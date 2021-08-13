@@ -1,0 +1,3 @@
+[submodule "qge"]
+	path = qge
+	url = git@github.com:moodyhunter/qtgraphicaleffects.git
