@@ -3,5 +3,6 @@
         <file>qml/components/PDPanel.qml</file>
         <file>qml/main.qml</file>
         <file>qml/components/RectangleAreaHandle.qml</file>
+        <file>qml/components/FixedGrid.qml</file>
     </qresource>
 </RCC>

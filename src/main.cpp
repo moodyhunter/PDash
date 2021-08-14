@@ -2,7 +2,6 @@
 #include <QLocale>
 #include <QQmlApplicationEngine>
 #include <QTranslator>
-#include <QtPlugin>
 
 int main(int argc, char *argv[])
 {
@@ -20,7 +19,7 @@ int main(int argc, char *argv[])
     }
 
     QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
+    const QUrl url(u"qrc:/qml/main.qml"_qs);
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated, &app,
         [url](QObject *obj, const QUrl &objUrl)

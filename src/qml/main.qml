@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Window
 import QtQuick.Controls
+import QtQuick.Shapes
 import "components"
 
 Window {
@@ -9,29 +10,33 @@ Window {
     height: 610
     visible: true
     title: qsTr("PD - The Personal Dashboard")
-    id: root
+    id: rootWindow
     color: "#eeeeee"
 
+    property bool editing: true
+
     SplitView {
+        id: splitview
         anchors.fill: parent
         spacing: 40
-        GridLayout {
+        FixedGrid {
             id: grid
             SplitView.fillWidth: true
-            columnSpacing: 4
-            rowSpacing: 10
             columns: 20
             rows: 20
-
-            Repeater {
-                model: [1, 2, 3, 4, 5, 6, 7]
-                PDPanel {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.row: Math.random()*20
-                    Layout.column: Math.random()*20
-                }
-            }
+            columnSpacing: 10
+            rowSpacing: 10
+            model: [{
+                    "row": 3,
+                    "column": 2,
+                    "rowSpan": 7,
+                    "columnSpan": 16
+                }, {
+                    "row": 10,
+                    "column": 2,
+                    "rowSpan": 7,
+                    "columnSpan": 8
+                }]
         }
 
         ColumnLayout {
@@ -39,10 +44,19 @@ Window {
             SplitView.minimumWidth: 150
             SplitView.preferredWidth: 250
 
-            PDPanel {
+            Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                hasHoveredAnimation: false
+                color: "grey"
+            }
+
+            Button {
+                text: "Toggle Edit Mode"
+                onClicked: grid.editMode = !grid.editMode
+            }
+            Button {
+                text: "Get Item Sizes"
+                onClicked: console.log(grid.getPositions())
             }
         }
     }

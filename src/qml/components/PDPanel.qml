@@ -4,14 +4,25 @@ import QtQuick.Controls
 import QtGraphicalEffects
 
 Item {
+    id: root
+    property int column
+    property int columnSpan: 1
+    property int row
+    property int rowSpan: 1
     property bool hasHoveredAnimation: true
+
     clip: false
+
+    HoverHandler {
+        enabled: hasHoveredAnimation
+        id: hoverhandler
+    }
 
     Rectangle {
         id: background
-        radius: 20
+        radius: 16
         color: "#fafafa"
-        border.color: "black"
+        border.color: "gray"
         border.width: 1
         anchors.fill: parent
     }
@@ -21,8 +32,6 @@ Item {
         source: background
         anchors.fill: background
         transparentBorder: true
-        state: hasHoveredAnimation
-               && hoverhandler.hovered ? "HOVERED" : "NORMAL"
 
         Behavior on radius {
             animation: NumberAnimation {
@@ -31,9 +40,8 @@ Item {
             }
         }
 
-        HoverHandler {
-            id: hoverhandler
-        }
+        state: hoverhandler.hovered ? "HOVERED" : "NORMAL"
+
         states: [
             State {
                 name: "HOVERED"

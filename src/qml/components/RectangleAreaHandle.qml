@@ -1,8 +1,9 @@
+
+
 /**
  * Copyright (C) Olivier Le Doeuff 2020
  * Contact: olivier.ldff@gmail.com
  */
-
 import QtQuick
 import QtQml
 
@@ -91,6 +92,7 @@ Item {
 
     // Emitted each time the user is moving the area
     signal moved(vector2d start, vector2d end)
+    signal released
 
     readonly property real pointerX: _hoverHandler.point.position.x
     readonly property real pointerY: _hoverHandler.point.position.y
@@ -261,6 +263,7 @@ Item {
         bottomPressed = false
         leftPressed = false
         rightPressed = false
+        released()
     }
 
     onPressedChanged: function () {
