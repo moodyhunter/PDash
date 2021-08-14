@@ -16,8 +16,8 @@ find_package(Qt6 6.1.0 COMPONENTS Core Gui Network Quick LinguistTools REQUIRED)
 
 set(TS_FILES translation/PD_zh_CN.ts)
 
-add_subdirectory(qge/src)
-list(APPEND QML_DIRS "${CMAKE_CURRENT_BINARY_DIR}/qge/src/")
+add_subdirectory(QtGraphicalEffects)
+list(APPEND QML_DIRS "${CMAKE_CURRENT_BINARY_DIR}")
 set(QML_IMPORT_PATH "${QML_DIRS}" CACHE STRING "Qt Creator 4.1 extra qml import paths")
 
 set(PROJECT_SOURCES

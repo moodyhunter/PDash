@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
     }
 
     QQmlApplicationEngine engine;
-    engine.addImportPath(app.applicationDirPath() + "/qge/src/");
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated, &app,
