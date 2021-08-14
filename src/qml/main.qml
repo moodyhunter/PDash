@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Window
+import QtQuick.Controls
 import "components"
 
 Window {
@@ -11,11 +12,12 @@ Window {
     id: root
     color: "#eeeeee"
 
-    RowLayout {
+    SplitView {
         anchors.fill: parent
         spacing: 40
         GridLayout {
             id: grid
+            SplitView.fillWidth: true
             columnSpacing: 4
             rowSpacing: 10
             columns: 20
@@ -26,12 +28,17 @@ Window {
                 PDPanel {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.rowSpan: 3
+                    Layout.row: Math.random()*20
+                    Layout.column: Math.random()*20
                 }
             }
         }
 
         ColumnLayout {
+            SplitView.maximumWidth: 500
+            SplitView.minimumWidth: 150
+            SplitView.preferredWidth: 250
+
             PDPanel {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
