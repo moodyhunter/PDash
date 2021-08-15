@@ -124,6 +124,7 @@ Item {
 
         Text {
             id: sizeLabel
+            visible: parent.visible
             x: current.x + current.width / 2 - width / 2
             y: current.y + current.height / 2 - height / 2
             text: "x = " + current.column + ", y = " + current.row + "\nSize: "

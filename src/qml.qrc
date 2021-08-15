@@ -3,6 +3,7 @@
         <file>qml/components/PDPanel.qml</file>
         <file>qml/main.qml</file>
         <file>qml/components/RectangleAreaHandle.qml</file>
-        <file>qml/components/FixedGrid.qml</file>
+        <file>qml/components/PanelGrid.qml</file>
+        <file>qml/components/ActivityListView.qml</file>
     </qresource>
 </RCC>
