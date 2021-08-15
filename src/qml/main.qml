@@ -146,6 +146,7 @@ Window {
                     CircularButton {
                         z: 99
                         backgroundcolor: grid.editMode ? activeTheme.highlight : activeTheme.background
+                        anchors.margins: 10
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
                         text: "Edit"
