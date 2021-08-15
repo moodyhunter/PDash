@@ -12,20 +12,40 @@ Window {
     visible: true
     title: qsTr("PD - The Personal Dashboard")
     id: rootWindow
-    color: "#eeeeee"
+    color: activeTheme.dark
 
     property bool editing: true
 
+    Themes {
+        id: activeTheme
+        state: "DarkState"
+    }
+
     property var panelModel: [{
-            "row": 3,
-            "column": 2,
-            "rowSpan": 7,
-            "columnSpan": 16
+            "row": 1,
+            "column": 1,
+            "rowSpan": 5,
+            "columnSpan": 6
         }, {
-            "row": 10,
-            "column": 2,
-            "rowSpan": 7,
-            "columnSpan": 8
+            "row": 6,
+            "column": 13,
+            "rowSpan": 10,
+            "columnSpan": 6
+        }, {
+            "row": 6,
+            "column": 1,
+            "rowSpan": 10,
+            "columnSpan": 12
+        }, {
+            "row": 1,
+            "column": 13,
+            "rowSpan": 5,
+            "columnSpan": 6
+        }, {
+            "row": 1,
+            "column": 7,
+            "rowSpan": 5,
+            "columnSpan": 6
         }]
 
     property var activityStreamModel: [{
@@ -54,56 +74,128 @@ Window {
             "date": "Yesterday"
         }]
 
-    Drawer {
-        width: 0.23 * rootWindow.width
-        height: rootWindow.height
-        Label {
-            text: "Content goes here!"
-            anchors.centerIn: parent
-        }
-    }
-
-    SplitView {
+    //Drawer {
+    //    width: 0.23 * rootWindow.width
+    //    height: rootWindow.height
+    //    Label {
+    //        text: "Content goes here!"
+    //        anchors.centerIn: parent
+    //    }
+    //}
+    RowLayout {
         anchors.fill: parent
-        id: splitview
-        spacing: 40
-
-        handle: Rectangle {
-            color: SplitHandle.pressed ? "#959595" : (SplitHandle.hovered ? "#b6b6b6" : "#dedede")
-            implicitWidth: 5
-            radius: 5
-        }
-
-        PanelGrid {
-            id: grid
-            SplitView.fillWidth: true
-            columns: 20
-            rows: 20
-            columnSpacing: 15
-            rowSpacing: 15
-            model: panelModel
+        Rectangle {
+            width: 90
+            color: activeTheme.background
+            Layout.fillHeight: true
         }
 
         ColumnLayout {
-            SplitView.maximumWidth: 500
-            SplitView.minimumWidth: 150
-            SplitView.preferredWidth: 350
-
-            ActivityListView {
-                model: activityStreamModel
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             RowLayout {
+                Label {
+                    text: "Dashboard"
+                    Layout.fillWidth: true
+                    font.pointSize: 30
+                    color: Qt.darker(activeTheme.text, 1.5)
+                }
                 Button {
-                    text: "Toggle Edit Mode"
-                    onClicked: grid.editMode = !grid.editMode
+                    text: "Print Sizes"
+                    onClicked: console.log(grid.getPositions())
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                height: 2
+                color: activeTheme.handlerHoverColor
+            }
+            SplitView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                id: splitview
+                spacing: 40
+
+                handle: Rectangle {
+                    color: SplitHandle.pressed ? Qt.darker(
+                                                     activeTheme.dark,
+                                                     1.5) : (SplitHandle.hovered ? activeTheme.handlerHoverColor : activeTheme.border)
+                    implicitWidth: 5
+                    radius: 5
                 }
 
-                Button {
-                    text: "Get Item Sizes"
-                    onClicked: console.log(grid.getPositions())
+                //            CircularButton {
+                //                text: "Push"
+                //                size: 60
+                //                backgroundcolor: "green"
+                //                bordercolor: "red"
+                //                onClicked: console.log("OK?")
+                //            }
+                PanelGrid {
+                    SplitView.fillWidth: true
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    id: grid
+                    columns: 20
+                    rows: 20
+                    columnSpacing: 15
+                    rowSpacing: 15
+                    model: panelModel
+                    CircularButton {
+                        z: 99
+                        backgroundcolor: grid.editMode ? activeTheme.highlight : activeTheme.background
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        text: "Edit"
+                        onClicked: grid.editMode = !grid.editMode
+                    }
+                }
+
+                ColumnLayout {
+                    SplitView.maximumWidth: 500
+                    SplitView.minimumWidth: 150
+                    SplitView.preferredWidth: 350
+
+                    ActivityListView {
+                        model: activityStreamModel
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.margins: 10
+                        control: ColumnLayout {
+                            Label {
+                                color: activeTheme.text
+                                Layout.fillWidth: true
+                                text: modelData.type
+                                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                            }
+                            Label {
+                                color: activeTheme.text
+                                Layout.fillWidth: true
+                                text: modelData.title
+                                wrapMode: Text.WrapAnywhere
+                            }
+                            Label {
+                                color: activeTheme.text
+                                Layout.fillWidth: true
+                                text: modelData.id
+                                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                            }
+                            Label {
+                                color: activeTheme.text
+                                Layout.fillWidth: true
+                                text: modelData.text
+                                wrapMode: Text.WrapAnywhere
+                            }
+                            Label {
+                                color: activeTheme.text
+                                Layout.fillWidth: true
+                                text: modelData.date
+                                wrapMode: Text.WrapAnywhere
+                            }
+                        }
+                    }
                 }
             }
         }

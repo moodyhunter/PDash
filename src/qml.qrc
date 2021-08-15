@@ -5,5 +5,7 @@
         <file>qml/components/RectangleAreaHandle.qml</file>
         <file>qml/components/PanelGrid.qml</file>
         <file>qml/components/ActivityListView.qml</file>
+        <file>qml/components/CircularButton.qml</file>
+        <file>qml/components/Themes.qml</file>
     </qresource>
 </RCC>

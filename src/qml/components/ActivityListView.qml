@@ -4,55 +4,65 @@ import QtQuick.Controls
 
 import QtGraphicalEffects
 
-ScrollView {
+ColumnLayout {
     property var model
+    property Component control
 
     id: root
-    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-    ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
-    ListView {
-        model: root.model
-        spacing: 20
-        Layout.margins: 10
+    Text {
+        color: Qt.darker(activeTheme.text, 1.5)
+        text: qsTr("All activity")
+        font.pointSize: 22
+        Layout.fillWidth: true
+    }
 
-        delegate: Item {
-            clip: false
-            width: root.width
-            height: clayout.implicitHeight
-            Rectangle {
-                id: content
-                color: "#f6f6f6"
-                radius: 10
-                anchors.fill: parent
-                ColumnLayout {
-                    id: clayout
-                    anchors.fill: parent
-                    Text {
-                        text: modelData.type
-                    }
-                    Text {
-                        text: modelData.title
-                    }
-                    Text {
-                        text: modelData.id
-                    }
-                    Text {
-                        text: modelData.text
-                    }
-                    Text {
-                        text: modelData.date
-                    }
+    ScrollView {
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+        Layout.fillHeight: true
+        Layout.fillWidth: true
+
+        clip: true
+        ListView {
+            model: root.model
+            spacing: 20
+            anchors.fill: parent
+            delegate: comp
+        }
+
+        Component {
+            id: comp
+            Item {
+                width: parent.width
+                implicitHeight: loader.implicitHeight + loader.anchors.margins * 2
+                HoverHandler {
+                    id: hover
                 }
-            }
+                DropShadow {
+                    id: shadow
+                    source: background
+                    anchors.fill: background
+                    transparentBorder: true
+                    radius: 15
+                }
 
-            DropShadow {
-                anchors.fill: content
-                source: content
-                transparentBorder: true
-                radius: 10
-                verticalOffset: 2
-                horizontalOffset: 2
+                Rectangle {
+                    id: background
+                    radius: 0
+                    color: hover.hovered ? activeTheme.handlerHoverColor : activeTheme.background
+                    border.color: activeTheme.border
+                    border.width: 1
+                    anchors.fill: parent
+                }
+
+                Loader {
+                    id: loader
+                    anchors.fill: parent
+                    anchors.margins: 10
+                    property var modelData: root.model[index]
+                    sourceComponent: control
+                }
             }
         }
     }

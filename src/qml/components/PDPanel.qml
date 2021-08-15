@@ -18,20 +18,12 @@ Item {
         id: hoverhandler
     }
 
-    Rectangle {
-        id: background
-        radius: 16
-        color: "#fafafa"
-        border.color: "gray"
-        border.width: 1
-        anchors.fill: parent
-    }
-
     DropShadow {
         id: shadow
         source: background
         anchors.fill: background
         transparentBorder: true
+        color: activeTheme.highlight
 
         Behavior on radius {
             animation: NumberAnimation {
@@ -58,5 +50,14 @@ Item {
                 }
             }
         ]
+    }
+
+    Rectangle {
+        id: background
+        radius: 16
+        color: activeTheme.background
+        border.color: activeTheme.border
+        border.width: 1
+        anchors.fill: parent
     }
 }

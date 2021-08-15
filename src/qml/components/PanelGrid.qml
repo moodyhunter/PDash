@@ -34,7 +34,8 @@ Item {
                 Layout.fillWidth: true
                 Layout.row: Math.floor(index / gridlayout.rows)
                 Layout.column: index % gridlayout.columns
-                color: _debug ? "grey" : "transparent"
+                color: _debug ? Qt.darker(activeTheme.background,
+                                          1.5) : "transparent"
                 border.width: _debug ? 1 : 0
             }
         }
@@ -123,12 +124,13 @@ Item {
         property int centerY
 
         Text {
+            color: activeTheme.text
             id: sizeLabel
             visible: parent.visible
-            x: current.x + current.width / 2 - width / 2
-            y: current.y + current.height / 2 - height / 2
-            text: "x = " + current.column + ", y = " + current.row + "\nSize: "
-                  + current.columnSpan + "x" + current.rowSpan
+            x: current == null ? 0 : current.x + current.width / 2 - width / 2
+            y: current == null ? 0 : current.y + current.height / 2 - height / 2
+            text: current == null ? "N/A" : "x = " + current.column + ", y = " + current.row
+                                    + "\nSize: " + current.columnSpan + "x" + current.rowSpan
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
         }
