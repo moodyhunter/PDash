@@ -15,6 +15,10 @@ Item {
     property bool _debug: false
 
     GridLayout {
+        columns: 20
+        rows: 20
+        columnSpacing: 15
+        rowSpacing: 15
         z: -1
         anchors.fill: parent
         id: gridlayout

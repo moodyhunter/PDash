@@ -84,10 +84,19 @@ Window {
     //}
     RowLayout {
         anchors.fill: parent
+        spacing: 0
+
         Rectangle {
             width: 90
             color: activeTheme.background
             Layout.fillHeight: true
+            Rectangle {
+                width: 2
+                color: Qt.darker(parent.color, 2)
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+            }
         }
 
         ColumnLayout {
@@ -126,26 +135,16 @@ Window {
                     radius: 5
                 }
 
-                //            CircularButton {
-                //                text: "Push"
-                //                size: 60
-                //                backgroundcolor: "green"
-                //                bordercolor: "red"
-                //                onClicked: console.log("OK?")
-                //            }
                 PanelGrid {
                     SplitView.fillWidth: true
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     id: grid
-                    columns: 20
-                    rows: 20
-                    columnSpacing: 15
-                    rowSpacing: 15
                     model: panelModel
                     CircularButton {
                         z: 99
                         backgroundcolor: grid.editMode ? activeTheme.highlight : activeTheme.background
+                        textcolor: grid.editMode ? activeTheme.background : activeTheme.highlight
                         anchors.margins: 10
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
@@ -158,12 +157,21 @@ Window {
                     SplitView.maximumWidth: 500
                     SplitView.minimumWidth: 150
                     SplitView.preferredWidth: 350
+                    id: column
+
+                    Text {
+                        color: Qt.darker(activeTheme.text, 1.5)
+                        text: qsTr("All activity")
+                        font.pointSize: 22
+                        Layout.fillWidth: true
+                        Layout.leftMargin: 10
+                    }
 
                     ActivityListView {
-                        model: activityStreamModel
-                        Layout.fillWidth: true
                         Layout.fillHeight: true
-                        Layout.margins: 10
+                        Layout.fillWidth: true
+                        Layout.leftMargin: 10
+                        model: rootWindow.activityStreamModel
                         control: ColumnLayout {
                             Label {
                                 color: activeTheme.text
