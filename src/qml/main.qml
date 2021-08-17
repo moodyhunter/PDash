@@ -21,7 +21,7 @@ Window {
         state: "DarkState"
     }
 
-    property var panelModel: [{
+    property var panelsModel: [{
             "row": 1,
             "column": 1,
             "rowSpan": 5,
@@ -106,6 +106,9 @@ Window {
             RowLayout {
                 Label {
                     text: "Dashboard"
+                    Layout.leftMargin: 10
+                    Layout.topMargin: 5
+                    Layout.bottomMargin: 5
                     Layout.fillWidth: true
                     font.pointSize: 30
                     color: Qt.darker(activeTheme.text, 1.5)
@@ -121,6 +124,7 @@ Window {
                 height: 2
                 color: activeTheme.handlerHoverColor
             }
+
             SplitView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -140,7 +144,7 @@ Window {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     id: grid
-                    model: panelModel
+                    model: panelsModel
                     CircularButton {
                         z: 99
                         backgroundcolor: grid.editMode ? activeTheme.highlight : activeTheme.background
@@ -203,6 +207,19 @@ Window {
                                 text: modelData.date
                                 wrapMode: Text.WrapAnywhere
                             }
+                        }
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                        height: 60
+                        Rectangle {
+                            color: activeTheme.background
+                            anchors.fill: parent
+                        }
+                        Label {
+                            anchors.fill: parent
+                            text: "Bottom Footer"
                         }
                     }
                 }

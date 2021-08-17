@@ -9,8 +9,10 @@ ListView {
     id: list
     Layout.fillHeight: true
     Layout.fillWidth: true
-    Layout.rightMargin: 30
-    ScrollBar.vertical: ScrollBar {}
+    Layout.rightMargin: 10
+    ScrollBar.vertical: ScrollBar {
+        policy: ScrollBar.AlwaysOn
+    }
     clip: true
     spacing: 20
     delegate: PDPanel {
