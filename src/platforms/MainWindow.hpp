@@ -3,11 +3,11 @@
 #include <QQuickView>
 #include <QResizeEvent>
 
-class TopWindow : public QWindow
+class MainWindow : public QWindow
 {
     Q_OBJECT
   public:
-    TopWindow();
+    MainWindow();
     void resizeEvent(QResizeEvent *ev);
     QQuickView *quickWindow;
 

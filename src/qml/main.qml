@@ -7,13 +7,8 @@ import QtQuick.Shapes
 import "components"
 
 Item {
-    width: 1300
-    height: 700
-    visible: true
-    //    title: qsTr("PD - The Personal Dashboard")
     id: rootWindow
-
-    //    color: activeTheme.dark
+    anchors.fill: parent
     property bool editing: true
 
     Themes {

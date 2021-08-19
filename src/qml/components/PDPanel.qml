@@ -23,7 +23,7 @@ Item {
         source: background
         anchors.fill: background
         transparentBorder: true
-        color: activeTheme.highlight
+        color: Qt.lighter(activeTheme.highlight, 1.1)
 
         Behavior on radius {
             animation: NumberAnimation {

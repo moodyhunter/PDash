@@ -21,17 +21,18 @@ list(APPEND QML_DIRS "${CMAKE_CURRENT_BINARY_DIR}")
 set(QML_IMPORT_PATH "${QML_DIRS}" CACHE STRING "Qt Creator 4.1 extra qml import paths")
 
 set(PROJECT_SOURCES
-    src/main.cpp
-    src/platforms/macOS-blurredWindow.mm
-    src/platforms/macOS-blurredWindow.hpp
-    src/qml.qrc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/MainWindow.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/qml.qrc
     ${TS_FILES}
     )
 
-qt_add_executable(PD MANUAL_FINALIZATION ${PROJECT_SOURCES})
-# For linking against statically built Qt
-qt_import_qml_plugins(PD)
+if(APPLE)
+    list(APPEND PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/MainWindow-macOS.mm")
+endif()
 
+qt_add_executable(PD MANUAL_FINALIZATION ${PROJECT_SOURCES})
+qt_import_qml_plugins(PD)
 qt_finalize_executable(PD)
 
 # See https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
@@ -39,7 +40,10 @@ qt_finalize_executable(PD)
 
 qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
+# ~/Qt/6.2.0/macos/bin/macdeployqt ./PD.app/ -qmldir=../src/qml/ -qmlimport=.
+
 set_target_properties(PD PROPERTIES
+    MACOSX_BUNDLE TRUE
     MACOSX_BUNDLE_GUI_IDENTIFIER pd.moody.me
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
