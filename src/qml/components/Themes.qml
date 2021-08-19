@@ -47,7 +47,7 @@ Item {
             name: "DarkState"
             PropertyChanges {
                 target: globalTheme
-                background: "#653B4252"
+                background: "#3B4252"
                 dark: "#2E3440"
                 highlight: "#5E81AC"
                 highlightText: "#ECEFF4"

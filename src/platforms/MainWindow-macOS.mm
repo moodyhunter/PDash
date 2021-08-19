@@ -8,8 +8,8 @@
 
 MainWindow::MainWindow() : QWindow()
 {
-    setWidth(1300);
-    setHeight(700);
+    setWidth(WINDOW_WIDTH);
+    setHeight(WINDOW_HEIGHT);
     quickWindow = new QQuickView(this);
     quickWindow->show();
     quickWindow->setColor(Qt::transparent);

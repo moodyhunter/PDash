@@ -6,7 +6,8 @@ import QtQuick.Shapes
 
 import "components"
 
-Item {
+Rectangle {
+    color: activeTheme.dark
     id: rootWindow
     anchors.fill: parent
     property bool editing: true
