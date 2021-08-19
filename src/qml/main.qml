@@ -6,14 +6,14 @@ import QtQuick.Shapes
 
 import "components"
 
-Window {
+Item {
     width: 1300
     height: 700
     visible: true
-    title: qsTr("PD - The Personal Dashboard")
+    //    title: qsTr("PD - The Personal Dashboard")
     id: rootWindow
-    color: activeTheme.dark
 
+    //    color: activeTheme.dark
     property bool editing: true
 
     Themes {
@@ -89,6 +89,7 @@ Window {
         Rectangle {
             width: 90
             color: activeTheme.background
+            opacity: activeTheme.backgroundOpacity
             Layout.fillHeight: true
             Rectangle {
                 width: 2

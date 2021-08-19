@@ -4,10 +4,6 @@
 <context>
     <name>main</name>
     <message>
-        <source>PD - The Personal Dashboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>All activity</source>
         <translation type="unfinished"></translation>
     </message>

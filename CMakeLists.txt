@@ -22,6 +22,8 @@ set(QML_IMPORT_PATH "${QML_DIRS}" CACHE STRING "Qt Creator 4.1 extra qml import 
 
 set(PROJECT_SOURCES
     src/main.cpp
+    src/platforms/macOS-blurredWindow.mm
+    src/platforms/macOS-blurredWindow.hpp
     src/qml.qrc
     ${TS_FILES}
     )
@@ -51,4 +53,5 @@ target_link_libraries(PD
         Qt::Core
         Qt::Gui
         Qt::Network
-        Qt::Quick)
+        Qt::Quick
+         )
