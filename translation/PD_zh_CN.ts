@@ -4,7 +4,7 @@
 <context>
     <name>MainComponent</name>
     <message>
-        <location filename="../src/qml/MainComponent.qml" line="138"/>
+        <location filename="../src/qml/MainComponent.qml" line="104"/>
         <source>All activity</source>
         <translation type="unfinished"></translation>
     </message>

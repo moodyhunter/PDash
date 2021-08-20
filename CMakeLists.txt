@@ -29,7 +29,7 @@ set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/QMLListPropertyHelper.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/QMLPropertyHelpers.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/PDBaseModel.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/MainWindowModel.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/MainWindowModel.cpp

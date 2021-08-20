@@ -17,40 +17,6 @@ Item {
         id: mwModel
     }
 
-    property var activityStreamModel: [{
-            "type": "GitHub Notifications",
-            "title": "Daguerreo/NodeEditor #14",
-            "text": "Daguerreo/NodeEditor #14\nCMake: respect specified Qt version from QT_VERSION_MAJOR",
-            "id": "5611652a-9463-48e7-8372-4a248a5f0ed0",
-            "date": "Just Now"
-        }, {
-            "type": "Mail - myemail@mydomain.com",
-            "title": "Watch a demo of Windows 365 - Microsoft Tech News",
-            "text": "Watch an overview of Windows 365 to see how it delivers your PC in the cloud.",
-            "id": "a169bd1d-4672-4e4d-a4b6-9f37a5f19b4f",
-            "date": "6 Hours Ago"
-        }, {
-            "type": "Jira Ticket",
-            "title": "New Change in QTBUG-87471",
-            "text": "Daguerreo/NodeEditor #14\nCMake: respect specified Qt version from QT_VERSION_MAJOR",
-            "id": "b9907466-cfc5-416c-8c34-53bde71a5a98",
-            "date": "Yesterday"
-        }, {
-            "type": "Due Date",
-            "title": "Coursework Due Passed",
-            "text": "CS999 Coursework Due",
-            "id": "9f8c4cc4-cead-4869-981c-c8737b94ebeb",
-            "date": "Yesterday"
-        }]
-
-    //Drawer {
-    //    width: 0.23 * rootWindow.width
-    //    height: rootWindow.height
-    //    Label {
-    //        text: "Content goes here!"
-    //        anchors.centerIn: parent
-    //    }
-    //}
     RowLayout {
         anchors.fill: parent
         spacing: 0
@@ -92,7 +58,7 @@ Item {
             Rectangle {
                 Layout.fillWidth: true
                 height: 2
-                color: AppTheme.handlerHoverColor
+                color: AppTheme.handlerHover
             }
 
             SplitView {
@@ -145,7 +111,7 @@ Item {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         Layout.leftMargin: 10
-                        model: rootComponent.activityStreamModel
+                        model: mwModel.activities
                         control: ColumnLayout {
                             Label {
                                 color: AppTheme.text

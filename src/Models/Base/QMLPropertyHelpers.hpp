@@ -1,32 +1,61 @@
 #pragma once
 
-#define QMLListFunctions(name, Name, thisClass, ModelClass, varname)                                                                                                     \
+#define PD_PROPERTY(type, name, Name)                                                                                                                                    \
+    Q_PROPERTY(type name READ get##Name WRITE set##Name NOTIFY name##Changed)                                                                                            \
+  private:                                                                                                                                                               \
+    type m_##name;                                                                                                                                                       \
+                                                                                                                                                                         \
   public:                                                                                                                                                                \
+    type get##Name() const                                                                                                                                               \
+    {                                                                                                                                                                    \
+        return m_##name;                                                                                                                                                 \
+    }                                                                                                                                                                    \
+    void set##Name(const type &newValue)                                                                                                                                 \
+    {                                                                                                                                                                    \
+        if (m_##name == newValue)                                                                                                                                        \
+            return;                                                                                                                                                      \
+        m_##name = newValue;                                                                                                                                             \
+        Q_EMIT name##Changed();                                                                                                                                          \
+    }                                                                                                                                                                    \
+    Q_SIGNAL void name##Changed();                                                                                                                                       \
+                                                                                                                                                                         \
+  private:
+
+#define PD_LIST_PROPERTY(ModelClass, name, Name, thisClass)                                                                                                              \
+  private:                                                                                                                                                               \
+    QList<ModelClass *> m_##name##_list;                                                                                                                                 \
+                                                                                                                                                                         \
+  public:                                                                                                                                                                \
+    Q_SIGNAL void name##ListChanged();                                                                                                                                   \
     void append##Name(ModelClass *p)                                                                                                                                     \
     {                                                                                                                                                                    \
-        varname.append(p);                                                                                                                                               \
+        m_##name##_list.append(p);                                                                                                                                       \
+        Q_EMIT name##ListChanged();                                                                                                                                      \
     }                                                                                                                                                                    \
     qsizetype name##Count() const                                                                                                                                        \
     {                                                                                                                                                                    \
-        return varname.count();                                                                                                                                          \
+        return m_##name##_list.count();                                                                                                                                  \
     }                                                                                                                                                                    \
     ModelClass *name(qsizetype index) const                                                                                                                              \
     {                                                                                                                                                                    \
-        return varname.at(index);                                                                                                                                        \
+        return m_##name##_list.at(index);                                                                                                                                \
     }                                                                                                                                                                    \
-    void clear##Name##s()                                                                                                                                                \
+    void clear##name##_list()                                                                                                                                            \
     {                                                                                                                                                                    \
-        varname.clear();                                                                                                                                                 \
+        m_##name##_list.clear();                                                                                                                                         \
+        Q_EMIT name##ListChanged();                                                                                                                                      \
     }                                                                                                                                                                    \
     void replace##Name(qsizetype index, ModelClass *p)                                                                                                                   \
     {                                                                                                                                                                    \
-        varname[index] = p;                                                                                                                                              \
+        m_##name##_list[index] = p;                                                                                                                                      \
+        Q_EMIT name##ListChanged();                                                                                                                                      \
     }                                                                                                                                                                    \
     void removeLast##Name()                                                                                                                                              \
     {                                                                                                                                                                    \
-        varname.removeLast();                                                                                                                                            \
+        m_##name##_list.removeLast();                                                                                                                                    \
+        Q_EMIT name##ListChanged();                                                                                                                                      \
     }                                                                                                                                                                    \
-    QQmlListProperty<ModelClass> name##s()                                                                                                                               \
+    QQmlListProperty<ModelClass> name##_list()                                                                                                                           \
     {                                                                                                                                                                    \
         return QQmlListProperty<ModelClass>{                                                                                                                             \
             this,                                                                                                                                                        \
@@ -34,7 +63,7 @@
             &thisClass::append##Name,                                                                                                                                    \
             &thisClass::name##Count,                                                                                                                                     \
             &thisClass::name,                                                                                                                                            \
-            &thisClass::clear##Name##s,                                                                                                                                  \
+            &thisClass::clear##name##_list,                                                                                                                              \
             &thisClass::replace##Name,                                                                                                                                   \
             &thisClass::removeLast##Name,                                                                                                                                \
         };                                                                                                                                                               \
@@ -53,9 +82,9 @@
     {                                                                                                                                                                    \
         return reinterpret_cast<thisClass *>(list->data)->name(i);                                                                                                       \
     }                                                                                                                                                                    \
-    static void clear##Name##s(QQmlListProperty<ModelClass> *list)                                                                                                       \
+    static void clear##name##_list(QQmlListProperty<ModelClass> *list)                                                                                                   \
     {                                                                                                                                                                    \
-        reinterpret_cast<thisClass *>(list->data)->clear##Name##s();                                                                                                     \
+        reinterpret_cast<thisClass *>(list->data)->clear##name##_list();                                                                                                 \
     }                                                                                                                                                                    \
     static void replace##Name(QQmlListProperty<ModelClass> *list, qsizetype i, ModelClass *p)                                                                            \
     {                                                                                                                                                                    \
