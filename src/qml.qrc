@@ -1,11 +1,13 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/components/PDPanel.qml</file>
-        <file>qml/main.qml</file>
+        <file>qml/MainWindow.qml</file>
         <file>qml/components/RectangleAreaHandle.qml</file>
         <file>qml/components/PanelGrid.qml</file>
         <file>qml/components/ActivityListView.qml</file>
         <file>qml/components/CircularButton.qml</file>
         <file>qml/components/Themes.qml</file>
+        <file>qml/MainComponent.qml</file>
+        <file>qml/components/DBPasswordQueryView.qml</file>
     </qresource>
 </RCC>

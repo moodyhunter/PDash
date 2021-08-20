@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 
+import pd.mooody.me
+
 Item {
     id: root
     property var model
@@ -38,7 +40,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.row: Math.floor(index / gridlayout.rows)
                 Layout.column: index % gridlayout.columns
-                color: _debug ? Qt.darker(activeTheme.background,
+                color: _debug ? Qt.darker(AppTheme.background,
                                           1.5) : "transparent"
                 border.width: _debug ? 1 : 0
             }
@@ -128,7 +130,7 @@ Item {
         property int centerY
 
         Text {
-            color: activeTheme.text
+            color: AppTheme.text
             id: sizeLabel
             visible: parent.visible
             x: current == null ? 0 : current.x + current.width / 2 - width / 2

@@ -3,6 +3,8 @@ import QtQuick.Controls
 
 import QtGraphicalEffects
 
+import pd.mooody.me
+
 Item {
     id: root
     property int column
@@ -23,7 +25,7 @@ Item {
         source: background
         anchors.fill: background
         transparentBorder: true
-        color: Qt.lighter(activeTheme.highlight, 1.1)
+        color: Qt.lighter(AppTheme.highlight, 1.1)
 
         Behavior on radius {
             animation: NumberAnimation {
@@ -55,8 +57,8 @@ Item {
     Rectangle {
         id: background
         radius: 16
-        color: activeTheme.background
-        border.color: activeTheme.border
+        color: AppTheme.background
+        border.color: AppTheme.border
         border.width: 1
         anchors.fill: parent
     }

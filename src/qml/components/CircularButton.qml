@@ -1,12 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 
+import pd.mooody.me
+
 RoundButton {
     id: root
     property int size: 50
-    property color textcolor: activeTheme.text
-    property color backgroundcolor: activeTheme.background
-    property color bordercolor: activeTheme.highlight
+    property color textcolor: AppTheme.text
+    property color backgroundcolor: AppTheme.background
+    property color bordercolor: AppTheme.highlight
 
     flat: true
 

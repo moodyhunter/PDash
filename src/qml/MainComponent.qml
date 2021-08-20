@@ -4,45 +4,18 @@ import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Shapes
 
+import pd.mooody.me
+
 import "components"
 
-Rectangle {
-    color: activeTheme.dark
-    id: rootWindow
+Item {
+    id: rootComponent
     anchors.fill: parent
     property bool editing: true
 
-    Themes {
-        id: activeTheme
-        state: "DarkState"
+    MainWindowModel {
+        id: mwModel
     }
-
-    property var panelsModel: [{
-            "row": 1,
-            "column": 1,
-            "rowSpan": 5,
-            "columnSpan": 6
-        }, {
-            "row": 6,
-            "column": 13,
-            "rowSpan": 10,
-            "columnSpan": 6
-        }, {
-            "row": 6,
-            "column": 1,
-            "rowSpan": 10,
-            "columnSpan": 12
-        }, {
-            "row": 1,
-            "column": 13,
-            "rowSpan": 5,
-            "columnSpan": 6
-        }, {
-            "row": 1,
-            "column": 7,
-            "rowSpan": 5,
-            "columnSpan": 6
-        }]
 
     property var activityStreamModel: [{
             "type": "GitHub Notifications",
@@ -84,8 +57,8 @@ Rectangle {
 
         Rectangle {
             width: 90
-            color: activeTheme.background
-            opacity: activeTheme.backgroundOpacity
+            color: AppTheme.background
+            opacity: AppTheme.backgroundOpacity
             Layout.fillHeight: true
             Rectangle {
                 width: 2
@@ -108,7 +81,7 @@ Rectangle {
                     Layout.bottomMargin: 5
                     Layout.fillWidth: true
                     font.pointSize: 30
-                    color: Qt.darker(activeTheme.text, 1.5)
+                    color: Qt.darker(AppTheme.text, 1.5)
                 }
                 Button {
                     text: "Print Sizes"
@@ -119,7 +92,7 @@ Rectangle {
             Rectangle {
                 Layout.fillWidth: true
                 height: 2
-                color: activeTheme.handlerHoverColor
+                color: AppTheme.handlerHoverColor
             }
 
             SplitView {
@@ -130,8 +103,8 @@ Rectangle {
 
                 handle: Rectangle {
                     color: SplitHandle.pressed ? Qt.darker(
-                                                     activeTheme.dark,
-                                                     1.5) : (SplitHandle.hovered ? activeTheme.handlerHoverColor : activeTheme.border)
+                                                     AppTheme.dark,
+                                                     1.5) : (SplitHandle.hovered ? AppTheme.handlerHoverColor : AppTheme.border)
                     implicitWidth: 5
                     radius: 5
                 }
@@ -141,11 +114,11 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     id: grid
-                    model: panelsModel
+                    model: mwModel.panels
                     CircularButton {
                         z: 99
-                        backgroundcolor: grid.editMode ? activeTheme.highlight : activeTheme.background
-                        textcolor: grid.editMode ? activeTheme.background : activeTheme.highlight
+                        backgroundcolor: grid.editMode ? AppTheme.highlight : AppTheme.background
+                        textcolor: grid.editMode ? AppTheme.background : AppTheme.highlight
                         anchors.margins: 10
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
@@ -161,7 +134,7 @@ Rectangle {
                     id: column
 
                     Text {
-                        color: Qt.darker(activeTheme.text, 1.5)
+                        color: Qt.darker(AppTheme.text, 1.5)
                         text: qsTr("All activity")
                         font.pointSize: 22
                         Layout.fillWidth: true
@@ -172,34 +145,34 @@ Rectangle {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         Layout.leftMargin: 10
-                        model: rootWindow.activityStreamModel
+                        model: rootComponent.activityStreamModel
                         control: ColumnLayout {
                             Label {
-                                color: activeTheme.text
+                                color: AppTheme.text
                                 Layout.fillWidth: true
                                 text: modelData.type
                                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                             }
                             Label {
-                                color: activeTheme.text
+                                color: AppTheme.text
                                 Layout.fillWidth: true
                                 text: modelData.title
                                 wrapMode: Text.WrapAnywhere
                             }
                             Label {
-                                color: activeTheme.text
+                                color: AppTheme.text
                                 Layout.fillWidth: true
                                 text: modelData.id
                                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                             }
                             Label {
-                                color: activeTheme.text
+                                color: AppTheme.text
                                 Layout.fillWidth: true
                                 text: modelData.text
                                 wrapMode: Text.WrapAnywhere
                             }
                             Label {
-                                color: activeTheme.text
+                                color: AppTheme.text
                                 Layout.fillWidth: true
                                 text: modelData.date
                                 wrapMode: Text.WrapAnywhere
@@ -211,7 +184,7 @@ Rectangle {
                         Layout.fillWidth: true
                         height: 60
                         Rectangle {
-                            color: activeTheme.background
+                            color: AppTheme.background
                             anchors.fill: parent
                         }
                         Label {
