@@ -39,7 +39,6 @@
 
 #include "QSQLCipherDriver.hpp"
 
-#include <QCoreApplication>
 #include <QDateTime>
 #include <QDebug>
 #include <QScopedValueRollback>
@@ -63,7 +62,8 @@
 #include <unistd.h>
 #endif
 
-#include <functional>
+#define SQLITE_HAS_CODEC
+
 #include <sqlite3.h>
 
 Q_DECLARE_OPAQUE_POINTER(sqlite3 *)
@@ -72,9 +72,12 @@ Q_DECLARE_METATYPE(sqlite3 *)
 Q_DECLARE_OPAQUE_POINTER(sqlite3_stmt *)
 Q_DECLARE_METATYPE(sqlite3_stmt *)
 
-QT_BEGIN_NAMESPACE
-
 #define DISABLE_COLUMN_METADATA
+
+QSqlDriver *QSQLCipherDriverCreator::createObject() const
+{
+    return new QSQLCipherDriver();
+}
 
 static QString _q_escapeIdentifier(const QString &identifier, QSqlDriver::IdentifierType type)
 {
@@ -264,8 +267,7 @@ bool QSQLCipherResultPrivate::fetchNext(QSqlCachedResult::ValueCache &values, in
 
     if (!stmt)
     {
-        q->setLastError(QSqlError(QCoreApplication::translate("QSQLiteResult", "Unable to fetch row"), QCoreApplication::translate("QSQLiteResult", "No query"),
-                                  QSqlError::ConnectionError));
+        q->setLastError(QSqlError(QObject::tr("QSQLiteResult", "Unable to fetch row"), QObject::tr("QSQLiteResult", "No query"), QSqlError::ConnectionError));
         q->setAt(QSql::AfterLastRow);
         return false;
     }
@@ -314,14 +316,14 @@ bool QSQLCipherResultPrivate::fetchNext(QSqlCachedResult::ValueCache &values, in
             // SQLITE_ERROR is a generic error code and we must call sqlite3_reset()
             // to get the specific error message.
             res = sqlite3_reset(stmt);
-            q->setLastError(qMakeError(drv_d_func()->access, QCoreApplication::translate("QSQLiteResult", "Unable to fetch row"), QSqlError::ConnectionError, res));
+            q->setLastError(qMakeError(drv_d_func()->access, QObject::tr("QSQLiteResult", "Unable to fetch row"), QSqlError::ConnectionError, res));
             q->setAt(QSql::AfterLastRow);
             return false;
         case SQLITE_MISUSE:
         case SQLITE_BUSY:
         default:
             // something wrong, don't get col info, but still return false
-            q->setLastError(qMakeError(drv_d_func()->access, QCoreApplication::translate("QSQLiteResult", "Unable to fetch row"), QSqlError::ConnectionError, res));
+            q->setLastError(qMakeError(drv_d_func()->access, QObject::tr("QSQLiteResult", "Unable to fetch row"), QSqlError::ConnectionError, res));
             sqlite3_reset(stmt);
             q->setAt(QSql::AfterLastRow);
             return false;
@@ -376,14 +378,14 @@ bool QSQLCipherResult::prepare(const QString &query)
 
     if (res != SQLITE_OK)
     {
-        setLastError(qMakeError(d->drv_d_func()->access, QCoreApplication::translate("QSQLiteResult", "Unable to execute statement"), QSqlError::StatementError, res));
+        setLastError(qMakeError(d->drv_d_func()->access, QObject::tr("QSQLiteResult", "Unable to execute statement"), QSqlError::StatementError, res));
         d->finalize();
         return false;
     }
     else if (pzTail && !QString(reinterpret_cast<const QChar *>(pzTail)).trimmed().isEmpty())
     {
-        setLastError(qMakeError(d->drv_d_func()->access, QCoreApplication::translate("QSQLiteResult", "Unable to execute multiple statements at a time"),
-                                QSqlError::StatementError, SQLITE_MISUSE));
+        setLastError(qMakeError(d->drv_d_func()->access, QObject::tr("QSQLiteResult", "Unable to execute multiple statements at a time"), QSqlError::StatementError,
+                                SQLITE_MISUSE));
         d->finalize();
         return false;
     }
@@ -429,7 +431,7 @@ bool QSQLCipherResult::exec()
     int res = sqlite3_reset(d->stmt);
     if (res != SQLITE_OK)
     {
-        setLastError(qMakeError(d->drv_d_func()->access, QCoreApplication::translate("QSQLiteResult", "Unable to reset statement"), QSqlError::StatementError, res));
+        setLastError(qMakeError(d->drv_d_func()->access, QObject::tr("QSQLiteResult", "Unable to reset statement"), QSqlError::StatementError, res));
         d->finalize();
         return false;
     }
@@ -532,8 +534,7 @@ bool QSQLCipherResult::exec()
             }
             if (res != SQLITE_OK)
             {
-                setLastError(
-                    qMakeError(d->drv_d_func()->access, QCoreApplication::translate("QSQLiteResult", "Unable to bind parameters"), QSqlError::StatementError, res));
+                setLastError(qMakeError(d->drv_d_func()->access, QObject::tr("QSQLiteResult", "Unable to bind parameters"), QSqlError::StatementError, res));
                 d->finalize();
                 return false;
             }
@@ -541,7 +542,7 @@ bool QSQLCipherResult::exec()
     }
     else
     {
-        setLastError(QSqlError(QCoreApplication::translate("QSQLiteResult", "Parameter count mismatch"), QString(), QSqlError::StatementError));
+        setLastError(QSqlError(QObject::tr("QSQLiteResult", "Parameter count mismatch"), QString(), QSqlError::StatementError));
         return false;
     }
     d->skippedStatus = d->fetchNext(d->firstRow, 0, true);
@@ -690,7 +691,7 @@ bool QSQLCipherDriver::hasFeature(DriverFeature f) const
    SQLite dbs have no user name, passwords, hosts or ports.
    just file names.
 */
-bool QSQLCipherDriver::open(const QString &db, const QString &, const QString &, const QString &, int, const QString &conOpts)
+bool QSQLCipherDriver::open(const QString &db, const QString &, const QString &pass, const QString &, int, const QString &conOpts)
 {
     Q_D(QSQLCipherDriver);
     if (isOpen())
@@ -707,14 +708,14 @@ bool QSQLCipherDriver::open(const QString &db, const QString &, const QString &,
     int regexpCacheSize = 25;
 #endif
 
-    const auto opts = QStringView{ conOpts }.split(QLatin1Char(';'));
+    const auto opts = QStringView{ conOpts }.split(u';');
     for (auto option : opts)
     {
         option = option.trimmed();
         if (option.startsWith(QStringLiteral("QSQLITE_BUSY_TIMEOUT")))
         {
             option = option.mid(20).trimmed();
-            if (option.startsWith(QLatin1Char('=')))
+            if (option.startsWith(u'='))
             {
                 bool ok;
                 const int nt = option.mid(1).trimmed().toInt(&ok);
@@ -746,7 +747,7 @@ bool QSQLCipherDriver::open(const QString &db, const QString &, const QString &,
             {
                 defineRegexp = true;
             }
-            else if (option.startsWith(QLatin1Char('=')))
+            else if (option.startsWith(u'='))
             {
                 bool ok = false;
                 const int cacheSize = option.mid(1).trimmed().toInt(&ok);
@@ -774,16 +775,26 @@ bool QSQLCipherDriver::open(const QString &db, const QString &, const QString &,
     {
         sqlite3_busy_timeout(d->access, timeOut);
         sqlite3_extended_result_codes(d->access, useExtendedResultCodes);
-        setOpen(true);
-        setOpenError(false);
-#if QT_CONFIG(regularexpression)
-        if (defineRegexp)
+        sqlite3_key(d->access, pass.toStdString().c_str(), pass.length());
+        if (sqlite3_exec(d->access, "SELECT count(*) FROM sqlite_master;", NULL, NULL, NULL) == SQLITE_OK)
         {
-            auto cache = new QCache<QString, QRegularExpression>(regexpCacheSize);
-            sqlite3_create_function_v2(d->access, "regexp", 2, SQLITE_UTF8, cache, &_q_regexp, nullptr, nullptr, &_q_regexp_cleanup);
-        }
+            setOpen(true);
+            setOpenError(false);
+#if QT_CONFIG(regularexpression)
+            if (defineRegexp)
+            {
+                auto cache = new QCache<QString, QRegularExpression>(regexpCacheSize);
+                sqlite3_create_function_v2(d->access, "regexp", 2, SQLITE_UTF8, cache, &_q_regexp, nullptr, nullptr, &_q_regexp_cleanup);
+            }
 #endif
-        return true;
+            return true;
+        }
+        else
+        {
+            setLastError(qMakeError(d->access, tr("Incorrect Password"), QSqlError::ConnectionError, res));
+            setOpenError(true);
+            return false;
+        }
     }
     else
     {
@@ -1069,5 +1080,3 @@ void QSQLCipherDriver::handleNotification(const QString &tableName, qint64 rowid
     if (d->notificationid.contains(tableName))
         emit notification(tableName, QSqlDriver::UnknownSource, QVariant(rowid));
 }
-
-QT_END_NAMESPACE

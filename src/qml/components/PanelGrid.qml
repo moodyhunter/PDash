@@ -14,7 +14,6 @@ Item {
     property bool editMode: false
     property PDPanel current: null
     property list<PDPanel> panels
-    property bool _debug: false
 
     GridLayout {
         columns: 20
@@ -35,14 +34,11 @@ Item {
         Repeater {
             id: repeater
             model: gridlayout.rows * gridlayout.columns
-            delegate: Rectangle {
+            delegate: Item {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.row: Math.floor(index / gridlayout.rows)
                 Layout.column: index % gridlayout.columns
-                color: _debug ? Qt.darker(AppTheme.background,
-                                          1.5) : "transparent"
-                border.width: _debug ? 1 : 0
             }
         }
     }

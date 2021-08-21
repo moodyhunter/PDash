@@ -9,5 +9,6 @@
         <file>qml/components/Themes.qml</file>
         <file>qml/MainComponent.qml</file>
         <file>qml/components/DBPasswordQueryView.qml</file>
+        <file>qml/LoginPage.qml</file>
     </qresource>
 </RCC>

@@ -12,6 +12,7 @@ class PDApplication : public QGuiApplication
 
   public:
     explicit PDApplication(int &argc, char *argv[]);
+    virtual ~PDApplication();
     void initialize();
     int exec();
 

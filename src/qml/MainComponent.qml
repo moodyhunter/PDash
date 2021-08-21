@@ -51,7 +51,7 @@ Item {
                 }
                 Button {
                     text: "Print Sizes"
-                    onClicked: console.log(grid.getPositions())
+                    //                    onClicked: console.log(grid.getPositions())
                 }
             }
 
@@ -162,4 +162,8 @@ Item {
             }
         }
     }
+    LoginPage {
+        id: login
+    }
+    Component.onCompleted: login.open()
 }

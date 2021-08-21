@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSqlDatabase>
 
 class DBManager : public QObject
 {
@@ -8,11 +9,8 @@ class DBManager : public QObject
   public:
     DBManager(QObject *parent = nullptr);
     virtual ~DBManager();
-    bool OpenDatabase();
+    Q_INVOKABLE bool openDatabase(const QString &dbName, const QString &password);
 
-  signals:
-    void OnDBPasswordRequested();
-
-  public slots:
-    void OnProvideDBPassword(const QString &);
+  private:
+    QSqlDatabase db;
 };

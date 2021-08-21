@@ -1,6 +1,4 @@
 import QtQuick
-import QtQuick.Window
-
 import pd.mooody.me
 
 Window {

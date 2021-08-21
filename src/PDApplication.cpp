@@ -4,6 +4,9 @@
 #include "Models/MainWindowModel.hpp"
 #include "Models/ThemesModel.hpp"
 
+#include <QFontDatabase>
+#include <QQmlContext>
+
 #ifdef Q_OS_MAC
 #include "platforms/MainWindow-macOS.hpp"
 #else
@@ -21,7 +24,15 @@ PDApplication::PDApplication(int &argc, char *argv[])
     qmlRegisterType<MainWindowModel>(PD_QML_URI, 1, 0, "MainWindowModel");
     qmlRegisterSingletonInstance<AppThemeModel>(PD_QML_URI, 1, 0, "AppTheme", appTheme);
     qmlRegisterSingletonInstance<PDApplication>(PD_QML_URI, 1, 0, "PDApp", this);
+    qmlRegisterSingletonInstance<DBManager>(PD_QML_URI, 1, 0, "DBManager", dbManager);
     qmlRegisterModule(PD_QML_URI, 1, 0);
+}
+
+PDApplication::~PDApplication()
+{
+    delete appTheme;
+    delete dbManager;
+    delete mainWindowModel;
 }
 
 void PDApplication::initialize()
@@ -47,6 +58,9 @@ int PDApplication::exec()
     window.show();
 #else
     QQmlApplicationEngine engine;
+    const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    engine.rootContext()->setContextProperty(QStringLiteral("fixedFont"), fixedFont);
+
     const static QUrl url(u"qrc:/qml/MainWindow.qml"_qs);
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated, this,

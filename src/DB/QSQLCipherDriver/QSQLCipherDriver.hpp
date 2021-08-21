@@ -36,14 +36,12 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
-#ifndef QSQL_SQLITE_H
-#define QSQL_SQLITE_H
-
-#define QT_STATICPLUGIN
+#pragma once
 
 #include <QSqlDriver>
-#include <QSqlDriverPlugin>
+#include <QSqlDriverCreatorBase>
+
+#define QT_STATICPLUGIN
 
 struct sqlite3;
 
@@ -82,24 +80,8 @@ class QSQLCipherDriver : public QSqlDriver
     void handleNotification(const QString &tableName, qint64 rowid);
 };
 
-class QSQLCipherDriverPlugin : public QSqlDriverPlugin
+class QSQLCipherDriverCreator : public QSqlDriverCreatorBase
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QSqlDriverFactoryInterface")
-
   public:
-    QSQLCipherDriverPlugin(QObject *parent = nullptr) : QSqlDriverPlugin(parent)
-    {
-    }
-
-    QSqlDriver *create(const QString &name) override
-    {
-        if (name == u"QSQLCIPHER")
-        {
-            return new QSQLCipherDriver();
-        }
-        return 0;
-    }
+    QSqlDriver *createObject() const override;
 };
-
-#endif // QSQL_SQLITE_H
