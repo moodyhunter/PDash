@@ -13,6 +13,7 @@ AppThemeModel::AppThemeModel(QObject *parent) : PDBaseModel(parent)
     setBorder("#3381A1C1");
     setDeep("#3B4252");
     setDeepText("#ECEFF4");
+    setHandlerHover(m_dark.lighter(150));
     setBackgroudOpacity(0.3);
 }
 

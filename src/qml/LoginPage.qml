@@ -65,9 +65,8 @@ Popup {
                 }
                 passwordCharacter: '*'
                 echoMode: "Password"
-                Keys.onEnterPressed: {
-                    parent.submit()
-                }
+                Keys.onEnterPressed: parent.submit()
+                Keys.onReturnPressed: parent.submit()
             }
 
             Label {

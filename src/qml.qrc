@@ -6,7 +6,6 @@
         <file>qml/components/PanelGrid.qml</file>
         <file>qml/components/ActivityListView.qml</file>
         <file>qml/components/CircularButton.qml</file>
-        <file>qml/components/Themes.qml</file>
         <file>qml/MainComponent.qml</file>
         <file>qml/components/DBPasswordQueryView.qml</file>
         <file>qml/LoginPage.qml</file>

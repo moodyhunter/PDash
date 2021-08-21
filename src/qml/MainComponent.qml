@@ -26,12 +26,12 @@ Item {
             color: AppTheme.background
             opacity: AppTheme.backgroundOpacity
             Layout.fillHeight: true
-        }
 
-        Rectangle {
-            width: 2
-            color: Qt.darker(parent.color, 2)
-            Layout.fillHeight: true
+            Rectangle {
+                width: 2
+                color: Qt.darker(parent.color, 2)
+                Layout.fillHeight: true
+            }
         }
 
         ColumnLayout {

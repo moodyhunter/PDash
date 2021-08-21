@@ -9,12 +9,12 @@
         <translation>输入你的密码</translation>
     </message>
     <message>
-        <location filename="../src/qml/LoginPage.qml" line="82"/>
+        <location filename="../src/qml/LoginPage.qml" line="81"/>
         <source>Unlock Database</source>
         <translation>解锁数据库</translation>
     </message>
     <message>
-        <location filename="../src/qml/LoginPage.qml" line="94"/>
+        <location filename="../src/qml/LoginPage.qml" line="93"/>
         <source>Failed to Open Database</source>
         <translation>无法打开数据库</translation>
     </message>

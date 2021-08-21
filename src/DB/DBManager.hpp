@@ -10,7 +10,4 @@ class DBManager : public QObject
     DBManager(QObject *parent = nullptr);
     virtual ~DBManager();
     Q_INVOKABLE bool openDatabase(const QString &dbName, const QString &password);
-
-  private:
-    QSqlDatabase db;
 };

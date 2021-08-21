@@ -22,6 +22,6 @@ class AppThemeModel : public PDBaseModel
     PD_PROPERTY(QColor, border, Border)
     PD_PROPERTY(QColor, deep, Deep)
     PD_PROPERTY(QColor, deepText, DeepText)
+    PD_PROPERTY(QColor, handlerHover, HandlerHover)
     PD_PROPERTY(double, backgroundOpacity, BackgroudOpacity)
-    PD_PROPERTY(double, handlerHover, HandlerHover)
 };
