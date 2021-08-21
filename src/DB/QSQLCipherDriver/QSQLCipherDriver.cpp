@@ -793,6 +793,11 @@ bool QSQLCipherDriver::open(const QString &db, const QString &, const QString &p
         {
             setLastError(qMakeError(d->access, tr("Incorrect Password"), QSqlError::ConnectionError, res));
             setOpenError(true);
+            if (d->access)
+            {
+                sqlite3_close(d->access);
+                d->access = 0;
+            }
             return false;
         }
     }
