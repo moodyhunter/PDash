@@ -26,13 +26,12 @@ Item {
             color: AppTheme.background
             opacity: AppTheme.backgroundOpacity
             Layout.fillHeight: true
-            Rectangle {
-                width: 2
-                color: Qt.darker(parent.color, 2)
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-            }
+        }
+
+        Rectangle {
+            width: 2
+            color: Qt.darker(parent.color, 2)
+            Layout.fillHeight: true
         }
 
         ColumnLayout {
@@ -41,7 +40,7 @@ Item {
 
             RowLayout {
                 Label {
-                    text: "Dashboard"
+                    text: qsTr("Dashboard")
                     Layout.leftMargin: 10
                     Layout.topMargin: 5
                     Layout.bottomMargin: 5
@@ -51,7 +50,7 @@ Item {
                 }
                 Button {
                     text: "Print Sizes"
-                    //                    onClicked: console.log(grid.getPositions())
+                    onClicked: console.log(grid.getPositions())
                 }
             }
 
@@ -70,7 +69,7 @@ Item {
                 handle: Rectangle {
                     color: SplitHandle.pressed ? Qt.darker(
                                                      AppTheme.dark,
-                                                     1.5) : (SplitHandle.hovered ? AppTheme.handlerHoverColor : AppTheme.border)
+                                                     1.5) : (SplitHandle.hovered ? AppTheme.handlerHover : AppTheme.border)
                     implicitWidth: 5
                     radius: 5
                 }

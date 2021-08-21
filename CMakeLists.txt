@@ -20,7 +20,6 @@ add_subdirectory(QtGraphicalEffects)
 list(APPEND QML_DIRS "${CMAKE_CURRENT_BINARY_DIR}")
 set(QML_IMPORT_PATH "${QML_DIRS}" CACHE STRING "Qt Creator 4.1 extra qml import paths")
 
-set(TS_FILES translation/PD_zh_CN.ts)
 set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.hpp
@@ -39,7 +38,6 @@ set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugins/PluginManager.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugins/PluginManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/qml.qrc
-    ${TS_FILES}
     )
 
 if(APPLE)
@@ -51,11 +49,18 @@ qt_add_executable(PD MANUAL_FINALIZATION ${PROJECT_SOURCES})
 qt_import_qml_plugins(PD)
 qt_finalize_executable(PD)
 
-# See https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/translation/PD_zh_CN.ts)
+
+qt_add_resources(PD "translations"
+    PREFIX "/translations"
+    BASE ${CMAKE_CURRENT_BINARY_DIR}
+    FILES ${QM_FILES})
+
+# For Android deployment, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 # set_property(TARGET PD APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android)
 
-qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-
+# For macOS deployment
 # ~/Qt/6.2.0/macos/bin/macdeployqt ./PD.app/ -qmldir=../src/qml/ -qmlimport=.
 
 set_target_properties(PD PROPERTIES

@@ -6,6 +6,7 @@
 
 #include <QFontDatabase>
 #include <QQmlContext>
+#include <QTranslator>
 
 #ifdef Q_OS_MAC
 #include "platforms/MainWindow-macOS.hpp"
@@ -37,17 +38,18 @@ PDApplication::~PDApplication()
 
 void PDApplication::initialize()
 {
-    // QTranslator translator;
-    // const auto uiLanguages = QLocale::system().uiLanguages();
-    // for (const auto &locale : uiLanguages)
-    // {
-    //     const auto baseName = "PD_" + QLocale(locale).name();
-    //     if (translator.load(":/i18n/" + baseName))
-    //     {
-    //         installTranslator(&translator);
-    //         break;
-    //     }
-    // }
+    auto translator = new QTranslator(this);
+    const auto uiLanguages = QLocale::system().uiLanguages();
+    for (const auto &locale : uiLanguages)
+    {
+        const auto baseName = "PD_" + QLocale(locale).name();
+        if (translator->load(":/translations/" + baseName))
+        {
+            installTranslator(translator);
+            return;
+        }
+    }
+    delete translator;
 }
 
 int PDApplication::exec()
