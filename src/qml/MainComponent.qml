@@ -43,10 +43,6 @@ Item {
                     font.pointSize: 30
                     color: Qt.darker(AppTheme.text, 1.5)
                 }
-                Button {
-                    text: "Print Sizes"
-                    onClicked: console.log(grid.getPositions())
-                }
             }
 
             Rectangle {
@@ -74,16 +70,6 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     id: grid
-                    CircularButton {
-                        z: 99
-                        backgroundcolor: grid.editMode ? AppTheme.highlight : AppTheme.background
-                        textcolor: grid.editMode ? AppTheme.background : AppTheme.highlight
-                        anchors.margins: 10
-                        anchors.right: parent.right
-                        anchors.bottom: parent.bottom
-                        text: "Edit"
-                        onClicked: grid.editMode = !grid.editMode
-                    }
                 }
 
                 ColumnLayout {

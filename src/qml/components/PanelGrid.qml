@@ -5,33 +5,29 @@ import pd.mooody.me
 
 Item {
     id: root
-    property var model: PanelModel
-    property alias totalRows: baseGrid.rows
-    property alias totalColumns: baseGrid.columns
-    property alias rowSpacing: baseGrid.rowSpacing
-    property alias columnSpacing: baseGrid.columnSpacing
+    property int totalRows: 20
+    property int totalColumns: 20
+    property int rowSpacing: 15
+    property int columnSpacing: 15
 
     property bool editMode: false
-    property PDPanel current: null
+    property PDPanel selectedPanel: null
 
     GridLayout {
-        columns: 20
-        rows: 20
-        columnSpacing: 15
-        rowSpacing: 15
         id: baseGrid
-        z: -1
         anchors.fill: parent
-        implicitHeight: 150
-        implicitWidth: 150
 
-        property real columnWidth: (baseGrid.width - columnSpacing
-                                    * (baseGrid.columns - 1)) / baseGrid.columns
-        property real rowHeight: (baseGrid.height - rowSpacing
-                                  * (baseGrid.rows - 1)) / baseGrid.rows
+        columns: root.totalColumns
+        rows: root.totalRows
+        columnSpacing: root.columnSpacing
+        rowSpacing: root.rowSpacing
+
+        z: -1
+
+        property real columnWidth: (width - columnSpacing * (columns - 1)) / columns
+        property real rowHeight: (height - rowSpacing * (rows - 1)) / rows
 
         Repeater {
-            id: repeater
             model: baseGrid.rows * baseGrid.columns
             delegate: Item {
                 Layout.fillHeight: true
@@ -43,8 +39,7 @@ Item {
     }
 
     Repeater {
-        parent: root
-        model: root.model
+        model: PanelModel
         PDPanel {
             z: 10
             hasHoveredAnimation: true
@@ -55,7 +50,7 @@ Item {
                 hoverEnabled: true
                 anchors.fill: parent
                 onEntered: {
-                    current = parent
+                    selectedPanel = parent
                     if (editMode) {
                         syncSizeHandleSizes()
                     }
@@ -65,8 +60,8 @@ Item {
             }
 
             property var _model: model
-
             property int cid: model.row * totalColumns + model.column
+
             x: baseGrid.children[cid].x
             y: baseGrid.children[cid].y
             width: model.columnSpan * (baseGrid.columnWidth + columnSpacing) - columnSpacing
@@ -84,7 +79,7 @@ Item {
     RectangleAreaHandle {
         id: sizehandle
         z: 99
-        visible: editMode && current != null
+        visible: editMode && selectedPanel != null
         reverseAllowed: false
         anchors.fill: parent
         handleSize: 20
@@ -96,28 +91,40 @@ Item {
             color: AppTheme.text
             id: sizeLabel
             visible: parent.visible
-            x: current == null ? 0 : current.x + current.width / 2 - width / 2
-            y: current == null ? 0 : current.y + current.height / 2 - height / 2
-            text: current == null ? "N/A" : "x = " + current._model.column
-                                    + ", y = " + current._model.row + "\nSize: "
-                                    + current._model.columnSpan + "x" + current._model.rowSpan
+            x: selectedPanel == null ? 0 : selectedPanel.x + selectedPanel.width / 2 - width / 2
+            y: selectedPanel == null ? 0 : selectedPanel.y + selectedPanel.height / 2 - height / 2
+            text: selectedPanel == null ? "N/A" : "x = " + selectedPanel._model.column
+                                          + ", y = " + selectedPanel._model.row
+                                          + "\nSize: " + selectedPanel._model.columnSpan
+                                          + "x" + selectedPanel._model.rowSpan
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
         }
 
-        onReleased: current.syncSizeHandleSizes()
+        onReleased: selectedPanel.syncSizeHandleSizes()
         onMoved: function (start, end) {
-            if (!current)
+            if (!selectedPanel)
                 return
 
-            current._model.column = Math.round(
+            selectedPanel._model.column = Math.round(
                         realStartX / (baseGrid.columnWidth + columnSpacing))
-            current._model.row = Math.round(
+            selectedPanel._model.row = Math.round(
                         realStartY / (baseGrid.rowHeight + rowSpacing))
-            current._model.columnSpan = Math.round(
+            selectedPanel._model.columnSpan = Math.round(
                         (realEndX - realStartX) / (baseGrid.columnWidth + columnSpacing))
-            current._model.rowSpan = Math.round(
+            selectedPanel._model.rowSpan = Math.round(
                         (realEndY - realStartY) / (baseGrid.rowHeight + rowSpacing))
         }
+    }
+
+    CircularButton {
+        z: 99
+        backgroundcolor: editMode ? AppTheme.highlight : AppTheme.background
+        textcolor: editMode ? AppTheme.background : AppTheme.highlight
+        anchors.margins: 10
+        anchors.right: root.right
+        anchors.bottom: root.bottom
+        text: "Edit"
+        onClicked: editMode = !editMode
     }
 }

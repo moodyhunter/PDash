@@ -27,7 +27,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qml/MainComponent.qml" line="97"/>
+        <location filename="../src/qml/MainComponent.qml" line="83"/>
         <source>All activity</source>
         <translation type="unfinished"></translation>
     </message>
