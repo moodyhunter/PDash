@@ -12,10 +12,6 @@ Item {
     anchors.fill: parent
     property bool editing: true
 
-    MainWindowModel {
-        id: mwModel
-    }
-
     RowLayout {
         anchors.fill: parent
         spacing: 0
@@ -78,7 +74,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     id: grid
-                    model: mwModel.panels
+                    model: MainWindowModel.panels
                     CircularButton {
                         z: 99
                         backgroundcolor: grid.editMode ? AppTheme.highlight : AppTheme.background

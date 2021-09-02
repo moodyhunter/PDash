@@ -22,12 +22,12 @@
 <context>
     <name>MainComponent</name>
     <message>
-        <location filename="../src/qml/MainComponent.qml" line="42"/>
+        <location filename="../src/qml/MainComponent.qml" line="38"/>
         <source>Dashboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qml/MainComponent.qml" line="102"/>
+        <location filename="../src/qml/MainComponent.qml" line="98"/>
         <source>All activity</source>
         <translation type="unfinished"></translation>
     </message>
@@ -87,7 +87,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/PDApplication.cpp" line="76"/>
+        <location filename="../src/PDApplication.cpp" line="70"/>
         <source>PD - The Personal Dashboard</source>
         <translation type="unfinished"></translation>
     </message>

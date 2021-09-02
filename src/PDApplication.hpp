@@ -8,9 +8,6 @@
 #include <QGuiApplication>
 #endif
 
-class AppThemeModel;
-class MainWindowModel;
-
 namespace PD::Database
 {
     class PDDatabaseManager;
@@ -29,8 +26,6 @@ class PDApplication : public PD_APP_CLASS
     PD::Database::PDDatabaseManager *DatabaseManager() const;
 
   private:
-    AppThemeModel *m_appTheme;
-    MainWindowModel *m_mainWindowModel;
     PD::Database::PDDatabaseManager *m_dbManager;
 };
 

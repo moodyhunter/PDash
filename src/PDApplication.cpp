@@ -21,18 +21,14 @@
 
 #define PD_QML_URI "pd.mooody.me"
 
-PDApplication::PDApplication(int &argc, char *argv[])
-    : PD_APP_CLASS(argc, argv),                        //
-      m_appTheme(new AppThemeModel),                   //
-      m_mainWindowModel(new MainWindowModel),          //
-      m_dbManager(new PD::Database::PDDatabaseManager) //
+PDApplication::PDApplication(int &argc, char *argv[]) : PD_APP_CLASS(argc, argv), m_dbManager(new PD::Database::PDDatabaseManager)
 {
     qpmRegisterType<MainWindowModel>();
     qpmRegisterType<AppThemeModel>();
     pdRegisterModelType<PD::Models::ActivityModel>();
     qmlRegisterType<PanelModel>(PD_QML_URI, 1, 0, "PanelModel");
-    qmlRegisterType<MainWindowModel>(PD_QML_URI, 1, 0, "MainWindowModel");
-    qmlRegisterSingletonInstance<AppThemeModel>(PD_QML_URI, 1, 0, "AppTheme", m_appTheme);
+    qmlRegisterSingletonInstance<MainWindowModel>(PD_QML_URI, 1, 0, "MainWindowModel", new MainWindowModel(this));
+    qmlRegisterSingletonInstance<AppThemeModel>(PD_QML_URI, 1, 0, "AppTheme", new AppThemeModel(this));
     qmlRegisterSingletonInstance<PDApplication>(PD_QML_URI, 1, 0, "PDApp", this);
     qmlRegisterSingletonInstance<PD::Models::ActivityModel>(PD_QML_URI, 1, 0, "ActivityModel", new PD::Models::ActivityModel(this));
     qmlRegisterSingletonInstance<PD::Database::PDDatabaseManager>(PD_QML_URI, 1, 0, "DBManager", m_dbManager);
@@ -41,9 +37,7 @@ PDApplication::PDApplication(int &argc, char *argv[])
 
 PDApplication::~PDApplication()
 {
-    delete m_appTheme;
     delete m_dbManager;
-    delete m_mainWindowModel;
 }
 
 void PDApplication::initialize()

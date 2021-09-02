@@ -2,8 +2,6 @@
 
 #include "DB/DBManager.hpp"
 
-#include <QDateTime>
-
 using namespace PD::Models;
 namespace db = PD::Database;
 
