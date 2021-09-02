@@ -101,7 +101,7 @@ bool PDDatabaseManager::CheckAndCreateTable()
         const auto fields = it.value();
 
         if (db.tables().contains(tableName))
-            return true;
+            continue;
 
         QString query;
         query += u"CREATE TABLE \"%1\" (\n"_qs.arg(tableName);

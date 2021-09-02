@@ -49,7 +49,7 @@ namespace PD::Models::Base
         qlonglong m_tableSize = -1;
         qlonglong m_currentFetchedSize = 0;
 
-        QMap<int, QVariantMap> m_dbCache;
+        QMap<int, QMap<int, QVariant>> m_dbCache;
     };
 
     template<typename T>

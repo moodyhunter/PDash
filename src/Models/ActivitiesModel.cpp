@@ -22,6 +22,4 @@ PDModelInfo ActivityModel::TypeInfo{
 
 QString ActivityModel::TableName = u"Activities"_qs;
 
-ActivityModel::ActivityModel(QObject *parent) : Base::PDBaseModel<ActivityModel>(false, true, parent)
-{
-}
+ActivityModel::ActivityModel(QObject *parent) : Base::PDBaseModel<ActivityModel>(false, true, parent){};

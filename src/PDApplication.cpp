@@ -3,6 +3,7 @@
 #include "DB/DBManager.hpp"
 #include "Models/ActivitiesModel.hpp"
 #include "Models/MainWindowModel.hpp"
+#include "Models/PanelModel.hpp"
 #include "Models/ThemesModel.hpp"
 
 #include <QFontDatabase>
@@ -23,14 +24,16 @@
 
 PDApplication::PDApplication(int &argc, char *argv[]) : PD_APP_CLASS(argc, argv), m_dbManager(new PD::Database::PDDatabaseManager)
 {
-    qpmRegisterType<MainWindowModel>();
-    qpmRegisterType<AppThemeModel>();
     pdRegisterModelType<PD::Models::ActivityModel>();
-    qmlRegisterType<PanelModel>(PD_QML_URI, 1, 0, "PanelModel");
-    qmlRegisterSingletonInstance<MainWindowModel>(PD_QML_URI, 1, 0, "MainWindowModel", new MainWindowModel(this));
-    qmlRegisterSingletonInstance<AppThemeModel>(PD_QML_URI, 1, 0, "AppTheme", new AppThemeModel(this));
-    qmlRegisterSingletonInstance<PDApplication>(PD_QML_URI, 1, 0, "PDApp", this);
     qmlRegisterSingletonInstance<PD::Models::ActivityModel>(PD_QML_URI, 1, 0, "ActivityModel", new PD::Models::ActivityModel(this));
+
+    pdRegisterModelType<PD::Models::PanelModel>();
+    qmlRegisterSingletonInstance<PD::Models::PanelModel>(PD_QML_URI, 1, 0, "PanelModel", new PD::Models::PanelModel(this));
+
+    qpmRegisterType<AppThemeModel>();
+    qmlRegisterSingletonInstance<AppThemeModel>(PD_QML_URI, 1, 0, "AppTheme", new AppThemeModel(this));
+
+    qmlRegisterSingletonInstance<PDApplication>(PD_QML_URI, 1, 0, "PDApp", this);
     qmlRegisterSingletonInstance<PD::Database::PDDatabaseManager>(PD_QML_URI, 1, 0, "DBManager", m_dbManager);
     qmlRegisterModule(PD_QML_URI, 1, 0);
 }

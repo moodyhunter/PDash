@@ -27,7 +27,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qml/MainComponent.qml" line="98"/>
+        <location filename="../src/qml/MainComponent.qml" line="97"/>
         <source>All activity</source>
         <translation type="unfinished"></translation>
     </message>
@@ -87,7 +87,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/PDApplication.cpp" line="70"/>
+        <location filename="../src/PDApplication.cpp" line="73"/>
         <source>PD - The Personal Dashboard</source>
         <translation type="unfinished"></translation>
     </message>

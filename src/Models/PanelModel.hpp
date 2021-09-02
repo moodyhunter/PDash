@@ -4,7 +4,7 @@
 
 namespace PD::Models
 {
-    class ActivityModel : public Base::PDBaseModel<ActivityModel>
+    class PanelModel : public Base::PDBaseModel<PanelModel>
     {
         Q_OBJECT
 
@@ -13,7 +13,7 @@ namespace PD::Models
         static QString TableName;
 
       public:
-        explicit ActivityModel(QObject *parent = nullptr);
-        virtual ~ActivityModel() = default;
+        explicit PanelModel(QObject *parent = nullptr);
+        virtual ~PanelModel() = default;
     };
 } // namespace PD::Models

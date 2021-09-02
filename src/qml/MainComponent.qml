@@ -74,7 +74,6 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     id: grid
-                    model: MainWindowModel.panels
                     CircularButton {
                         z: 99
                         backgroundcolor: grid.editMode ? AppTheme.highlight : AppTheme.background

@@ -73,9 +73,11 @@ void PDBaseModelImpl::fetchMore(const QModelIndex &parent)
             m_dbCache.clear();
             for (auto i = 0; i < result.size(); i++)
             {
-                QVariantMap roleValueMap;
-                for (auto it = result[i].begin(); it != result[i].end(); it++)
-                    roleValueMap.insert(m_roleDBNamesMap.key(it.key()), it.value());
+                const auto item = result[i];
+                QMap<int, QVariant> roleValueMap;
+                for (auto it = m_roleNamesMap.begin(); it != m_roleNamesMap.end(); it++)
+                    roleValueMap.insert(it.key(), item[m_roleDBNamesMap[QString::fromUtf8(it.value())]]);
+
                 m_dbCache.insert(i, roleValueMap);
             }
         }
@@ -96,7 +98,7 @@ QVariant PDBaseModelImpl::data(const QModelIndex &index, int role) const
     const auto &cacheItem = m_dbCache[row];
 
     if (role >= Qt::UserRole)
-        return cacheItem[QString::fromUtf8(m_roleNamesMap[role])];
+        return cacheItem[role];
 
     return getDataForRole((Qt::ItemDataRole) role);
 }
@@ -112,10 +114,11 @@ Qt::ItemFlags PDBaseModelImpl::flags(const QModelIndex &index) const
 
 bool PDBaseModelImpl::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    qWarning() << "Unimplemented";
     if (data(index, role) != value)
     {
         // FIXME: Implement me!
+        m_dbCache[index.row()][role] = value;
+        qWarning() << "Unimplemented save to DB";
         emit dataChanged(index, index, { role });
         return true;
     }
