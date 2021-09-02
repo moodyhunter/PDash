@@ -16,7 +16,7 @@ class PanelModel : public QObject
   public:
     explicit PanelModel(QObject *parent = nullptr) : QObject(parent){};
     PanelModel(int r, int c, int rs, int cs, QObject *parent = nullptr) : QObject(parent), m_row(r), m_column(c), m_rowSpan(rs), m_columnSpan(cs){};
-    virtual ~PanelModel(){};
+    virtual ~PanelModel() = default;
 };
 
 class ActivityModel : public QObject
@@ -31,25 +31,30 @@ class ActivityModel : public QObject
   public:
     explicit ActivityModel(QObject *parent = nullptr) : QObject(parent){};
     ActivityModel(const QString &type, const QString &title, const QString &text, const QString &id, const QString &date, QObject *parent = nullptr)
-        : QObject(parent), m_type(type), m_title(title), m_text(text), m_id(id), m_date(date){};
-    virtual ~ActivityModel(){};
+        : ActivityModel(parent)
+    {
+        m_type = type;
+        m_title = title;
+        m_text = text;
+        m_id = id;
+        m_date = date;
+    }
+    virtual ~ActivityModel() = default;
 };
 
-class MainWindowModel : public PDBaseModel
+class MainWindowModel : public PDBaseListModel
 {
     Q_OBJECT
 
     Q_PROPERTY(QQmlListProperty<PanelModel> panels READ panel_list NOTIFY panelListChanged)
-    PD_LIST_PROPERTY(PanelModel, panel, Panel, MainWindowModel);
+    PD_PROPERTY_QMLLIST(PanelModel, panel, Panel, MainWindowModel);
 
     Q_PROPERTY(QQmlListProperty<ActivityModel> activities READ activity_list NOTIFY activityListChanged)
-    PD_LIST_PROPERTY(ActivityModel, activity, Activity, MainWindowModel);
+    PD_PROPERTY_QMLLIST(ActivityModel, activity, Activity, MainWindowModel);
 
   public:
     MainWindowModel(QObject *parent = nullptr);
-    virtual ~MainWindowModel();
-
-    virtual void LoadData() override;
+    virtual ~MainWindowModel() = default;
 };
 
 Q_DECLARE_METATYPE(MainWindowModel)

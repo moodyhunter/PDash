@@ -12,7 +12,7 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt6 6.1.0 COMPONENTS Core Gui Network Quick LinguistTools Sql REQUIRED)
+find_package(Qt6 6.2.0 COMPONENTS Core Gui Network Quick LinguistTools Sql REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SQLCipher IMPORTED_TARGET REQUIRED sqlcipher)
 
@@ -29,7 +29,14 @@ set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/QMLPropertyHelpers.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/QObjectPropertyMap.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/PDBaseModel.hpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/PDBaseModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/PDBaseModel2.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/PDBaseModel2.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/MainWindowModel.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/MainWindowModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ThemesModel.hpp
@@ -63,6 +70,8 @@ qt_add_resources(PD "translations"
 # For macOS deployment
 # ~/Qt/6.2.0/macos/bin/macdeployqt ./PD.app/ -qmldir=../src/qml/ -qmlimport=.
 
+target_compile_definitions(PD PRIVATE -DQT_DISABLE_DEPRECATED_BEFORE=0x060200)
+
 set_target_properties(PD PROPERTIES
     MACOSX_BUNDLE TRUE
     MACOSX_BUNDLE_GUI_IDENTIFIER pd.moody.me
@@ -70,6 +79,16 @@ set_target_properties(PD PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     )
 
+option(PD_DEBUG_MODEL OFF)
+if(PD_DEBUG_MODEL)
+    find_package(Qt6 6.2.0 COMPONENTS Widgets REQUIRED)
+    target_compile_definitions(PD PRIVATE PD_DEBUG_MODEL=1)
+    target_link_libraries(PD PRIVATE Qt::Widgets)
+endif()
+
+target_compile_definitions(PD PRIVATE QT_USE_QSTRINGBUILDER QT_NO_CAST_FROM_ASCII)
+
+target_include_directories(PD PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(PD PRIVATE ${Qt6Sql_PRIVATE_INCLUDE_DIRS})
 target_compile_definitions(PD PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(PD

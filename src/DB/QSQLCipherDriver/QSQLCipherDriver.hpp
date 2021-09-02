@@ -79,9 +79,3 @@ class QSQLCipherDriver : public QSqlDriver
   private Q_SLOTS:
     void handleNotification(const QString &tableName, qint64 rowid);
 };
-
-class QSQLCipherDriverCreator : public QSqlDriverCreatorBase
-{
-  public:
-    QSqlDriver *createObject() const override;
-};

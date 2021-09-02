@@ -8,8 +8,6 @@ import pd.mooody.me
 Popup {
     id: popup
     closePolicy: Popup.NoAutoClose
-    width: parent.width
-    height: parent.height
     modal: true
 
     readonly property int _paddingH: parent.width / 2 - 200
@@ -89,7 +87,6 @@ Popup {
                     hidinganimation.start()
                 } else {
                     errmsgLabel.visible = true
-                    pswdText.clear()
                     errmsgLabel.text = qsTr("Failed to Open Database")
                 }
             }

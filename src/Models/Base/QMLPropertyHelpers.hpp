@@ -1,7 +1,28 @@
 #pragma once
 
+#define PD_PROPERTY_PTR(type, name, Name)                                                                                                                                \
+    Q_PROPERTY(type *name READ get##Name WRITE set##Name)                                                                                                                \
+  private:                                                                                                                                                               \
+    type *m_##name = nullptr;                                                                                                                                            \
+                                                                                                                                                                         \
+  public:                                                                                                                                                                \
+    type *get##Name() const                                                                                                                                              \
+    {                                                                                                                                                                    \
+        return m_##name;                                                                                                                                                 \
+    }                                                                                                                                                                    \
+    void set##Name(type *o)                                                                                                                                              \
+    {                                                                                                                                                                    \
+        if (m_##name)                                                                                                                                                    \
+            delete m_##name;                                                                                                                                             \
+        m_##name = o;                                                                                                                                                    \
+        if (m_##name)                                                                                                                                                    \
+            m_##name->setParent(this);                                                                                                                                   \
+    }                                                                                                                                                                    \
+                                                                                                                                                                         \
+  private:
+
 #define PD_PROPERTY(type, name, Name)                                                                                                                                    \
-    Q_PROPERTY(type name READ get##Name WRITE set##Name NOTIFY name##Changed)                                                                                            \
+    Q_PROPERTY(type name READ get##Name WRITE set##Name NOTIFY on##Name##Changed)                                                                                        \
   private:                                                                                                                                                               \
     type m_##name;                                                                                                                                                       \
                                                                                                                                                                          \
@@ -15,13 +36,13 @@
         if (m_##name == newValue)                                                                                                                                        \
             return;                                                                                                                                                      \
         m_##name = newValue;                                                                                                                                             \
-        Q_EMIT name##Changed();                                                                                                                                          \
+        Q_EMIT on##Name##Changed(m_##name);                                                                                                                              \
     }                                                                                                                                                                    \
-    Q_SIGNAL void name##Changed();                                                                                                                                       \
+    Q_SIGNAL void on##Name##Changed(const type &v);                                                                                                                      \
                                                                                                                                                                          \
   private:
 
-#define PD_LIST_PROPERTY(ModelClass, name, Name, thisClass)                                                                                                              \
+#define PD_PROPERTY_QMLLIST(ModelClass, name, Name, thisClass)                                                                                                           \
   private:                                                                                                                                                               \
     QList<ModelClass *> m_##name##_list;                                                                                                                                 \
                                                                                                                                                                          \

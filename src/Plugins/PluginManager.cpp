@@ -3,3 +3,7 @@
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
 }
+
+void PluginManager::loadPlugins()
+{
+}

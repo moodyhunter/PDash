@@ -5,12 +5,11 @@
 
 #include <QColor>
 
-class AppThemeModel : public PDBaseModel
+class AppThemeModel : public PDBaseListModel
 {
     Q_OBJECT
   public:
     explicit AppThemeModel(QObject *parent = nullptr);
-    virtual void LoadData() override;
 
     PD_PROPERTY(QColor, background, Background)
     PD_PROPERTY(QColor, dark, Dark)

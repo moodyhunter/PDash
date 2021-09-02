@@ -1,13 +1,27 @@
 #pragma once
 
+#include "QObjectPropertyMap.hpp"
+
+#include <QAbstractTableModel>
+#include <QMap>
 #include <QObject>
 
-class PDBaseModel : public QObject
+class PDBaseListModel : public QObject // QAbstractListModel
 {
     Q_OBJECT
 
-  public:
-    PDBaseModel(QObject *parent = nullptr) : QObject(parent){};
-    virtual ~PDBaseModel(){};
-    virtual void LoadData() = 0;
+  protected:
+    PDBaseListModel(QObject *parent = nullptr);
+    virtual ~PDBaseListModel();
+    virtual void OnDatabaseOpened(){};
+    virtual QString CreateDBCommand()
+    {
+        return u""_qs;
+    };
+
+  private slots:
+    void p_OnDatabaseOpened();
+
+  private:
+    const QString m_table;
 };

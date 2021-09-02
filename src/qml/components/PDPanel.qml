@@ -1,22 +1,21 @@
 import QtQuick
 import QtQuick.Controls
-
 import QtGraphicalEffects
 
 import pd.mooody.me
 
 Item {
     id: root
-    property int column
+    property int column: 0
+    property int row: 0
     property int columnSpan: 1
-    property int row
     property int rowSpan: 1
     property bool hasHoveredAnimation: true
 
     clip: false
 
     HoverHandler {
-        enabled: hasHoveredAnimation
+        enabled: root.hasHoveredAnimation
         id: hoverhandler
     }
 

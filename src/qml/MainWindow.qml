@@ -2,7 +2,6 @@ import QtQuick
 import pd.mooody.me
 
 Window {
-    id: rootWindow
     color: AppTheme.dark
     width: 1300
     height: 700

@@ -1,8 +1,7 @@
 #include "ThemesModel.hpp"
 
-AppThemeModel::AppThemeModel(QObject *parent) : PDBaseModel(parent)
+AppThemeModel::AppThemeModel(QObject *parent) : PDBaseListModel(parent)
 {
-#pragma message("TODO: Use LoadData")
     setBackground("#3B4252");
     setDark("#2E3440");
     setHighlight("#5E81AC");
@@ -15,8 +14,4 @@ AppThemeModel::AppThemeModel(QObject *parent) : PDBaseModel(parent)
     setDeepText("#ECEFF4");
     setHandlerHover(m_dark.lighter(150));
     setBackgroudOpacity(0.3);
-}
-
-void AppThemeModel::LoadData()
-{
 }

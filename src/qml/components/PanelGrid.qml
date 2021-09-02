@@ -5,7 +5,7 @@ import pd.mooody.me
 
 Item {
     id: root
-    property var model
+    property list<PanelModel> model
     property alias rows: gridlayout.rows
     property alias columns: gridlayout.columns
     property alias rowSpacing: gridlayout.rowSpacing

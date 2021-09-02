@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Window
 import QtQuick.Controls
-import QtQuick.Shapes
 
 import pd.mooody.me
 
@@ -163,6 +162,8 @@ Item {
     }
     LoginPage {
         id: login
+        width: parent.width
+        height: parent.height
     }
     Component.onCompleted: login.open()
 }

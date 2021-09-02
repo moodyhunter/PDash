@@ -1,12 +1,22 @@
 #pragma once
 
+#if PD_DEBUG_MODEL
+#define PD_APP_CLASS QApplication
+#include <QApplication>
+#else
+#define PD_APP_CLASS QGuiApplication
 #include <QGuiApplication>
+#endif
 
 class AppThemeModel;
 class MainWindowModel;
-class DBManager;
 
-class PDApplication : public QGuiApplication
+namespace PD::Database
+{
+    class PDDatabaseManager;
+}
+
+class PDApplication : public PD_APP_CLASS
 {
     Q_OBJECT
 
@@ -16,8 +26,20 @@ class PDApplication : public QGuiApplication
     void initialize();
     int exec();
 
+    PD::Database::PDDatabaseManager *DatabaseManager() const;
+
   private:
-    AppThemeModel *appTheme;
-    MainWindowModel *mainWindowModel;
-    DBManager *dbManager;
+    AppThemeModel *m_appTheme;
+    MainWindowModel *m_mainWindowModel;
+    PD::Database::PDDatabaseManager *m_dbManager;
 };
+
+#if defined(qApp)
+#undef qApp
+#endif
+#define qApp (static_cast<PDApplication *>(QCoreApplication::instance()))
+
+#if defined(pdApp)
+#undef pdApp
+#endif
+#define pdApp (static_cast<PDApplication *>(QCoreApplication::instance()))

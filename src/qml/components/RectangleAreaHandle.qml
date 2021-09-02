@@ -1,12 +1,11 @@
+import QtQuick
+import QtQml
 
 
 /**
  * Copyright (C) Olivier Le Doeuff 2020
  * Contact: olivier.ldff@gmail.com
  */
-import QtQuick
-import QtQml
-
 Item {
     id: root
 

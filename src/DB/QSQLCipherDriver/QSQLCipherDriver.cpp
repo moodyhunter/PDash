@@ -41,6 +41,7 @@
 
 #include <QDateTime>
 #include <QDebug>
+#include <QMetaType>
 #include <QScopedValueRollback>
 #include <QSqlError>
 #include <QSqlField>
@@ -73,11 +74,6 @@ Q_DECLARE_OPAQUE_POINTER(sqlite3_stmt *)
 Q_DECLARE_METATYPE(sqlite3_stmt *)
 
 #define DISABLE_COLUMN_METADATA
-
-QSqlDriver *QSQLCipherDriverCreator::createObject() const
-{
-    return new QSQLCipherDriver();
-}
 
 static QString _q_escapeIdentifier(const QString &identifier, QSqlDriver::IdentifierType type)
 {
@@ -656,7 +652,7 @@ QSQLCipherDriver::QSQLCipherDriver(sqlite3 *connection, QObject *parent) : QSqlD
 
 QSQLCipherDriver::~QSQLCipherDriver()
 {
-    close();
+    QSQLCipherDriver::close();
 }
 
 bool QSQLCipherDriver::hasFeature(DriverFeature f) const
@@ -775,7 +771,7 @@ bool QSQLCipherDriver::open(const QString &db, const QString &, const QString &p
     {
         sqlite3_busy_timeout(d->access, timeOut);
         sqlite3_extended_result_codes(d->access, useExtendedResultCodes);
-        sqlite3_key(d->access, pass.toStdString().c_str(), pass.length());
+        sqlite3_key(d->access, pass.toUtf8().constData(), pass.length());
         if (sqlite3_exec(d->access, "SELECT count(*) FROM sqlite_master;", NULL, NULL, NULL) == SQLITE_OK)
         {
             setOpen(true);
