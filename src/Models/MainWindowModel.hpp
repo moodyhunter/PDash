@@ -18,39 +18,12 @@ class PanelModel : public QObject
     PanelModel(int r, int c, int rs, int cs, QObject *parent = nullptr) : QObject(parent), m_row(r), m_column(c), m_rowSpan(rs), m_columnSpan(cs){};
     virtual ~PanelModel() = default;
 };
-
-class ActivityModel : public QObject
-{
-    Q_OBJECT
-    PD_PROPERTY(QString, type, Type)
-    PD_PROPERTY(QString, title, Title)
-    PD_PROPERTY(QString, text, Text)
-    PD_PROPERTY(QString, id, Id)
-    PD_PROPERTY(QString, date, Date)
-
-  public:
-    explicit ActivityModel(QObject *parent = nullptr) : QObject(parent){};
-    ActivityModel(const QString &type, const QString &title, const QString &text, const QString &id, const QString &date, QObject *parent = nullptr)
-        : ActivityModel(parent)
-    {
-        m_type = type;
-        m_title = title;
-        m_text = text;
-        m_id = id;
-        m_date = date;
-    }
-    virtual ~ActivityModel() = default;
-};
-
 class MainWindowModel : public PDBaseListModel
 {
     Q_OBJECT
 
     Q_PROPERTY(QQmlListProperty<PanelModel> panels READ panel_list NOTIFY panelListChanged)
     PD_PROPERTY_QMLLIST(PanelModel, panel, Panel, MainWindowModel);
-
-    Q_PROPERTY(QQmlListProperty<ActivityModel> activities READ activity_list NOTIFY activityListChanged)
-    PD_PROPERTY_QMLLIST(ActivityModel, activity, Activity, MainWindowModel);
 
   public:
     MainWindowModel(QObject *parent = nullptr);

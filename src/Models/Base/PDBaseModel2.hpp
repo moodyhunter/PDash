@@ -29,13 +29,16 @@ namespace PD::Models::Base
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         virtual bool hasChildren(const QModelIndex &) const override;
         virtual bool canFetchMore(const QModelIndex &parent) const override;
-        virtual void fetchMore(const QModelIndex &parent) override;
+        virtual void fetchMore(const QModelIndex &parent = {}) override;
 
         virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
         virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
         virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
         virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
         virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+
+      private slots:
+        void reloadData();
 
       private:
         QHash<int, QByteArray> m_roleNamesMap;

@@ -87,7 +87,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/PDApplication.cpp" line="75"/>
+        <location filename="../src/PDApplication.cpp" line="76"/>
         <source>PD - The Personal Dashboard</source>
         <translation type="unfinished"></translation>
     </message>

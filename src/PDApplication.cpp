@@ -34,6 +34,7 @@ PDApplication::PDApplication(int &argc, char *argv[])
     qmlRegisterType<MainWindowModel>(PD_QML_URI, 1, 0, "MainWindowModel");
     qmlRegisterSingletonInstance<AppThemeModel>(PD_QML_URI, 1, 0, "AppTheme", m_appTheme);
     qmlRegisterSingletonInstance<PDApplication>(PD_QML_URI, 1, 0, "PDApp", this);
+    qmlRegisterSingletonInstance<PD::Models::ActivityModel>(PD_QML_URI, 1, 0, "ActivityModel", new PD::Models::ActivityModel(this));
     qmlRegisterSingletonInstance<PD::Database::PDDatabaseManager>(PD_QML_URI, 1, 0, "DBManager", m_dbManager);
     qmlRegisterModule(PD_QML_URI, 1, 0);
 }

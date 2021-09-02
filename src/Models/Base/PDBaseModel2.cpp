@@ -20,6 +20,7 @@ PDBaseModelImpl::PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &tab
         m_roleNamesMap.insert(role, roleName.toUtf8());
         m_roleDBNamesMap.insert(roleName, dbName);
     }
+    connect(pdApp->DatabaseManager(), &Database::PDDatabaseManager::OnDatabaseOpened, this, &PDBaseModelImpl::reloadData);
 }
 
 QVariant PDBaseModelImpl::getDataForRole(Qt::ItemDataRole) const
@@ -78,7 +79,7 @@ void PDBaseModelImpl::fetchMore(const QModelIndex &parent)
                 m_dbCache.insert(i, roleValueMap);
             }
         }
-        emit rowsInserted(parent, 0, m_tableSize, {});
+        emit rowsInserted(parent, 0, m_tableSize - 1, {});
     }
 }
 
@@ -137,4 +138,13 @@ bool PDBaseModelImpl::removeRows(int row, int count, const QModelIndex &parent)
     // FIXME: Implement me!
     endRemoveRows();
     return true;
+}
+
+void PDBaseModelImpl::reloadData()
+{
+    emit rowsRemoved({}, 0, m_currentFetchedSize, {});
+    m_currentFetchedSize = 0;
+    m_dbCache.clear();
+    m_tableSize = -1;
+    fetchMore();
 }

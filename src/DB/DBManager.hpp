@@ -48,6 +48,7 @@ namespace PD::Database
       private:
         bool CheckAndCreateTable();
         static inline QMap<QString, QList<ModelDBField>> tableFields;
+        bool m_isDatabaseOpened = false;
     };
 
 } // namespace PD::Database

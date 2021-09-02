@@ -109,39 +109,6 @@ Item {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         Layout.leftMargin: 10
-                        model: mwModel.activities
-                        control: ColumnLayout {
-                            Label {
-                                color: AppTheme.text
-                                Layout.fillWidth: true
-                                text: modelData.type
-                                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                            }
-                            Label {
-                                color: AppTheme.text
-                                Layout.fillWidth: true
-                                text: modelData.title
-                                wrapMode: Text.WrapAnywhere
-                            }
-                            Label {
-                                color: AppTheme.text
-                                Layout.fillWidth: true
-                                text: modelData.id
-                                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                            }
-                            Label {
-                                color: AppTheme.text
-                                Layout.fillWidth: true
-                                text: modelData.text
-                                wrapMode: Text.WrapAnywhere
-                            }
-                            Label {
-                                color: AppTheme.text
-                                Layout.fillWidth: true
-                                text: modelData.date
-                                wrapMode: Text.WrapAnywhere
-                            }
-                        }
                     }
 
                     Item {

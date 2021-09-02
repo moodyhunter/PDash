@@ -26,7 +26,7 @@ bool PDDatabaseManager::openDatabase(const QString &dbName, const QString &passw
     auto db = QSqlDatabase::database(ConnectionName);
     db.setDatabaseName(u"/home/leroy/pd_"_qs + dbName + u".db"_qs);
     qDebug() << db.databaseName();
-    const auto result = db.open({}, {});
+    const auto result = db.open({}, password);
 
     if (!result)
         return false;
@@ -35,6 +35,7 @@ bool PDDatabaseManager::openDatabase(const QString &dbName, const QString &passw
         db.exec(uR"(CREATE TABLE "PD_MetaData" ("DBCreation" INTEGER NOT NULL);)"_qs);
 
     CheckAndCreateTable();
+    m_isDatabaseOpened = true;
     emit OnDatabaseOpened();
     qDebug() << "DB Opened";
     return true;
@@ -42,7 +43,10 @@ bool PDDatabaseManager::openDatabase(const QString &dbName, const QString &passw
 
 qlonglong PDDatabaseManager::GetTableSize(const QString &table)
 {
+    if (!m_isDatabaseOpened)
+        return {};
     auto db = QSqlDatabase::database(ConnectionName);
+
     auto q = db.exec(u"SELECT COUNT(*) FROM %1;"_qs.arg(table));
     if (!q.isActive())
         qWarning() << q.lastError().text();
@@ -52,14 +56,16 @@ qlonglong PDDatabaseManager::GetTableSize(const QString &table)
 
 QList<QVariantMap> PDDatabaseManager::Select(const QString &table, const QStringList &fields, int offset, int limit)
 {
+    if (!m_isDatabaseOpened)
+        return {};
+    auto db = QSqlDatabase::database(ConnectionName);
+
     auto query = u"SELECT %1 FROM %2 ORDER BY id "_qs.arg(fields.join(u", "_qs), table);
     if (limit > 0)
         query += u"LIMIT %1 "_qs.arg(limit);
     if (offset > 0)
         query += u"OFFSET %1 "_qs.arg(offset);
     query += u";";
-
-    auto db = QSqlDatabase::database(ConnectionName);
 
     auto q = db.exec(query);
 
