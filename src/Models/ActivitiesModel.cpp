@@ -14,10 +14,10 @@ enum Roles
 };
 
 PDModelInfo ActivityModel::TypeInfo{
-    { Type, u"type"_qs, { u"Type"_qs, db::DBFieldType::TEXT } },
-    { Title, u"title"_qs, { u"Title"_qs, db::DBFieldType::TEXT } },
-    { Content, u"content"_qs, { u"Content"_qs, db::DBFieldType::TEXT } },
-    { Date, u"date"_qs, { u"Date"_qs, db::DBFieldType::INTEGER } },
+    { Type, u"type", { u"Type"_qs, db::DBFieldType::TEXT } },
+    { Title, u"title", { u"Title"_qs, db::DBFieldType::TEXT } },
+    { Content, u"content", { u"Content"_qs, db::DBFieldType::TEXT } },
+    { Date, u"date", { u"Date"_qs, db::DBFieldType::INTEGER } },
 };
 
 QString ActivityModel::TableName = u"Activities"_qs;

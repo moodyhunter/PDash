@@ -14,10 +14,10 @@ enum Roles
 };
 
 PDModelInfo PanelModel::TypeInfo{
-    { Row, u"row"_qs, { u"Row"_qs, db::DBFieldType::INTEGER } },
-    { Column, u"column"_qs, { u"Column"_qs, db::DBFieldType::INTEGER } },
-    { RowSpan, u"rowSpan"_qs, { u"RowSpan"_qs, db::DBFieldType::INTEGER } },
-    { ColumnSpan, u"columnSpan"_qs, { u"ColumnSpan"_qs, db::DBFieldType::INTEGER } },
+    { Row, u"row", { u"Row"_qs, db::DBFieldType::INTEGER } },
+    { Column, u"column", { u"Column"_qs, db::DBFieldType::INTEGER } },
+    { RowSpan, u"rowSpan", { u"RowSpan"_qs, db::DBFieldType::INTEGER } },
+    { ColumnSpan, u"columnSpan", { u"ColumnSpan"_qs, db::DBFieldType::INTEGER } },
 };
 
 QString PanelModel::TableName = u"MainWindowPanels"_qs;

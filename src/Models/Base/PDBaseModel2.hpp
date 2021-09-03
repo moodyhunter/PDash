@@ -18,7 +18,7 @@ namespace PD::Models
     };
     Q_DECLARE_FLAGS(PDModelOptions, PDModelOption)
     Q_DECLARE_OPERATORS_FOR_FLAGS(PDModelOptions)
-    typedef QList<std::tuple<int, QString, PD::Database::ModelDBField>> PDModelInfo;
+    typedef QList<std::tuple<int, QStringView, PD::Database::ModelDBField>> PDModelInfo;
 }
 
 namespace PD::Models::Base

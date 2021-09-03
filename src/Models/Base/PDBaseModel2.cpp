@@ -18,7 +18,7 @@ PDBaseModelImpl::PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &tab
         const auto &[dbName, dbType, dbDefaultValue] = dbInfo;
         Q_UNUSED(dbType);
         m_roleNamesMap.insert(role, roleName.toUtf8());
-        m_roleDBNamesMap.insert(roleName, dbName);
+        m_roleDBNamesMap.insert(roleName.toString(), dbName);
     }
     connect(pdApp->DatabaseManager(), &Database::PDDatabaseManager::OnDatabaseOpened, this, &PDBaseModelImpl::reloadData);
 }
