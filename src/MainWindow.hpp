@@ -1,15 +1,15 @@
 #pragma once
 
-#include <QWindow>
+#include <QQuickWindow>
 
 class QResizeEvent;
 class QQuickView;
 
-class MainWindow : public QWindow
+class PDMainWindow : public QQuickWindow
 {
     Q_OBJECT
   public:
-    MainWindow();
+    PDMainWindow();
     void resizeEvent(QResizeEvent *ev);
 
   private:

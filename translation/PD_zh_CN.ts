@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>MainWindow</name>
+    <name>PDMainWindow</name>
     <message>
         <location filename="../src/MainWindow.cpp" line="16"/>
         <source>PD - The Personal Dashboard</source>

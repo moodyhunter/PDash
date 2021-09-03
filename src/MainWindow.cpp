@@ -11,7 +11,7 @@
 constexpr auto WINDOW_WIDTH = 1300;
 constexpr auto WINDOW_HEIGHT = 700;
 
-MainWindow::MainWindow() : QWindow()
+PDMainWindow::PDMainWindow() : QQuickWindow()
 {
     setTitle(tr("PD - The Personal Dashboard"));
 
@@ -40,7 +40,7 @@ MainWindow::MainWindow() : QWindow()
     }
 }
 
-void MainWindow::resizeEvent(QResizeEvent *)
+void PDMainWindow::resizeEvent(QResizeEvent *)
 {
     quickWindow->setGeometry(0, 0, this->width(), this->height());
     if (m_effectsBackgroundWindow)

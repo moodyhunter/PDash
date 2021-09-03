@@ -6,8 +6,6 @@
 #include "Models/PanelModel.hpp"
 #include "Models/ThemesModel.hpp"
 
-#include <QQmlEngine>
-#include <QQuickWindow>
 #include <QTranslator>
 
 #if PD_DEBUG_MODEL
@@ -63,7 +61,7 @@ int PDApplication::exec()
     listview.show();
 #else
     QQuickWindow::setDefaultAlphaBuffer(true);
-    MainWindow window;
+    PDMainWindow window;
     window.show();
 #endif
     return QCoreApplication::exec();
