@@ -1,6 +1,7 @@
 #include "PDApplication.hpp"
 
 #include "DB/DBManager.hpp"
+#include "MainWindow.hpp"
 #include "Models/ActivitiesModel.hpp"
 #include "Models/MainWindowModel.hpp"
 #include "Models/PanelModel.hpp"
@@ -9,12 +10,6 @@
 #include <QFontDatabase>
 #include <QQmlContext>
 #include <QTranslator>
-
-#ifdef Q_OS_MAC
-#include "platforms/MainWindow-macOS.hpp"
-#else
-#include <QQmlApplicationEngine>
-#endif
 
 #if PD_DEBUG_MODEL
 #include <QListView>
@@ -68,26 +63,8 @@ int PDApplication::exec()
     listview.setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
     listview.show();
 #else
-#ifdef Q_OS_MAC
     MainWindow window;
-    window.setTitle(QObject::tr("PD - The Personal Dashboard"));
     window.show();
-#else
-    QQmlApplicationEngine engine;
-    const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
-    engine.rootContext()->setContextProperty(QStringLiteral("fixedFont"), fixedFont);
-
-    const static QUrl url(u"qrc:/qml/MainWindow.qml"_qs);
-    QObject::connect(
-        &engine, &QQmlApplicationEngine::objectCreated, this,
-        [](QObject *obj, const QUrl &objUrl)
-        {
-            if (!obj && url == objUrl)
-                QCoreApplication::exit(-1);
-        },
-        Qt::QueuedConnection);
-    engine.load(url);
-#endif
 #endif
     return QCoreApplication::exec();
 }

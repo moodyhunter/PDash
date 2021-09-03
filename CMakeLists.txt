@@ -24,6 +24,8 @@ set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MainWindow.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MainWindow.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.hpp
@@ -48,11 +50,13 @@ set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugins/PluginManager.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugins/PluginManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/qml.qrc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.hpp
     )
 
 if(APPLE)
-    list(APPEND PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/MainWindow-macOS.hpp")
-    list(APPEND PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/MainWindow-macOS.mm")
+    list(APPEND PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.mm)
+else()
+    list(APPEND PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.cpp)
 endif()
 
 qt_add_executable(PD MANUAL_FINALIZATION ${PROJECT_SOURCES})

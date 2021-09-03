@@ -3,13 +3,9 @@
 #include <QQuickView>
 #include <QWindow>
 
-#ifndef Q_OS_MAC
-#error "You should not build this file on non-macOS platforms"
-#endif
-
 class QResizeEvent;
 
-class MainWindow : public QWindow
+class MainWindow : public QQuickWindow
 {
     Q_OBJECT
   public:
@@ -18,4 +14,5 @@ class MainWindow : public QWindow
 
   private:
     QQuickView *quickWindow;
+    QWindow *m_effectsBackgroundWindow;
 };

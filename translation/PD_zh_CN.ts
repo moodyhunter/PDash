@@ -35,7 +35,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/qml/MainWindow.qml" line="9"/>
+        <location filename="../src/MainWindow.cpp" line="15"/>
         <source>PD - The Personal Dashboard</source>
         <translation type="unfinished"></translation>
     </message>
@@ -84,11 +84,6 @@
         <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="541"/>
         <source>QSQLiteResult</source>
         <comment>Parameter count mismatch</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/PDApplication.cpp" line="73"/>
-        <source>PD - The Personal Dashboard</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

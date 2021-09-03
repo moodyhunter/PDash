@@ -108,10 +108,12 @@ Item {
             }
         }
     }
+
     LoginPage {
         id: login
-        width: parent.width
-        height: parent.height
+        parent: rootWindow.contentItem
+        width: rootComponent.width
+        height: rootComponent.height
     }
     Component.onCompleted: login.open()
 }
