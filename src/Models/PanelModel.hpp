@@ -11,6 +11,7 @@ namespace PD::Models
       public:
         static PDModelInfo TypeInfo;
         static QString TableName;
+        static PDModelOptions ModelOptions;
 
       public:
         explicit PanelModel(QObject *parent = nullptr);

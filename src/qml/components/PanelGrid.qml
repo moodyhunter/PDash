@@ -11,7 +11,7 @@ Item {
     property int columnSpacing: 15
 
     property bool editMode: false
-    property PDPanel selectedPanel: null
+    property PDPanelCard selectedPanel: null
 
     GridLayout {
         id: baseGrid
@@ -40,7 +40,7 @@ Item {
 
     Repeater {
         model: PanelModel
-        PDPanel {
+        PDPanelCard {
             z: 10
             hasHoveredAnimation: true
             parent: root

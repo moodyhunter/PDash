@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/components/PDPanel.qml</file>
+        <file>qml/components/PDPanelCard.qml</file>
         <file>qml/MainWindow.qml</file>
         <file>qml/components/RectangleAreaHandle.qml</file>
         <file>qml/components/PanelGrid.qml</file>

@@ -17,7 +17,7 @@ ListView {
     }
     clip: true
     spacing: 20
-    delegate: PDPanel {
+    delegate: PDPanelCard {
         implicitHeight: layout.implicitHeight + 30
         width: list.width - 20
 

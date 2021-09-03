@@ -11,6 +11,13 @@ namespace PD::Database
 
 namespace PD::Models
 {
+    enum PDModelOption
+    {
+        MF_Editable = 0x0001,
+        MF_FetchDynamically = 0x0010
+    };
+    Q_DECLARE_FLAGS(PDModelOptions, PDModelOption)
+    Q_DECLARE_OPERATORS_FOR_FLAGS(PDModelOptions)
     typedef QList<std::tuple<int, QString, PD::Database::ModelDBField>> PDModelInfo;
 }
 
@@ -20,7 +27,7 @@ namespace PD::Models::Base
     {
         Q_OBJECT
       public:
-        explicit PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &table, bool dynamic, bool editable, QObject *parent = nullptr);
+        explicit PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &table, PDModelOptions flags, QObject *parent = nullptr);
 
         virtual QVariant getDataForRole(Qt::ItemDataRole r) const;
 
@@ -29,7 +36,7 @@ namespace PD::Models::Base
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         virtual bool hasChildren(const QModelIndex &) const override;
         virtual bool canFetchMore(const QModelIndex &parent) const override;
-        virtual void fetchMore(const QModelIndex &parent = {}) override;
+        virtual void fetchMore(const QModelIndex &parent = QModelIndex()) override;
 
         virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
         virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -41,25 +48,26 @@ namespace PD::Models::Base
         void reloadData();
 
       private:
+        const PDModelOptions m_flags;
+
+      private:
+        QMap<int, QMap<int, QVariant>> m_dbCache;
         QHash<int, QByteArray> m_roleNamesMap;
         QMap<QString, QString> m_roleDBNamesMap;
         QString m_tableName;
-        bool m_editable = false;
-        bool m_dynamicFetch = false;
         qlonglong m_tableSize = -1;
         qlonglong m_currentFetchedSize = 0;
-
-        QMap<int, QMap<int, QVariant>> m_dbCache;
     };
 
     template<typename T>
     class PDBaseModel : public PDBaseModelImpl
     {
       protected:
-        explicit PDBaseModel(bool dynamic, bool editable, QObject *parent = nullptr) : PDBaseModelImpl(T::TypeInfo, T::TableName, dynamic, editable, parent)
+        explicit PDBaseModel(QObject *parent = nullptr) : PDBaseModelImpl(T::TypeInfo, T::TableName, T::ModelOptions, parent)
         {
             static_assert(std::is_same_v<decltype(T::TableName), QString>);
             static_assert(std::is_same_v<decltype(T::TypeInfo), PDModelInfo>);
+            static_assert(std::is_same_v<decltype(T::ModelOptions), PDModelOptions>);
         }
     };
 } // namespace PD::Models::Base

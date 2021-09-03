@@ -5,8 +5,8 @@
 
 using namespace PD::Models::Base;
 
-PDBaseModelImpl::PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &table, bool dynamic, bool editable, QObject *parent)
-    : QAbstractListModel(parent), m_tableName(u"pd_data_"_qs + table), m_editable(editable), m_dynamicFetch(dynamic)
+PDBaseModelImpl::PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &table, PDModelOptions flags, QObject *parent)
+    : QAbstractListModel(parent), m_flags(flags), m_tableName(u"pd_data_"_qs + table)
 {
     for (auto it = typeinfo.begin(); it != typeinfo.end(); it++)
     {
@@ -40,7 +40,7 @@ int PDBaseModelImpl::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    if (m_dynamicFetch)
+    if (m_flags & MF_FetchDynamically)
         return m_currentFetchedSize;
 
     return std::max(m_tableSize, 0ll);
@@ -56,7 +56,7 @@ bool PDBaseModelImpl::canFetchMore(const QModelIndex &) const
     if (m_tableSize < 0)
         return true;
 
-    if (!m_dynamicFetch)
+    if (m_flags ^ MF_FetchDynamically)
         return false;
 
     return m_currentFetchedSize < m_tableSize;
@@ -64,7 +64,7 @@ bool PDBaseModelImpl::canFetchMore(const QModelIndex &) const
 
 void PDBaseModelImpl::fetchMore(const QModelIndex &parent)
 {
-    if (!m_dynamicFetch)
+    if (m_flags ^ MF_FetchDynamically)
     {
         if (m_tableSize < 0)
         {
