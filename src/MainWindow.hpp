@@ -1,11 +1,11 @@
 #pragma once
 
-#include <QQuickView>
 #include <QWindow>
 
 class QResizeEvent;
+class QQuickView;
 
-class MainWindow : public QQuickWindow
+class MainWindow : public QWindow
 {
     Q_OBJECT
   public:

@@ -35,7 +35,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/MainWindow.cpp" line="15"/>
+        <location filename="../src/MainWindow.cpp" line="16"/>
         <source>PD - The Personal Dashboard</source>
         <translation type="unfinished"></translation>
     </message>

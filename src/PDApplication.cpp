@@ -3,12 +3,11 @@
 #include "DB/DBManager.hpp"
 #include "MainWindow.hpp"
 #include "Models/ActivitiesModel.hpp"
-#include "Models/MainWindowModel.hpp"
 #include "Models/PanelModel.hpp"
 #include "Models/ThemesModel.hpp"
 
-#include <QFontDatabase>
-#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickWindow>
 #include <QTranslator>
 
 #if PD_DEBUG_MODEL
@@ -63,6 +62,7 @@ int PDApplication::exec()
     listview.setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
     listview.show();
 #else
+    QQuickWindow::setDefaultAlphaBuffer(true);
     MainWindow window;
     window.show();
 #endif

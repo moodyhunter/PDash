@@ -6,37 +6,43 @@
 #include <QFontDatabase>
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QQuickView>
 
 constexpr auto WINDOW_WIDTH = 1300;
 constexpr auto WINDOW_HEIGHT = 700;
 
-MainWindow::MainWindow() : QQuickWindow()
+MainWindow::MainWindow() : QWindow()
 {
     setTitle(tr("PD - The Personal Dashboard"));
-    QQuickWindow::setDefaultAlphaBuffer(true);
 
     setWidth(WINDOW_WIDTH);
     setHeight(WINDOW_HEIGHT);
+
+    m_effectsBackgroundWindow = PD::Platform::PDPlatformAPI::getEffectBackgroundWindow();
     quickWindow = new QQuickView(this);
+#if defined(QT_DEBUG) && defined(Q_OS_MAC)
+    quickWindow->engine()->addImportPath(qApp->applicationDirPath() + u"/../../../");
+#endif
 
     const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     quickWindow->rootContext()->setContextProperty(u"fixedFont"_qs, fixedFont);
     quickWindow->rootContext()->setContextProperty(u"rootWindow"_qs, quickWindow);
+    quickWindow->rootContext()->setContextProperty(u"hasBackgroundEffect"_qs, m_effectsBackgroundWindow != nullptr);
 
-    quickWindow->engine()->addImportPath(qApp->applicationDirPath() + u"/../../../");
     quickWindow->setSource({ u"qrc:/qml/MainComponent.qml"_qs });
-    quickWindow->setColor(Qt::transparent);
     quickWindow->show();
 
-    // Create the native effects view
-    m_effectsBackgroundWindow = PD::Platform::PDPlatformAPI::getEffectBackgroundWindow();
-    m_effectsBackgroundWindow->setParent(this);
-    m_effectsBackgroundWindow->show();
-    m_effectsBackgroundWindow->lower();
+    if (m_effectsBackgroundWindow)
+    {
+        m_effectsBackgroundWindow->setParent(this);
+        m_effectsBackgroundWindow->show();
+        m_effectsBackgroundWindow->lower();
+    }
 }
 
-void MainWindow::resizeEvent(QResizeEvent *ev)
+void MainWindow::resizeEvent(QResizeEvent *)
 {
-    m_effectsBackgroundWindow->setGeometry(0, 0, this->width(), this->height());
     quickWindow->setGeometry(0, 0, this->width(), this->height());
+    if (m_effectsBackgroundWindow)
+        m_effectsBackgroundWindow->setGeometry(0, 0, this->width(), this->height());
 }

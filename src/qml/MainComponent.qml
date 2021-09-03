@@ -115,5 +115,8 @@ Item {
         width: rootComponent.width
         height: rootComponent.height
     }
-    Component.onCompleted: login.open()
+    Component.onCompleted: {
+        login.open()
+        rootWindow.color = hasBackgroundEffect ? Qt.transparent : AppTheme.dark
+    }
 }
