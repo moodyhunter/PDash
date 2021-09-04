@@ -61,8 +61,8 @@ int PDApplication::exec()
     listview.show();
 #else
     QQuickWindow::setDefaultAlphaBuffer(true);
-    PDMainWindow window;
-    window.show();
+    PDMainWindow w;
+    w.show();
 #endif
     return QCoreApplication::exec();
 }
