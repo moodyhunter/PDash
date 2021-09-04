@@ -4,17 +4,17 @@
 <context>
     <name>LoginPage</name>
     <message>
-        <location filename="../src/qml/LoginPage.qml" line="46"/>
+        <location filename="../src/qml/LoginPage.qml" line="50"/>
         <source>Enter Your Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qml/LoginPage.qml" line="79"/>
+        <location filename="../src/qml/LoginPage.qml" line="83"/>
         <source>Unlock Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qml/LoginPage.qml" line="90"/>
+        <location filename="../src/qml/LoginPage.qml" line="94"/>
         <source>Failed to Open Database</source>
         <translation type="unfinished"></translation>
     </message>
@@ -35,7 +35,7 @@
 <context>
     <name>PDMainWindow</name>
     <message>
-        <location filename="../src/MainWindow.cpp" line="16"/>
+        <location filename="../src/MainWindow.cpp" line="52"/>
         <source>PD - The Personal Dashboard</source>
         <translation type="unfinished"></translation>
     </message>

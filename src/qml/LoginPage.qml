@@ -10,6 +10,10 @@ Popup {
     closePolicy: Popup.NoAutoClose
     modal: true
 
+    function makeFocus() {
+        pswdText.forceActiveFocus()
+    }
+
     readonly property int _paddingH: parent.width / 2 - 200
     readonly property int _paddingV: parent.height / 2 - 70
     bottomPadding: _paddingV
@@ -92,6 +96,4 @@ Popup {
             }
         }
     }
-
-    Component.onCompleted: pswdText.forceActiveFocus()
 } //Popup

@@ -25,6 +25,10 @@ namespace PD::Models::Base
 {
     class PDBaseModelImpl : public QAbstractListModel
     {
+        constexpr static auto F_CLEAN = 0;
+        constexpr static auto F_DIRTY = 1;
+        typedef QAtomicInteger<int> AtomicFieldState;
+
         Q_OBJECT
       public:
         explicit PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &table, PDModelOptions flags, QObject *parent = nullptr);
@@ -32,6 +36,8 @@ namespace PD::Models::Base
         virtual QVariant getDataForRole(Qt::ItemDataRole r) const;
 
         QHash<int, QByteArray> roleNames() const override final;
+
+        Q_INVOKABLE void saveToDatabase(bool fullSave = false);
 
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         virtual bool hasChildren(const QModelIndex &) const override;
@@ -43,6 +49,7 @@ namespace PD::Models::Base
         virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
         virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
         virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+        virtual void timerEvent(QTimerEvent *) override;
 
       private slots:
         void reloadData();
@@ -51,7 +58,8 @@ namespace PD::Models::Base
         const PDModelOptions m_flags;
 
       private:
-        QMap<int, QMap<int, QVariant>> m_dbCache;
+        // ======== id,       role,      roleData, dirtyFlag
+        QList<QPair<int, QMap<int, QPair<QVariant, AtomicFieldState>>>> m_dbCache;
         QHash<int, QByteArray> m_roleNamesMap;
         QMap<QString, QString> m_roleDBNamesMap;
         QString m_tableName;

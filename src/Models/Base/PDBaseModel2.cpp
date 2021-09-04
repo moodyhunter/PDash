@@ -4,6 +4,7 @@
 #include "PDApplication.hpp"
 
 using namespace PD::Models::Base;
+using namespace std::chrono_literals;
 
 PDBaseModelImpl::PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &table, PDModelOptions flags, QObject *parent)
     : QAbstractListModel(parent), m_flags(flags), m_tableName(u"pd_data_"_qs + table)
@@ -21,6 +22,7 @@ PDBaseModelImpl::PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &tab
         m_roleDBNamesMap.insert(roleName.toString(), dbName);
     }
     connect(pdApp->DatabaseManager(), &Database::PDDatabaseManager::OnDatabaseOpened, this, &PDBaseModelImpl::reloadData);
+    startTimer(30s);
 }
 
 QVariant PDBaseModelImpl::getDataForRole(Qt::ItemDataRole) const
@@ -31,6 +33,27 @@ QVariant PDBaseModelImpl::getDataForRole(Qt::ItemDataRole) const
 QHash<int, QByteArray> PDBaseModelImpl::roleNames() const
 {
     return m_roleNamesMap;
+}
+
+void PDBaseModelImpl::saveToDatabase(bool fullSave)
+{
+    Q_UNUSED(fullSave)
+    QStringList fields;
+    QVariantList fieldsData;
+    for (auto &&[dbId, dbData] : m_dbCache)
+    {
+        fields.clear();
+        fieldsData.clear();
+        for (auto it = dbData.begin(); it != dbData.end(); it++)
+        {
+            const auto fieldName = m_roleDBNamesMap[QString::fromUtf8(m_roleNamesMap[it.key()])];
+            auto &&[fieldData, roleState] = it.value();
+            if (fullSave || roleState.loadRelaxed() == F_DIRTY)
+                fields << fieldName, fieldsData << fieldData, roleState.storeRelaxed(F_CLEAN);
+        }
+        if (!fields.isEmpty())
+            pdApp->DatabaseManager()->Update(m_tableName, dbId, fields, fieldsData);
+    }
 }
 
 int PDBaseModelImpl::rowCount(const QModelIndex &parent) const
@@ -71,14 +94,16 @@ void PDBaseModelImpl::fetchMore(const QModelIndex &parent)
             m_tableSize = pdApp->DatabaseManager()->GetTableSize(m_tableName);
             const auto result = pdApp->DatabaseManager()->Select(m_tableName, m_roleDBNamesMap.values());
             m_dbCache.clear();
-            for (auto i = 0; i < result.size(); i++)
+            for (auto rit = result.begin(); rit != result.end(); rit++)
             {
-                const auto item = result[i];
-                QMap<int, QVariant> roleValueMap;
+                const auto dbId = rit.key();
+                const auto dbData = rit.value();
+                QMap<int, QPair<QVariant, AtomicFieldState>> roleValueMap;
+                const static AtomicFieldState CleanState{ F_CLEAN };
                 for (auto it = m_roleNamesMap.begin(); it != m_roleNamesMap.end(); it++)
-                    roleValueMap.insert(it.key(), item[m_roleDBNamesMap[QString::fromUtf8(it.value())]]);
+                    roleValueMap.insert(it.key(), { dbData[m_roleDBNamesMap[QString::fromUtf8(it.value())]], CleanState });
 
-                m_dbCache.insert(i, roleValueMap);
+                m_dbCache << std::make_pair(dbId, roleValueMap);
             }
         }
         emit rowsInserted(parent, 0, m_tableSize - 1, {});
@@ -92,33 +117,32 @@ QVariant PDBaseModelImpl::data(const QModelIndex &index, int role) const
 
     const auto row = index.row();
 
-    if (!m_dbCache.contains(row))
-        return {};
+    if (m_dbCache.length() < row)
+        return QVariant();
 
-    const auto &cacheItem = m_dbCache[row];
+    const auto &cacheItem = m_dbCache[row].second;
 
     if (role >= Qt::UserRole)
-        return cacheItem[role];
+        return cacheItem[role].first;
 
     return getDataForRole((Qt::ItemDataRole) role);
 }
 
-Qt::ItemFlags PDBaseModelImpl::flags(const QModelIndex &index) const
+Qt::ItemFlags PDBaseModelImpl::flags(const QModelIndex &) const
 {
-    qWarning() << "Unimplemented";
-    if (!index.isValid())
-        return Qt::NoItemFlags;
-
-    return Qt::ItemIsEditable; // FIXME: Implement me!
+    return Qt::NoItemFlags;
+    //    qWarning() << "Unimplemented";
+    //    if (!index.isValid())
+    //        return Qt::NoItemFlags;
+    //    return Qt::ItemIsEditable; // FIXME: Implement me!
 }
 
 bool PDBaseModelImpl::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (data(index, role) != value)
     {
-        // FIXME: Implement me!
-        m_dbCache[index.row()][role] = value;
-        qWarning() << "Unimplemented save to DB";
+        m_dbCache[index.row()].second[role].first = value;
+        m_dbCache[index.row()].second[role].second.storeRelaxed(F_DIRTY);
         emit dataChanged(index, index, { role });
         return true;
     }
@@ -141,6 +165,11 @@ bool PDBaseModelImpl::removeRows(int row, int count, const QModelIndex &parent)
     // FIXME: Implement me!
     endRemoveRows();
     return true;
+}
+
+void PDBaseModelImpl::timerEvent(QTimerEvent *)
+{
+    saveToDatabase();
 }
 
 void PDBaseModelImpl::reloadData()

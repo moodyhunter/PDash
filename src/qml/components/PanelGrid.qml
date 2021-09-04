@@ -39,6 +39,7 @@ Item {
     }
 
     Repeater {
+        id: repeater
         model: PanelModel
         PDPanelCard {
             z: 10
@@ -125,6 +126,10 @@ Item {
         anchors.right: root.right
         anchors.bottom: root.bottom
         text: "Edit"
-        onClicked: editMode = !editMode
+        onClicked: {
+            if (editMode)
+                repeater.model.saveToDatabase()
+            editMode = !editMode
+        }
     }
 }

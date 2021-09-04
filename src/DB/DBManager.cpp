@@ -54,13 +54,13 @@ qlonglong PDDatabaseManager::GetTableSize(const QString &table)
     return q.value(0).toLongLong();
 }
 
-QList<QVariantMap> PDDatabaseManager::Select(const QString &table, const QStringList &fields, int offset, int limit)
+QMap<int, QVariantMap> PDDatabaseManager::Select(const QString &table, const QStringList &fields, int offset, int limit)
 {
     if (!m_isDatabaseOpened)
         return {};
     auto db = QSqlDatabase::database(ConnectionName);
 
-    auto query = u"SELECT %1 FROM %2 ORDER BY id "_qs.arg(fields.join(u", "_qs), table);
+    auto query = u"SELECT id,%1 FROM %2 ORDER BY id "_qs.arg(fields.join(u", "_qs), table);
     if (limit > 0)
         query += u"LIMIT %1 "_qs.arg(limit);
     if (offset > 0)
@@ -72,15 +72,48 @@ QList<QVariantMap> PDDatabaseManager::Select(const QString &table, const QString
     if (!q.isActive())
         qWarning() << q.lastError().text();
 
-    QList<QVariantMap> result;
+    QMap<int, QVariantMap> result;
     while (q.next())
     {
         QVariantMap map;
         for (const auto &field : fields)
             map.insert(field, q.value(field));
-        result << map;
+        result[q.value(0).toInt()] = map;
     }
     return result;
+}
+
+void PDDatabaseManager::Update(const QString &table, int id, const QStringList &fields, const QVariantList &fieldData)
+{
+    Q_ASSERT_X(fields.size() == fieldData.size(), Q_FUNC_INFO, "Size of data doesn't equal to size of fields.");
+    auto db = QSqlDatabase::database(ConnectionName);
+    if (!db.isOpen())
+    {
+        qWarning() << "Database not opened";
+        return;
+    }
+
+    QString query;
+    query += u"UPDATE %1 SET "_qs.arg(table);
+    for (auto i = 0; i < fields.size(); i++)
+    {
+        const auto field = fields[i];
+        query += u"%1=:%1,"_qs.arg(field);
+    }
+    query.chop(1);
+    query += u" WHERE id = %1"_qs.arg(id);
+
+    QSqlQuery q{ db };
+    const auto prepare = q.prepare(query);
+    if (!prepare)
+        qWarning() << "Failed to prepare SQL statement:" << query;
+    for (auto i = 0; i < fields.size(); i++)
+        q.bindValue(i, fieldData[i]);
+
+    if (!q.exec())
+        qWarning() << "Failed to execute query";
+
+    return;
 }
 
 bool PDDatabaseManager::CheckAndCreateTable()

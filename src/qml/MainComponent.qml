@@ -117,6 +117,7 @@ Item {
     }
     Component.onCompleted: {
         login.open()
+        login.makeFocus()
         rootWindow.color = hasBackgroundEffect ? Qt.transparent : AppTheme.dark
     }
 }
