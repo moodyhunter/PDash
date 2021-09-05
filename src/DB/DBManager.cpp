@@ -106,7 +106,11 @@ void PDDatabaseManager::Update(const QString &table, int id, const QStringList &
     QSqlQuery q{ db };
     const auto prepare = q.prepare(query);
     if (!prepare)
+    {
         qWarning() << "Failed to prepare SQL statement:" << query;
+        return;
+    }
+
     for (auto i = 0; i < fields.size(); i++)
         q.bindValue(i, fieldData[i]);
 
@@ -114,6 +118,42 @@ void PDDatabaseManager::Update(const QString &table, int id, const QStringList &
         qWarning() << "Failed to execute query";
 
     return;
+}
+
+int PDDatabaseManager::Insert(const QString &table, const QStringList &fields, const QVariantList &data)
+{
+    auto db = QSqlDatabase::database(ConnectionName);
+    if (!db.isOpen())
+    {
+        qWarning() << "Database not opened";
+        return -1;
+    }
+
+    QString query;
+    QStringList placeholders(fields.size());
+    placeholders.fill(u"?"_qs);
+    query += u"INSERT INTO %1 (%2) VALUES (%3)"_qs.arg(table, fields.join(u','), placeholders.join(u','));
+    QSqlQuery q{ db };
+
+    const auto prepare = q.prepare(query);
+    if (!prepare)
+    {
+        qWarning() << "Failed to prepare SQL statement:" << query;
+        return -1;
+    }
+
+    for (auto i = 0; i < fields.size(); i++)
+        q.bindValue(i, data[i]);
+
+    if (!q.exec())
+    {
+        qWarning() << "Failed to execute query";
+        return -1;
+    }
+
+    auto rowIdQuery = db.exec(u"SELECT last_insert_rowid();"_qs);
+    rowIdQuery.first();
+    return rowIdQuery.value(0).toInt();
 }
 
 bool PDDatabaseManager::CheckAndCreateTable()
@@ -151,9 +191,8 @@ bool PDDatabaseManager::CheckAndCreateTable()
         qDebug() << query;
         if (auto q = db.exec(query); !q.isActive())
         {
-            const auto err = q.lastError();
             failedTables << tableName;
-            qWarning() << "Failed to execute SQL.";
+            qWarning() << "Failed to execute SQL." << q.lastError().text();
             return false;
         }
     }

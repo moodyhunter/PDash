@@ -38,6 +38,7 @@ namespace PD::Models::Base
         QHash<int, QByteArray> roleNames() const override final;
 
         Q_INVOKABLE void saveToDatabase(bool fullSave = false);
+        Q_INVOKABLE void appendItem(const QVariantMap &data);
 
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         virtual bool hasChildren(const QModelIndex &) const override;

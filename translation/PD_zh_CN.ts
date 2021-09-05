@@ -41,6 +41,19 @@
     </message>
 </context>
 <context>
+    <name>PanelGrid</name>
+    <message>
+        <location filename="../src/qml/components/PanelGrid.qml" line="136"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/qml/components/PanelGrid.qml" line="150"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="266"/>

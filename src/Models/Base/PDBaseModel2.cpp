@@ -56,6 +56,25 @@ void PDBaseModelImpl::saveToDatabase(bool fullSave)
     }
 }
 
+void PDBaseModelImpl::appendItem(const QVariantMap &data)
+{
+    QStringList dbFields;
+    QMap<int, QPair<QVariant, AtomicFieldState>> rolesData;
+    for (auto it = data.begin(); it != data.end(); it++)
+    {
+        const auto roleName = it.key();
+        dbFields << m_roleDBNamesMap[roleName];
+        rolesData.insert(m_roleNamesMap.key(roleName.toUtf8()), std::make_pair(it.value(), AtomicFieldState{ F_CLEAN }));
+    }
+    const auto dbId = pdApp->DatabaseManager()->Insert(m_tableName, dbFields, data.values());
+    if (dbId >= 0)
+    {
+        beginInsertRows({}, m_dbCache.size(), m_dbCache.size());
+        m_dbCache.append({ dbId, rolesData });
+        endInsertRows();
+    }
+}
+
 int PDBaseModelImpl::rowCount(const QModelIndex &parent) const
 {
     // For list models only the root node (an invalid parent) should return the list's size. For all
@@ -153,6 +172,7 @@ bool PDBaseModelImpl::insertRows(int row, int count, const QModelIndex &parent)
 {
     qWarning() << "Unimplemented";
     beginInsertRows(parent, row, row + count - 1);
+    const auto maxId = *std::max_element(m_dbCache.begin(), m_dbCache.end(), [](const auto &a, const auto &b) { return a.first < b.first; });
     // FIXME: Implement me!
     endInsertRows();
     return true;

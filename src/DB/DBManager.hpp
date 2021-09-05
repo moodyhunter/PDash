@@ -40,8 +40,10 @@ namespace PD::Database
 
         Q_INVOKABLE bool openDatabase(const QString &dbName, const QString &password);
         qlonglong GetTableSize(const QString &table);
+
         QMap<int, QVariantMap> Select(const QString &table, const QStringList &fields, int offset = 0, int limit = 0);
         void Update(const QString &table, int id, const QStringList &fields, const QVariantList &fieldData);
+        int Insert(const QString &table, const QStringList &fields, const QVariantList &data);
 
       signals:
         void OnDatabaseOpened();

@@ -12,6 +12,14 @@ Item {
 
     property bool editMode: false
     property PDPanelCard selectedPanel: null
+    property bool itemMoving: false
+
+    function syncSizeHandleSizes() {
+        sizehandle._start.x = selectedPanel.x / sizehandle.parent.width
+        sizehandle._start.y = selectedPanel.y / sizehandle.parent.height
+        sizehandle._end.x = (selectedPanel.x + selectedPanel.width) / sizehandle.parent.width
+        sizehandle._end.y = (selectedPanel.y + selectedPanel.height) / sizehandle.parent.height
+    }
 
     GridLayout {
         id: baseGrid
@@ -47,17 +55,18 @@ Item {
             parent: root
 
             MouseArea {
+                id: mouse
                 visible: editMode
                 hoverEnabled: true
                 anchors.fill: parent
                 onEntered: {
-                    selectedPanel = parent
-                    if (editMode) {
-                        syncSizeHandleSizes()
+                    if (!itemMoving) {
+                        selectedPanel = parent
+                        if (editMode) {
+                            syncSizeHandleSizes()
+                        }
                     }
                 }
-                onReleased: if (editMode)
-                                syncSizeHandleSizes()
             }
 
             property var _model: model
@@ -67,13 +76,6 @@ Item {
             y: baseGrid.children[cid].y
             width: model.columnSpan * (baseGrid.columnWidth + columnSpacing) - columnSpacing
             height: model.rowSpan * (baseGrid.rowHeight + rowSpacing) - rowSpacing
-
-            function syncSizeHandleSizes() {
-                sizehandle._start.x = x / sizehandle.parent.width
-                sizehandle._start.y = y / sizehandle.parent.height
-                sizehandle._end.x = (x + width) / sizehandle.parent.width
-                sizehandle._end.y = (y + height) / sizehandle.parent.height
-            }
         }
     }
 
@@ -90,7 +92,6 @@ Item {
 
         Text {
             color: AppTheme.text
-            id: sizeLabel
             visible: parent.visible
             x: selectedPanel == null ? 0 : selectedPanel.x + selectedPanel.width / 2 - width / 2
             y: selectedPanel == null ? 0 : selectedPanel.y + selectedPanel.height / 2 - height / 2
@@ -102,10 +103,16 @@ Item {
             horizontalAlignment: Text.AlignHCenter
         }
 
-        onReleased: selectedPanel.syncSizeHandleSizes()
+        onReleased: {
+            itemMoving = false
+            syncSizeHandleSizes()
+        }
         onMoved: function (start, end) {
             if (!selectedPanel)
                 return
+
+            if (!itemMoving)
+                itemMoving = true
 
             selectedPanel._model.column = Math.round(
                         realStartX / (baseGrid.columnWidth + columnSpacing))
@@ -119,17 +126,62 @@ Item {
     }
 
     CircularButton {
+        id: editButton
         z: 99
         backgroundcolor: editMode ? AppTheme.highlight : AppTheme.background
         textcolor: editMode ? AppTheme.background : AppTheme.highlight
         anchors.margins: 10
         anchors.right: root.right
         anchors.bottom: root.bottom
-        text: "Edit"
+        text: qsTr("Edit")
         onClicked: {
             if (editMode)
-                repeater.model.saveToDatabase()
+                PanelModel.saveToDatabase()
             editMode = !editMode
+        }
+    }
+
+    CircularButton {
+        z: 99
+        id: addButton
+        anchors.right: editButton.left
+        anchors.bottom: root.bottom
+        anchors.margins: 10
+        text: qsTr("Add")
+        state: editMode ? "visible" : "hidden"
+        states: [
+            State {
+                name: "visible"
+                PropertyChanges {
+                    target: addButton
+                    opacity: 1
+                }
+            },
+            State {
+                name: "hidden"
+                PropertyChanges {
+                    target: addButton
+                    opacity: 0
+                }
+            }
+        ]
+        transitions: [
+            Transition {
+                reversible: true
+                PropertyAnimation {
+                    easing.type: Easing.InQuad
+                    properties: "opacity"
+                    duration: 200
+                }
+            }
+        ]
+        onClicked: {
+            PanelModel.appendItem({
+                                      "row": 2,
+                                      "column": 2,
+                                      "rowSpan": 1,
+                                      "columnSpan": 1
+                                  })
         }
     }
 }
