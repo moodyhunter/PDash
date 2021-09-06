@@ -71,6 +71,7 @@ void PDBaseModelImpl::appendItem(const QVariantMap &data)
     {
         beginInsertRows({}, m_dbCache.size(), m_dbCache.size());
         m_dbCache.append({ dbId, rolesData });
+        m_tableSize++;
         endInsertRows();
     }
 }

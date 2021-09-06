@@ -25,8 +25,8 @@ Item {
         id: baseGrid
         anchors.fill: parent
 
-        columns: root.totalColumns
-        rows: root.totalRows
+        rows: totalRows
+        columns: totalColumns
         columnSpacing: root.columnSpacing
         rowSpacing: root.rowSpacing
 
@@ -36,12 +36,12 @@ Item {
         property real rowHeight: (height - rowSpacing * (rows - 1)) / rows
 
         Repeater {
-            model: baseGrid.rows * baseGrid.columns
+            model: totalRows * totalColumns
             delegate: Item {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                Layout.row: Math.floor(index / baseGrid.rows)
-                Layout.column: index % baseGrid.columns
+                Layout.row: Math.floor(index / totalRows)
+                Layout.column: index % totalColumns
             }
         }
     }
@@ -182,6 +182,7 @@ Item {
                                       "rowSpan": 1,
                                       "columnSpan": 1
                                   })
+            // FIXME: repeater not updated
         }
     }
 }
