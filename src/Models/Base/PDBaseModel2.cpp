@@ -78,11 +78,15 @@ void PDBaseModelImpl::appendItem(const QVariantMap &data)
 
 void PDBaseModelImpl::removeItem(const QVariant &v)
 {
-    const auto index = v.toInt();
+    bool ok = false;
+    const auto index = v.toInt(&ok);
+    if (!ok)
+        return;
     beginRemoveRows({}, index, index);
     m_tableSize--;
     const auto &[dbId, data] = m_dbCache.takeAt(index);
     pdApp->DatabaseManager()->Delete(m_tableName, dbId);
+    qDebug() << data;
     endRemoveRows();
 }
 
