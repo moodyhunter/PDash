@@ -39,6 +39,7 @@ namespace PD::Models::Base
 
         Q_INVOKABLE void saveToDatabase(bool fullSave = false);
         Q_INVOKABLE void appendItem(const QVariantMap &data);
+        Q_INVOKABLE void removeItem(const QVariant &v);
 
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         virtual bool hasChildren(const QModelIndex &) const override;
@@ -65,7 +66,6 @@ namespace PD::Models::Base
         QMap<QString, QString> m_roleDBNamesMap;
         QString m_tableName;
         qlonglong m_tableSize = -1;
-        qlonglong m_currentFetchedSize = 0;
     };
 
     template<typename T>

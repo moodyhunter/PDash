@@ -19,6 +19,7 @@ pkg_check_modules(SQLCipher IMPORTED_TARGET REQUIRED sqlcipher)
 add_subdirectory(QtGraphicalEffects)
 list(APPEND QML_DIRS "${CMAKE_CURRENT_BINARY_DIR}")
 set(QML_IMPORT_PATH "${QML_DIRS}" CACHE STRING "Qt Creator 4.1 extra qml import paths")
+add_compile_definitions($<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
 set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
@@ -97,7 +98,6 @@ target_compile_definitions(PD PRIVATE QT_USE_QSTRINGBUILDER QT_NO_CAST_FROM_ASCI
 
 target_include_directories(PD PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(PD PRIVATE ${Qt6Sql_PRIVATE_INCLUDE_DIRS})
-target_compile_definitions(PD PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(PD
     PRIVATE
         Qt::Core

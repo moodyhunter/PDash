@@ -76,6 +76,16 @@ void PDBaseModelImpl::appendItem(const QVariantMap &data)
     }
 }
 
+void PDBaseModelImpl::removeItem(const QVariant &v)
+{
+    const auto index = v.toInt();
+    beginRemoveRows({}, index, index);
+    m_tableSize--;
+    const auto &[dbId, data] = m_dbCache.takeAt(index);
+    pdApp->DatabaseManager()->Delete(m_tableName, dbId);
+    endRemoveRows();
+}
+
 int PDBaseModelImpl::rowCount(const QModelIndex &parent) const
 {
     // For list models only the root node (an invalid parent) should return the list's size. For all
@@ -84,7 +94,7 @@ int PDBaseModelImpl::rowCount(const QModelIndex &parent) const
         return 0;
 
     if (m_flags & MF_FetchDynamically)
-        return m_currentFetchedSize;
+        return m_dbCache.size();
 
     return std::max(m_tableSize, 0ll);
 }
@@ -102,7 +112,7 @@ bool PDBaseModelImpl::canFetchMore(const QModelIndex &) const
     if (m_flags ^ MF_FetchDynamically)
         return false;
 
-    return m_currentFetchedSize < m_tableSize;
+    return m_dbCache.size() < m_tableSize;
 }
 
 void PDBaseModelImpl::fetchMore(const QModelIndex &parent)
@@ -195,8 +205,7 @@ void PDBaseModelImpl::timerEvent(QTimerEvent *)
 
 void PDBaseModelImpl::reloadData()
 {
-    emit rowsRemoved({}, 0, m_currentFetchedSize, {});
-    m_currentFetchedSize = 0;
+    emit rowsRemoved({}, 0, m_dbCache.size(), {});
     m_dbCache.clear();
     m_tableSize = -1;
     fetchMore();

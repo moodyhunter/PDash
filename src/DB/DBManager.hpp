@@ -44,6 +44,7 @@ namespace PD::Database
         QMap<int, QVariantMap> Select(const QString &table, const QStringList &fields, int offset = 0, int limit = 0);
         void Update(const QString &table, int id, const QStringList &fields, const QVariantList &fieldData);
         int Insert(const QString &table, const QStringList &fields, const QVariantList &data);
+        void Delete(const QString &table, int id);
 
       signals:
         void OnDatabaseOpened();

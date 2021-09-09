@@ -70,6 +70,7 @@ Item {
             }
 
             property var _model: model
+            property var _index: index
             property int cid: model.row * totalColumns + model.column
 
             x: baseGrid.children[cid].x
@@ -90,17 +91,35 @@ Item {
         property int centerX
         property int centerY
 
-        Text {
-            color: AppTheme.text
-            visible: parent.visible
-            x: selectedPanel == null ? 0 : selectedPanel.x + selectedPanel.width / 2 - width / 2
-            y: selectedPanel == null ? 0 : selectedPanel.y + selectedPanel.height / 2 - height / 2
-            text: selectedPanel == null ? "N/A" : "x = " + selectedPanel._model.column
-                                          + ", y = " + selectedPanel._model.row
-                                          + "\nSize: " + selectedPanel._model.columnSpan
-                                          + "x" + selectedPanel._model.rowSpan
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
+        Item {
+            x: selectedPanel == null ? 0 : selectedPanel.x + selectedPanel.width
+                                       / 2 - column.implicitWidth / 2
+            y: selectedPanel == null ? 0 : selectedPanel.y + selectedPanel.height
+                                       / 2 - column.implicitHeight / 2
+            Column {
+                spacing: 10
+                id: column
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: AppTheme.text
+                    visible: parent.visible
+                    text: selectedPanel
+                          == null ? "N/A" : "x = " + selectedPanel._model.column
+                                    + ", y = " + selectedPanel._model.row
+                                    + "\nSize: " + selectedPanel._model.columnSpan
+                                    + "x" + selectedPanel._model.rowSpan
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+                CircularButton {
+                    text: qsTr("Delete")
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    onClicked: {
+                        PanelModel.removeItem(selectedPanel._index)
+                        console.log(selectedPanel._model)
+                    }
+                }
+            }
         }
 
         onReleased: {
@@ -179,10 +198,9 @@ Item {
             PanelModel.appendItem({
                                       "row": 2,
                                       "column": 2,
-                                      "rowSpan": 1,
-                                      "columnSpan": 1
+                                      "rowSpan": 4,
+                                      "columnSpan": 4
                                   })
-            // FIXME: repeater not updated
         }
     }
 }

@@ -156,6 +156,17 @@ int PDDatabaseManager::Insert(const QString &table, const QStringList &fields, c
     return rowIdQuery.value(0).toInt();
 }
 
+void PDDatabaseManager::Delete(const QString &table, int id)
+{
+    auto db = QSqlDatabase::database(ConnectionName);
+    if (!db.isOpen())
+    {
+        qWarning() << "Database not opened";
+        return;
+    }
+    db.exec(u"DELETE FROM %1 WHERE id = %2"_qs.arg(table).arg(id)).first();
+}
+
 bool PDDatabaseManager::CheckAndCreateTable()
 {
     static const auto DBFieldTypeMetaEnum = QMetaEnum::fromType<DBFieldType>();
