@@ -91,34 +91,29 @@ Item {
         property int centerX
         property int centerY
 
-        Item {
+        Column {
             x: selectedPanel == null ? 0 : selectedPanel.x + selectedPanel.width
-                                       / 2 - column.implicitWidth / 2
+                                       / 2 - implicitWidth / 2
             y: selectedPanel == null ? 0 : selectedPanel.y + selectedPanel.height
-                                       / 2 - column.implicitHeight / 2
-            Column {
-                spacing: 10
-                id: column
-                Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    color: AppTheme.text
-                    visible: parent.visible
-                    text: selectedPanel
-                          == null ? "N/A" : "x = " + selectedPanel._model.column
-                                    + ", y = " + selectedPanel._model.row
-                                    + "\nSize: " + selectedPanel._model.columnSpan
-                                    + "x" + selectedPanel._model.rowSpan
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
-                }
-                CircularButton {
-                    text: qsTr("Delete")
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    onClicked: {
-                        PanelModel.removeItem(selectedPanel._index)
-                        console.log(selectedPanel._model)
-                    }
-                }
+                                       / 2 - implicitHeight / 2
+            spacing: 10
+            id: column
+            Text {
+                anchors.horizontalCenter: column.horizontalCenter
+                color: AppTheme.text
+                visible: parent.visible
+                text: (selectedPanel == null || selectedPanel._model
+                       === null) ? "N/A" : "x = " + selectedPanel._model.column
+                                   + ", y = " + selectedPanel._model.row
+                                   + "\nSize: " + selectedPanel._model.columnSpan
+                                   + "x" + selectedPanel._model.rowSpan
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+            }
+            CircularButton {
+                text: qsTr("Delete")
+                anchors.horizontalCenter: column.horizontalCenter
+                onClicked: PanelModel.removeItem(selectedPanel._index)
             }
         }
 
@@ -134,13 +129,15 @@ Item {
                 itemMoving = true
 
             selectedPanel._model.column = Math.round(
-                        realStartX / (baseGrid.columnWidth + columnSpacing))
+                        sizehandle.realStartX / (baseGrid.columnWidth + columnSpacing))
             selectedPanel._model.row = Math.round(
-                        realStartY / (baseGrid.rowHeight + rowSpacing))
+                        sizehandle.realStartY / (baseGrid.rowHeight + rowSpacing))
             selectedPanel._model.columnSpan = Math.round(
-                        (realEndX - realStartX) / (baseGrid.columnWidth + columnSpacing))
+                        (sizehandle.realEndX - sizehandle.realStartX)
+                        / (baseGrid.columnWidth + columnSpacing))
             selectedPanel._model.rowSpan = Math.round(
-                        (realEndY - realStartY) / (baseGrid.rowHeight + rowSpacing))
+                        (sizehandle.realEndY - sizehandle.realStartY)
+                        / (baseGrid.rowHeight + rowSpacing))
         }
     }
 
