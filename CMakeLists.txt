@@ -18,7 +18,7 @@ pkg_check_modules(SQLCipher IMPORTED_TARGET REQUIRED sqlcipher)
 
 add_subdirectory(QtGraphicalEffects)
 list(APPEND QML_DIRS "${CMAKE_CURRENT_BINARY_DIR}")
-set(QML_IMPORT_PATH "${QML_DIRS}" CACHE STRING "Qt Creator 4.1 extra qml import paths")
+set(QML_IMPORT_PATH "${QML_DIRS}" CACHE STRING "Qt Creator extra qml import paths")
 add_compile_definitions($<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
 set(PROJECT_SOURCES
@@ -27,32 +27,35 @@ set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/MainWindow.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/MainWindow.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/QMLPropertyHelpers.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/QObjectPropertyMap.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/PDBaseModel.hpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/QMLPropertyHelpers.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/QObjectPropertyMap.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseModel.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PluginManager.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PluginManager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseListModel.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseListModel.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/PanelModel.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/PanelModel.cpp
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/PDBaseModel.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/PDBaseModel2.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/Base/PDBaseModel2.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/MainWindowModel.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/MainWindowModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ThemesModel.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ThemesModel.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugins/PluginInterface.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugins/PluginManager.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugins/PluginManager.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/qml.qrc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.hpp
     )
+
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/PluginInterface)
 
 if(APPLE)
     list(APPEND PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.mm)
@@ -76,13 +79,13 @@ qt_add_resources(PD "translations"
 # set_property(TARGET PD APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android)
 
 # For macOS deployment
-# ~/Qt/6.2.0/macos/bin/macdeployqt ./PD.app/ -qmldir=../src/qml/ -qmlimport=.
+# ~/Qt/6.2.0/macos/bin/macdeployqt ./PD.app/ -qmldir=${CMAKE_CURRENT_SOURCE_DIR}/src/qml/ -qmlimport=.
 
 target_compile_definitions(PD PRIVATE -DQT_DISABLE_DEPRECATED_BEFORE=0x060200)
 
 set_target_properties(PD PROPERTIES
     MACOSX_BUNDLE TRUE
-    MACOSX_BUNDLE_GUI_IDENTIFIER pd.moody.me
+    MACOSX_BUNDLE_GUI_IDENTIFIER "pd.moody.me"
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     )
@@ -105,4 +108,5 @@ target_link_libraries(PD
         Qt::Network
         Qt::Quick
         Qt::Sql
-        PkgConfig::SQLCipher)
+        PkgConfig::SQLCipher
+        PD::PDPluginInterface)

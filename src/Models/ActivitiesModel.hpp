@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Base/PDBaseModel2.hpp"
+#include "Core/PDBaseListModel.hpp"
 
 namespace PD::Models
 {
-    class ActivityModel : public Base::PDBaseModel<ActivityModel>
+    class ActivityModel : public Base::PDBaseListModel<ActivityModel>
     {
         Q_OBJECT
 

@@ -6,7 +6,7 @@
 #include <QMap>
 #include <QObject>
 
-class PDBaseListModel : public QObject // QAbstractListModel
+class PDBaseListModel : public QObject
 {
     Q_OBJECT
 

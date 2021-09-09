@@ -43,17 +43,17 @@
 <context>
     <name>PanelGrid</name>
     <message>
-        <location filename="../src/qml/components/PanelGrid.qml" line="114"/>
+        <location filename="../src/qml/components/PanelGrid.qml" line="111"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qml/components/PanelGrid.qml" line="152"/>
+        <location filename="../src/qml/components/PanelGrid.qml" line="149"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qml/components/PanelGrid.qml" line="166"/>
+        <location filename="../src/qml/components/PanelGrid.qml" line="163"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>

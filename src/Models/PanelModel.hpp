@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Base/PDBaseModel2.hpp"
+#include "Core/PDBaseListModel.hpp"
 
 namespace PD::Models
 {
-    class PanelModel : public Base::PDBaseModel<PanelModel>
+    class PanelModel : public Base::PDBaseListModel<PanelModel>
     {
         Q_OBJECT
 

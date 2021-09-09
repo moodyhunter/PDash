@@ -24,4 +24,4 @@ QString ActivityModel::TableName = u"Activities"_qs;
 
 PDModelOptions ActivityModel::ModelOptions{ MF_Editable };
 
-ActivityModel::ActivityModel(QObject *parent) : Base::PDBaseModel<ActivityModel>(parent){};
+ActivityModel::ActivityModel(QObject *parent) : Base::PDBaseListModel<ActivityModel>(parent){};

@@ -1,4 +1,4 @@
-#include "PDBaseModel2.hpp"
+#include "Core/PDBaseListModel.hpp"
 
 #include "DB/DBManager.hpp"
 #include "PDApplication.hpp"
@@ -6,7 +6,7 @@
 using namespace PD::Models::Base;
 using namespace std::chrono_literals;
 
-PDBaseModelImpl::PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &table, PDModelOptions flags, QObject *parent)
+PDBaseListModelImpl::PDBaseListModelImpl(const PDModelInfo &typeinfo, const QString &table, PDModelOptions flags, QObject *parent)
     : QAbstractListModel(parent), m_flags(flags), m_tableName(u"pd_data_"_qs + table)
 {
     for (auto it = typeinfo.begin(); it != typeinfo.end(); it++)
@@ -21,21 +21,21 @@ PDBaseModelImpl::PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &tab
         m_roleNamesMap.insert(role, roleName.toUtf8());
         m_roleDBNamesMap.insert(roleName.toString(), dbName);
     }
-    connect(pdApp->DatabaseManager(), &Database::PDDatabaseManager::OnDatabaseOpened, this, &PDBaseModelImpl::reloadData);
+    connect(pdApp->DatabaseManager(), &Database::PDDatabaseManager::OnDatabaseOpened, this, &PDBaseListModelImpl::reloadData);
     startTimer(30s);
 }
 
-QVariant PDBaseModelImpl::getDataForRole(Qt::ItemDataRole) const
+QVariant PDBaseListModelImpl::getDataForRole(Qt::ItemDataRole) const
 {
     return {};
 }
 
-QHash<int, QByteArray> PDBaseModelImpl::roleNames() const
+QHash<int, QByteArray> PDBaseListModelImpl::roleNames() const
 {
     return m_roleNamesMap;
 }
 
-void PDBaseModelImpl::saveToDatabase(bool fullSave)
+void PDBaseListModelImpl::saveToDatabase(bool fullSave)
 {
     Q_UNUSED(fullSave)
     QStringList fields;
@@ -56,7 +56,7 @@ void PDBaseModelImpl::saveToDatabase(bool fullSave)
     }
 }
 
-void PDBaseModelImpl::appendItem(const QVariantMap &data)
+void PDBaseListModelImpl::appendItem(const QVariantMap &data)
 {
     QStringList dbFields;
     QMap<int, QPair<QVariant, AtomicFieldState>> rolesData;
@@ -76,7 +76,7 @@ void PDBaseModelImpl::appendItem(const QVariantMap &data)
     }
 }
 
-void PDBaseModelImpl::removeItem(const QVariant &v)
+void PDBaseListModelImpl::removeItem(const QVariant &v)
 {
     bool ok = false;
     const auto index = v.toInt(&ok);
@@ -90,7 +90,7 @@ void PDBaseModelImpl::removeItem(const QVariant &v)
     endRemoveRows();
 }
 
-int PDBaseModelImpl::rowCount(const QModelIndex &parent) const
+int PDBaseListModelImpl::rowCount(const QModelIndex &parent) const
 {
     // For list models only the root node (an invalid parent) should return the list's size. For all
     // other (valid) parents, rowCount() should return 0 so that it does not become a tree model.
@@ -103,12 +103,12 @@ int PDBaseModelImpl::rowCount(const QModelIndex &parent) const
     return std::max(m_tableSize, 0ll);
 }
 
-bool PDBaseModelImpl::hasChildren(const QModelIndex &) const
+bool PDBaseListModelImpl::hasChildren(const QModelIndex &) const
 {
     return false;
 }
 
-bool PDBaseModelImpl::canFetchMore(const QModelIndex &) const
+bool PDBaseListModelImpl::canFetchMore(const QModelIndex &) const
 {
     if (m_tableSize < 0)
         return true;
@@ -119,7 +119,7 @@ bool PDBaseModelImpl::canFetchMore(const QModelIndex &) const
     return m_dbCache.size() < m_tableSize;
 }
 
-void PDBaseModelImpl::fetchMore(const QModelIndex &parent)
+void PDBaseListModelImpl::fetchMore(const QModelIndex &parent)
 {
     if (m_flags ^ MF_FetchDynamically)
     {
@@ -144,7 +144,7 @@ void PDBaseModelImpl::fetchMore(const QModelIndex &parent)
     }
 }
 
-QVariant PDBaseModelImpl::data(const QModelIndex &index, int role) const
+QVariant PDBaseListModelImpl::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
@@ -162,7 +162,7 @@ QVariant PDBaseModelImpl::data(const QModelIndex &index, int role) const
     return getDataForRole((Qt::ItemDataRole) role);
 }
 
-Qt::ItemFlags PDBaseModelImpl::flags(const QModelIndex &) const
+Qt::ItemFlags PDBaseListModelImpl::flags(const QModelIndex &) const
 {
     return Qt::NoItemFlags;
     //    qWarning() << "Unimplemented";
@@ -171,7 +171,7 @@ Qt::ItemFlags PDBaseModelImpl::flags(const QModelIndex &) const
     //    return Qt::ItemIsEditable; // FIXME: Implement me!
 }
 
-bool PDBaseModelImpl::setData(const QModelIndex &index, const QVariant &value, int role)
+bool PDBaseListModelImpl::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (data(index, role) != value)
     {
@@ -183,17 +183,17 @@ bool PDBaseModelImpl::setData(const QModelIndex &index, const QVariant &value, i
     return false;
 }
 
-bool PDBaseModelImpl::insertRows(int row, int count, const QModelIndex &parent)
+bool PDBaseListModelImpl::insertRows(int row, int count, const QModelIndex &parent)
 {
     qWarning() << "Unimplemented";
     beginInsertRows(parent, row, row + count - 1);
-    const auto maxId = *std::max_element(m_dbCache.begin(), m_dbCache.end(), [](const auto &a, const auto &b) { return a.first < b.first; });
+    //    const auto maxId = *std::max_element(m_dbCache.begin(), m_dbCache.end(), [](const auto &a, const auto &b) { return a.first < b.first; });
     // FIXME: Implement me!
     endInsertRows();
     return true;
 }
 
-bool PDBaseModelImpl::removeRows(int row, int count, const QModelIndex &parent)
+bool PDBaseListModelImpl::removeRows(int row, int count, const QModelIndex &parent)
 {
     qWarning() << "Unimplemented";
     beginRemoveRows(parent, row, row + count - 1);
@@ -202,12 +202,12 @@ bool PDBaseModelImpl::removeRows(int row, int count, const QModelIndex &parent)
     return true;
 }
 
-void PDBaseModelImpl::timerEvent(QTimerEvent *)
+void PDBaseListModelImpl::timerEvent(QTimerEvent *)
 {
     saveToDatabase();
 }
 
-void PDBaseModelImpl::reloadData()
+void PDBaseListModelImpl::reloadData()
 {
     emit rowsRemoved({}, 0, m_dbCache.size(), {});
     m_dbCache.clear();

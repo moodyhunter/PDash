@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Base/PDBaseModel.hpp"
-#include "Base/QMLPropertyHelpers.hpp"
+#include "Core/PDBaseModel.hpp"
+#include "Core/QMLPropertyHelpers.hpp"
 
 #include <QColor>
 

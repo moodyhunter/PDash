@@ -23,7 +23,7 @@ namespace PD::Models
 
 namespace PD::Models::Base
 {
-    class PDBaseModelImpl : public QAbstractListModel
+    class PDBaseListModelImpl : public QAbstractListModel
     {
         constexpr static auto F_CLEAN = 0;
         constexpr static auto F_DIRTY = 1;
@@ -31,7 +31,7 @@ namespace PD::Models::Base
 
         Q_OBJECT
       public:
-        explicit PDBaseModelImpl(const PDModelInfo &typeinfo, const QString &table, PDModelOptions flags, QObject *parent = nullptr);
+        explicit PDBaseListModelImpl(const PDModelInfo &typeinfo, const QString &table, PDModelOptions flags, QObject *parent = nullptr);
 
         virtual QVariant getDataForRole(Qt::ItemDataRole r) const;
 
@@ -69,10 +69,10 @@ namespace PD::Models::Base
     };
 
     template<typename T>
-    class PDBaseModel : public PDBaseModelImpl
+    class PDBaseListModel : public PDBaseListModelImpl
     {
       protected:
-        explicit PDBaseModel(QObject *parent = nullptr) : PDBaseModelImpl(T::TypeInfo, T::TableName, T::ModelOptions, parent)
+        explicit PDBaseListModel(QObject *parent = nullptr) : PDBaseListModelImpl(T::TypeInfo, T::TableName, T::ModelOptions, parent)
         {
             static_assert(std::is_same_v<decltype(T::TableName), QString>);
             static_assert(std::is_same_v<decltype(T::TypeInfo), PDModelInfo>);
@@ -84,7 +84,7 @@ namespace PD::Models::Base
 template<typename T>
 void pdRegisterModelType()
 {
-    static_assert(std::is_base_of_v<PD::Models::Base::PDBaseModel<T>, T>, "Type must be a subclass of PDBaseModel");
+    static_assert(std::is_base_of_v<PD::Models::Base::PDBaseListModel<T>, T>, "Type must be a subclass of PDBaseModel");
     QList<PD::Database::ModelDBField> fields;
     for (const auto &[a, b, dbInfo] : T::TypeInfo)
         fields << dbInfo;

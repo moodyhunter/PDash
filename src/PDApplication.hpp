@@ -8,33 +8,38 @@
 #include <QGuiApplication>
 #endif
 
-namespace PD::Database
+// clang-format off
+namespace PD::Database { class PDDatabaseManager; }
+namespace PD::Core { class PDPluginManager; }
+// clang-format on
+
+namespace PD
 {
-    class PDDatabaseManager;
-}
+    class PDApplication : public PD_APP_CLASS
+    {
+        Q_OBJECT
 
-class PDApplication : public PD_APP_CLASS
-{
-    Q_OBJECT
+      public:
+        explicit PDApplication(int &argc, char *argv[]);
+        virtual ~PDApplication();
+        void initialize();
+        int exec();
 
-  public:
-    explicit PDApplication(int &argc, char *argv[]);
-    virtual ~PDApplication();
-    void initialize();
-    int exec();
+        PD::Database::PDDatabaseManager *DatabaseManager() const;
+        PD::Core::PDPluginManager *PluginManager() const;
 
-    PD::Database::PDDatabaseManager *DatabaseManager() const;
-
-  private:
-    PD::Database::PDDatabaseManager *m_dbManager;
-};
+      private:
+        PD::Database::PDDatabaseManager *m_dbManager;
+        PD::Core::PDPluginManager *m_pluginManager;
+    };
+} // namespace PD
 
 #if defined(qApp)
 #undef qApp
 #endif
-#define qApp (static_cast<PDApplication *>(QCoreApplication::instance()))
+#define qApp (static_cast<PD::PDApplication *>(QCoreApplication::instance()))
 
 #if defined(pdApp)
 #undef pdApp
 #endif
-#define pdApp (static_cast<PDApplication *>(QCoreApplication::instance()))
+#define pdApp (static_cast<PD::PDApplication *>(QCoreApplication::instance()))

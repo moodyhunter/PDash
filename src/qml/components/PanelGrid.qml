@@ -88,9 +88,6 @@ Item {
         anchors.fill: parent
         handleSize: 20
 
-        property int centerX
-        property int centerY
-
         Column {
             x: selectedPanel == null ? 0 : selectedPanel.x + selectedPanel.width
                                        / 2 - implicitWidth / 2

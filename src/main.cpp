@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    PDApplication app(argc, argv);
+    PD::PDApplication app(argc, argv);
     app.initialize();
     return app.exec();
 }

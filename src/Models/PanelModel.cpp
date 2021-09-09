@@ -24,4 +24,4 @@ QString PanelModel::TableName = u"MainWindowPanels"_qs;
 
 PDModelOptions PanelModel::ModelOptions{ MF_Editable };
 
-PanelModel::PanelModel(QObject *parent) : Base::PDBaseModel<PanelModel>(parent){};
+PanelModel::PanelModel(QObject *parent) : Base::PDBaseListModel<PanelModel>(parent){};
