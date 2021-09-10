@@ -1,8 +1,11 @@
 #include "MainWindow.hpp"
 
+#include "Core/PluginManager.hpp"
+#include "PDApplication.hpp"
 #include "platforms/Platform.hpp"
 
 #include <QCoreApplication>
+#include <QDirIterator>
 #include <QFontDatabase>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -11,45 +14,62 @@
 constexpr auto WINDOW_WIDTH = 1300;
 constexpr auto WINDOW_HEIGHT = 700;
 
-void SetupQMLContext(QQmlContext *ctx)
-{
-    const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
-    ctx->setContextProperty(u"fixedFont"_qs, fixedFont);
-}
+using namespace PD;
 
-PDMainWindow::PDMainWindow() : QQuickView()
+PDMainWindow::PDMainWindow() : QQuickView(), quickWindow(this)
 {
-    const static QUrl MainComponent{ u"qrc:/qml/MainComponent.qml"_qs };
+    connect(pdApp->PluginManager(), &Core::PDPluginManager::OnQmlImportPathAdded, this, &PDMainWindow::p_QmlImportPathAdded);
+
+    const static auto prop_RootWindow = u"rootWindow"_qs;
+    const static auto prop_hasBackgroundEffect = u"hasBackgroundEffect"_qs;
+
 #ifdef Q_OS_MACOS
-    m_effectsBackgroundWindow = PD::Platform::PDPlatformAPI::getEffectBackgroundWindow();
     quickWindow = new QQuickView(this);
+#endif
+
 #ifdef QT_DEBUG
     quickWindow->engine()->addImportPath(qApp->applicationDirPath() + u"/../../../");
 #endif
+    quickWindow->rootContext()->setContextProperty(prop_RootWindow, this);
+    quickWindow->rootContext()->setContextProperty(prop_hasBackgroundEffect, false);
+    quickWindow->rootContext()->setContextProperty(u"fixedFont"_qs, QFontDatabase::systemFont(QFontDatabase::FixedFont));
+}
 
-    SetupQMLContext(quickWindow->rootContext());
-    quickWindow->rootContext()->setContextProperty(u"rootWindow"_qs, quickWindow);
-    quickWindow->rootContext()->setContextProperty(u"hasBackgroundEffect"_qs, m_effectsBackgroundWindow != nullptr);
-
+void PDMainWindow::Open()
+{
+    QDirIterator it(u":/pd/mooody/me/"_qs, {}, QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext())
+        qDebug() << it.next();
+    const static QUrl MainComponent{ u"qrc:/pd/mooody/me/MainComponent.qml"_qs };
     quickWindow->setSource(MainComponent);
+#ifdef Q_OS_MACOS
     quickWindow->show();
     quickWindow->requestActivate();
-
-    if (m_effectsBackgroundWindow)
-    {
-        m_effectsBackgroundWindow->setParent(this);
-        m_effectsBackgroundWindow->show();
-        m_effectsBackgroundWindow->lower();
-    }
-#else
-    rootContext()->setContextProperty(u"rootWindow"_qs, this);
-    rootContext()->setContextProperty(u"hasBackgroundEffect"_qs, false);
-    SetupQMLContext(this->rootContext());
-    setSource(MainComponent);
+    m_effectsBackgroundWindow = Platform::PDPlatformAPI::getEffectBackgroundWindow();
+    m_effectsBackgroundWindow->setParent(this);
+    m_effectsBackgroundWindow->show();
+    m_effectsBackgroundWindow->lower();
 #endif
     setWidth(WINDOW_WIDTH);
     setHeight(WINDOW_HEIGHT);
     setTitle(tr("PD - The Personal Dashboard"));
+    show();
+}
+
+
+void PDMainWindow::p_QmlImportPathAdded(const QString &path)
+{
+#ifdef Q_OS_MACOS
+    quickWindow->engine()->addImportPath(path);
+#else
+
+    QDirIterator it(u":/pdplugins/"_qs, {}, QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext())
+        qDebug() << it.next();
+
+    this->engine()->addImportPath(path);
+    this->engine()->addImportPath(u":/pdplugins/"_qs);
+#endif
 }
 
 #ifdef Q_OS_MAC

@@ -23,6 +23,8 @@ QStringList GetAssetsPath(const QString &dirName)
 
     list << u":/" + dirName;
 
+    list << u"/home/leroy/.local/build_temp/build-PD-Qt_6_System-Debug/src/Plugins/PDClock"_qs;
+
     list << QStandardPaths::locateAll(QStandardPaths::AppDataLocation, dirName, QStandardPaths::LocateDirectory);
     list << QStandardPaths::locateAll(QStandardPaths::AppConfigLocation, dirName, QStandardPaths::LocateDirectory);
 
@@ -82,8 +84,9 @@ void PDPluginManager::LoadPlugins()
 
     for (const auto &plugin : QPluginLoader::staticInstances())
     {
-        loadPluginImpl(u"[STATIC]"_qs, plugin, nullptr);
+        loadPluginInstanceObject(u"[STATIC]"_qs, plugin, nullptr);
     }
+
 #ifndef QT_STATIC
     for (const auto &pluginDirPath : GetAssetsPath(u"plugins"_qs))
     {
@@ -91,13 +94,8 @@ void PDPluginManager::LoadPlugins()
         if (entries.isEmpty())
             continue;
 
-#ifdef Q_OS_WINDOWS
-        // qgetenv is lossy on Windows
-        qputenv("PATH", QDir::toNativeSeparators(qEnvironmentVariable("PATH") + QDir::listSeparator() + pluginDirPath + "/libs").toUtf8());
-#else
-        // qEnvironmentVariable is lossy
-        qputenv("PATH", QDir::toNativeSeparators(QString::fromUtf8(qgetenv("PATH")) + QDir::listSeparator() + pluginDirPath + u"/libs"_qs).toUtf8());
-#endif
+        if (QDir libsDir(pluginDirPath + u"/libs"); libsDir.exists())
+            qputenv("PATH", QDir::toNativeSeparators(qEnvironmentVariable("PATH") + QDir::listSeparator() + libsDir.absolutePath()).toUtf8());
 
         for (const auto &fileName : entries)
         {
@@ -105,7 +103,7 @@ void PDPluginManager::LoadPlugins()
         }
     }
 #else
-    qInfo() << "PD is statically linked against Qt, skipping loading dynamic plugins.";
+    qInfo() << "PD is statically linked against Qt, not loading dynamic plugins.";
 #endif
 
     for (auto it = plugins.constKeyValueBegin(); it != plugins.constKeyValueEnd(); it++)
@@ -153,10 +151,10 @@ bool PDPluginManager::tryLoadPlugin(const QString &pluginFullPath)
         return false;
     }
 
-    return loadPluginImpl(pluginFullPath, instance, loader);
+    return loadPluginInstanceObject(pluginFullPath, instance, loader);
 }
 
-bool PDPluginManager::loadPluginImpl(const QString &fullPath, QObject *instance, QPluginLoader *loader)
+bool PDPluginManager::loadPluginInstanceObject(const QString &fullPath, QObject *instance, QPluginLoader *loader)
 {
     PluginInfo info;
     info.libraryPath = fullPath;
@@ -165,7 +163,7 @@ bool PDPluginManager::loadPluginImpl(const QString &fullPath, QObject *instance,
 
     if (!info.pinterface)
     {
-        qInfo() << "Failed to cast from QObject to PluginInterface";
+        qWarning() << "Cannot to cast from QObject to PDPluginInterface";
         // Static plugins doesn't have a loader.
         if (info.loader)
         {
@@ -183,5 +181,8 @@ bool PDPluginManager::loadPluginImpl(const QString &fullPath, QObject *instance,
 
     qInfo() << "Loaded plugin:" << info.libraryPath;
     plugins.insert(info.id, info);
+
+    emit OnQmlImportPathAdded(info.pinterface->QmlImportPath());
+
     return true;
 }

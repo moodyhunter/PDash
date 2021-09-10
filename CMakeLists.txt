@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.20)
 
 project(PD VERSION 0.1 LANGUAGES CXX)
 
@@ -23,36 +23,41 @@ add_compile_definitions($<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_
 
 set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/MainWindow.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/MainWindow.cpp
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseListModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseListModel.hpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseModel.hpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PluginManager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PluginManager.hpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/QMLPropertyHelpers.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/QObjectPropertyMap.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseModel.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PluginManager.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PluginManager.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseModel.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseListModel.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseListModel.cpp
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.hpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MainWindow.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MainWindow.hpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.hpp
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/PanelModel.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/PanelModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/PanelModel.hpp
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ThemesModel.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ThemesModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ThemesModel.hpp
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/qml.qrc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.hpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.hpp
+#    ${CMAKE_CURRENT_SOURCE_DIR}/src/qml.qrc
     )
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/PluginInterface)
@@ -63,17 +68,15 @@ else()
     list(APPEND PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.cpp)
 endif()
 
-qt_add_executable(PD MANUAL_FINALIZATION ${PROJECT_SOURCES})
-qt_import_qml_plugins(PD)
-qt_finalize_executable(PD)
+add_subdirectory(src/PDPlugins)
 
-qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/translation/PD_zh_CN.ts)
+qt_add_executable(PD ${PROJECT_SOURCES})
+qt_add_translations(PD
+    TS_FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/translation/PD_zh_CN.ts
+    RESOURCE_PREFIX "/translations")
 
-qt_add_resources(PD "translations"
-    PREFIX "/translations"
-    BASE ${CMAKE_CURRENT_BINARY_DIR}
-    FILES ${QM_FILES})
+include(src/qml/qml.cmake)
 
 # For Android deployment, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 # set_property(TARGET PD APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android)
@@ -84,6 +87,7 @@ qt_add_resources(PD "translations"
 target_compile_definitions(PD PRIVATE -DQT_DISABLE_DEPRECATED_BEFORE=0x060200)
 
 set_target_properties(PD PROPERTIES
+    WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
     MACOSX_BUNDLE_GUI_IDENTIFIER "pd.moody.me"
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -100,7 +104,6 @@ endif()
 target_compile_definitions(PD PRIVATE QT_USE_QSTRINGBUILDER QT_NO_CAST_FROM_ASCII)
 
 target_include_directories(PD PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_include_directories(PD PRIVATE ${Qt6Sql_PRIVATE_INCLUDE_DIRS})
 target_link_libraries(PD
     PRIVATE
         Qt::Core
@@ -108,5 +111,6 @@ target_link_libraries(PD
         Qt::Network
         Qt::Quick
         Qt::Sql
+        Qt::SqlPrivate
         PkgConfig::SQLCipher
         PD::PDPluginInterface)

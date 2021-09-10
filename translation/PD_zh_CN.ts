@@ -2,6 +2,15 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
+    <name>ClockItem</name>
+    <message>
+        <location filename="../build/src/Plugins/PDClock/ClockItem.qml" line="8"/>
+        <location filename="../src/Plugins/PDClock/ClockItem.qml" line="8"/>
+        <source>This is PD Clock</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LoginPage</name>
     <message>
         <location filename="../src/qml/LoginPage.qml" line="50"/>
@@ -33,9 +42,9 @@
     </message>
 </context>
 <context>
-    <name>PDMainWindow</name>
+    <name>PD::PDMainWindow</name>
     <message>
-        <location filename="../src/MainWindow.cpp" line="52"/>
+        <location filename="../src/MainWindow.cpp" line="51"/>
         <source>PD - The Personal Dashboard</source>
         <translation type="unfinished"></translation>
     </message>

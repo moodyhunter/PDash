@@ -17,8 +17,13 @@
 
 using namespace PD;
 
-PDApplication::PDApplication(int &argc, char *argv[]) : PD_APP_CLASS(argc, argv), m_dbManager(new Database::PDDatabaseManager), m_pluginManager(new Core::PDPluginManager)
+PDApplication::PDApplication(int &argc, char *argv[])
+    : PD_APP_CLASS(argc, argv),                           //
+      m_dbManager(new Database::PDDatabaseManager(this)), //
+      m_pluginManager(new Core::PDPluginManager(this))
 {
+    QQuickWindow::setDefaultAlphaBuffer(true);
+    m_mainWindow = new PDMainWindow;
     pdRegisterModelType<Models::ActivityModel>();
     qmlRegisterSingletonInstance<Models::ActivityModel>(PD_QML_URI, 1, 0, "ActivityModel", new Models::ActivityModel(this));
 
@@ -35,22 +40,28 @@ PDApplication::PDApplication(int &argc, char *argv[]) : PD_APP_CLASS(argc, argv)
 
 PDApplication::~PDApplication()
 {
-    delete m_dbManager;
+    delete m_mainWindow;
 }
 
 void PDApplication::initialize()
 {
-    auto translator = new QTranslator(this);
-    const auto uiLanguages = QLocale::system().uiLanguages();
-    for (const auto &locale : uiLanguages)
+    do
     {
-        if (translator->load(u":/translations/PD_"_qs + QLocale(locale).name()))
+        auto translator = new QTranslator(this);
+        const auto uiLanguages = QLocale::system().uiLanguages();
+        for (const auto &locale : uiLanguages)
         {
-            installTranslator(translator);
-            return;
+            const auto name = QLocale(locale).name();
+            if (translator->load(u":/translations/PD_"_qs + name))
+            {
+                installTranslator(translator);
+                break;
+            }
         }
-    }
-    delete translator;
+        delete translator;
+    } while (false);
+
+    m_pluginManager->LoadPlugins();
 }
 
 int PDApplication::exec()
@@ -63,9 +74,7 @@ int PDApplication::exec()
     listview.setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
     listview.show();
 #else
-    QQuickWindow::setDefaultAlphaBuffer(true);
-    PDMainWindow w;
-    w.show();
+    m_mainWindow->Open();
 #endif
     return QCoreApplication::exec();
 }

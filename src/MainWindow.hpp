@@ -4,16 +4,28 @@
 
 class QResizeEvent;
 
-class PDMainWindow : public QQuickView
+namespace PD
 {
-    Q_OBJECT
-  public:
-    PDMainWindow();
-#ifdef Q_OS_MACOS
-    void resizeEvent(QResizeEvent *ev);
+    class PDMainWindow : public QQuickView
+    {
+        Q_OBJECT
+      public:
+        PDMainWindow();
 
-  private:
-    QQuickView *quickWindow;
-    QWindow *m_effectsBackgroundWindow;
+        void Open();
+
+      private slots:
+        void p_QmlImportPathAdded(const QString &path);
+
+#ifdef Q_OS_MACOS
+      protected:
+        void resizeEvent(QResizeEvent *ev);
+
+      private:
+        QWindow *m_effectsBackgroundWindow;
 #endif
-};
+
+      private:
+        QQuickView *quickWindow;
+    };
+} // namespace PD

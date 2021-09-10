@@ -26,9 +26,12 @@ namespace PD::Core
         const QList<const PluginInfo *> AllPlugins() const;
         const PluginInfo *GetPlugin(const PDPluginId &pid);
 
+      signals:
+        void OnQmlImportPathAdded(const QString &path);
+
       private:
         bool tryLoadPlugin(const QString &pluginFullPath);
-        bool loadPluginImpl(const QString &fullPath, QObject *instance, QPluginLoader *loader);
+        bool loadPluginInstanceObject(const QString &fullPath, QObject *instance, QPluginLoader *loader);
 
       private:
         QHash<PDPluginId, PluginInfo> plugins;

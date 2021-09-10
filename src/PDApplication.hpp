@@ -11,6 +11,7 @@
 // clang-format off
 namespace PD::Database { class PDDatabaseManager; }
 namespace PD::Core { class PDPluginManager; }
+namespace PD { class PDMainWindow; }
 // clang-format on
 
 namespace PD
@@ -31,6 +32,7 @@ namespace PD
       private:
         PD::Database::PDDatabaseManager *m_dbManager;
         PD::Core::PDPluginManager *m_pluginManager;
+        PD::PDMainWindow *m_mainWindow;
     };
 } // namespace PD
 

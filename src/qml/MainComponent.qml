@@ -5,8 +5,6 @@ import QtQuick.Controls
 
 import pd.mooody.me
 
-import "components"
-
 Item {
     id: rootComponent
     anchors.fill: parent
@@ -91,17 +89,17 @@ Item {
                         Layout.fillWidth: true
                         Layout.leftMargin: 10
                     }
-
-                    Item {
+                    Rectangle {
                         Layout.fillWidth: true
                         height: 60
-                        Rectangle {
-                            color: AppTheme.background
-                            anchors.fill: parent
-                        }
+                        color: AppTheme.background
                         Label {
                             anchors.fill: parent
                             text: "Bottom Footer"
+                        }
+                        Loader {
+                            anchors.fill: parent
+                            source: "/PDPlugins/Clock/ClockItem.qml"
                         }
                     }
                 }
