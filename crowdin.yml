@@ -1,0 +1,3 @@
+files:
+  - source: /translations/PD_en_US.ts
+    translation: /translations/PD_%locale_with_underscore%.ts
