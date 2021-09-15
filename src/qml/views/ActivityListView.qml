@@ -14,8 +14,8 @@ ListView {
     ScrollBar.vertical: ScrollBar {
         policy: ScrollBar.AlwaysOn
     }
-    clip: true
     spacing: 20
+    boundsBehavior: Flickable.StopAtBounds
     delegate: PDGlowedRectangle {
         implicitHeight: layout.implicitHeight + 30
         width: list.width - 20

@@ -4,16 +4,10 @@ import QtGraphicalEffects
 
 import pd.mooody.me
 
-Item {
+Control {
     id: root
-    property bool glowAnimation: true
-
     clip: false
-
-    HoverHandler {
-        enabled: root.glowAnimation
-        id: hoverhandler
-    }
+    hoverEnabled: true
 
     DropShadow {
         id: shadow
@@ -29,7 +23,7 @@ Item {
             }
         }
 
-        state: hoverhandler.hovered ? "HOVERED" : "NORMAL"
+        state: root.hovered ? "HOVERED" : "NORMAL"
 
         states: [
             State {

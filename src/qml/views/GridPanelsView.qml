@@ -51,7 +51,7 @@ Item {
         model: PanelModel
         PDPanelCard {
             z: 10
-            glowAnimation: true
+            hoverEnabled: true
             parent: root
 
             MouseArea {
@@ -190,14 +190,19 @@ Item {
             }
         ]
         onClicked: {
-            PanelModel.appendItem({
-                                      "row": 2,
-                                      "column": 2,
-                                      "rowSpan": 4,
-                                      "columnSpan": 4,
-                                      "contentType": "something",
-                                      "contentData": ""
-                                  })
+            pluginTypeSelector.open()
+            //            PanelModel.appendItem({
+            //                                      "row": 2,
+            //                                      "column": 2,
+            //                                      "rowSpan": 4,
+            //                                      "columnSpan": 4,
+            //                                      "contentType": "something",
+            //                                      "contentData": ""
+            //                                  })
         }
+    }
+
+    PluginTypeView {
+        id: pluginTypeSelector
     }
 }
