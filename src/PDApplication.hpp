@@ -1,12 +1,5 @@
 #pragma once
-
-#if PD_DEBUG_MODEL
-#define PD_APP_CLASS QApplication
-#include <QApplication>
-#else
-#define PD_APP_CLASS QGuiApplication
-#include <QGuiApplication>
-#endif
+#include <SingleApplication>
 
 // clang-format off
 namespace PD::Database { class PDDatabaseManager; }
@@ -16,7 +9,7 @@ namespace PD { class PDMainWindow; }
 
 namespace PD
 {
-    class PDApplication : public PD_APP_CLASS
+    class PDApplication : public SingleApplication
     {
         Q_OBJECT
 

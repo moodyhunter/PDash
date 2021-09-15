@@ -16,6 +16,9 @@ find_package(Qt6 6.2.0 COMPONENTS Core Gui Network Quick LinguistTools Sql REQUI
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SQLCipher IMPORTED_TARGET REQUIRED sqlcipher)
 
+set(QAPPLICATION_CLASS QGuiApplication)
+add_subdirectory(3rdparty/SingleApplication)
+
 add_subdirectory(QtGraphicalEffects)
 list(APPEND QML_DIRS "${CMAKE_CURRENT_BINARY_DIR}")
 set(QML_IMPORT_PATH "${QML_DIRS}" CACHE STRING "Qt Creator extra qml import paths")
@@ -84,7 +87,10 @@ include(src/qml/qml.cmake)
 # For macOS deployment
 # ~/Qt/6.2.0/macos/bin/macdeployqt ./PD.app/ -qmldir=${CMAKE_CURRENT_SOURCE_DIR}/src/qml/ -qmlimport=.
 
-target_compile_definitions(PD PRIVATE -DQT_DISABLE_DEPRECATED_BEFORE=0x060200)
+target_compile_definitions(PD PRIVATE
+    -DQT_DISABLE_DEPRECATED_BEFORE=0x060200
+    -DQT_USE_QSTRINGBUILDER=1
+    -DQT_NO_CAST_FROM_ASCII)
 
 set_target_properties(PD PROPERTIES
     WIN32_EXECUTABLE TRUE
@@ -94,16 +100,8 @@ set_target_properties(PD PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     )
 
-option(PD_DEBUG_MODEL OFF)
-if(PD_DEBUG_MODEL)
-    find_package(Qt6 6.2.0 COMPONENTS Widgets REQUIRED)
-    target_compile_definitions(PD PRIVATE PD_DEBUG_MODEL=1)
-    target_link_libraries(PD PRIVATE Qt::Widgets)
-endif()
-
-target_compile_definitions(PD PRIVATE QT_USE_QSTRINGBUILDER QT_NO_CAST_FROM_ASCII)
-
 target_include_directories(PD PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
 target_link_libraries(PD
     PRIVATE
         Qt::Core
@@ -112,6 +110,7 @@ target_link_libraries(PD
         Qt::Quick
         Qt::Sql
         Qt::SqlPrivate
+        SingleApplication::SingleApplication
         PkgConfig::SQLCipher
         PD::AllPlugins
         PD::PDPluginInterface)

@@ -9,16 +9,12 @@
 
 #include <QTranslator>
 
-#if PD_DEBUG_MODEL
-#include <QListView>
-#endif
-
 #define PD_QML_URI "pd.mooody.me"
 
 using namespace PD;
 
 PDApplication::PDApplication(int &argc, char *argv[])
-    : PD_APP_CLASS(argc, argv),                           //
+    : SingleApplication(argc, argv),                      //
       m_dbManager(new Database::PDDatabaseManager(this)), //
       m_pluginManager(new Core::PDPluginManager(this))
 {
@@ -66,16 +62,7 @@ void PDApplication::initialize()
 
 int PDApplication::exec()
 {
-#if PD_DEBUG_MODEL
-    Models::ActivityModel model;
-    m_dbManager->openDatabase(u"default"_qs, {});
-    QListView listview;
-    listview.setModel(&model);
-    listview.setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
-    listview.show();
-#else
     m_mainWindow->Open();
-#endif
     return QCoreApplication::exec();
 }
 

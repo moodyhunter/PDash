@@ -4,3 +4,6 @@
 [submodule "src/PluginInterface"]
 	path = src/PluginInterface
 	url = https://github.com/moodyhunter/PDPluginInterface.git
+[submodule "3rdparty/SingleApplication"]
+	path = 3rdparty/SingleApplication
+	url = https://github.com/itay-grudev/SingleApplication
