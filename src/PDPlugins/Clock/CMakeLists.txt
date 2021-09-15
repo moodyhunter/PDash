@@ -6,7 +6,7 @@ pd_add_plugin(Clock
     STATIC
     CLASS_NAME "PDClock"
     SOURCES
-        back.cpp
-        back.hpp
+        Clock.cpp
+        Clock.hpp
     QML_FILES
         ClockItem.qml)
