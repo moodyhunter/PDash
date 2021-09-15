@@ -11,12 +11,11 @@ RoundButton {
     property color bordercolor: AppTheme.highlight
 
     flat: true
-
     width: root.size
     height: root.size
 
     background: Rectangle {
-        property real _colorratio: 1.2
+        readonly property real _colorratio: 1.2
         color: down ? Qt.darker(
                           root.backgroundcolor,
                           _colorratio) : (root.hovered ? Qt.lighter(
