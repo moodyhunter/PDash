@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtGraphicalEffects
 import QtQuick.Layouts
 
 import pd.mooody.me

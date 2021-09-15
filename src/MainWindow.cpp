@@ -37,9 +37,6 @@ PDMainWindow::PDMainWindow() : QQuickView(), quickWindow(this)
 
 void PDMainWindow::Open()
 {
-    QDirIterator it(u":/pd/mooody/me/"_qs, {}, QDir::Files, QDirIterator::Subdirectories);
-    while (it.hasNext())
-        qDebug() << it.next();
     const static QUrl MainComponent{ u"qrc:/pd/mooody/me/MainComponent.qml"_qs };
     quickWindow->setSource(MainComponent);
 #ifdef Q_OS_MACOS
@@ -55,7 +52,6 @@ void PDMainWindow::Open()
     setTitle(tr("PD - The Personal Dashboard"));
     show();
 }
-
 
 void PDMainWindow::p_QmlImportPathAdded(const QString &path)
 {

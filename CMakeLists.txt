@@ -113,4 +113,5 @@ target_link_libraries(PD
         Qt::Sql
         Qt::SqlPrivate
         PkgConfig::SQLCipher
+        PD::AllPlugins
         PD::PDPluginInterface)

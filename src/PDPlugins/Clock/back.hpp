@@ -14,8 +14,7 @@ class PDClock
   public:
     PDClock(QObject *parent = nullptr);
     virtual ~PDClock();
-    virtual PDPluginId PluginId() const override;
-    virtual QString QmlImportPath() const override;
+    virtual void RegisterQMLTypes() override;
 };
 
 class PDClockProp : public QObject

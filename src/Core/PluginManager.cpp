@@ -182,7 +182,10 @@ bool PDPluginManager::loadPluginInstanceObject(const QString &fullPath, QObject 
     qInfo() << "Loaded plugin:" << info.libraryPath;
     plugins.insert(info.id, info);
 
-    emit OnQmlImportPathAdded(info.pinterface->QmlImportPath());
+    for (const auto &str : info.pinterface->QmlImportPaths())
+        emit OnQmlImportPathAdded(str);
+
+    info.pinterface->RegisterQMLTypes();
 
     return true;
 }
