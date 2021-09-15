@@ -51,7 +51,7 @@ Item {
         model: PanelModel
         PDPanelCard {
             z: 10
-            hasHoveredAnimation: true
+            glowAnimation: true
             parent: root
 
             MouseArea {

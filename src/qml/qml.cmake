@@ -2,6 +2,7 @@ list(APPEND QML_FILES
     ${CMAKE_CURRENT_LIST_DIR}/MainComponent.qml
     ${CMAKE_CURRENT_LIST_DIR}/controls/PDLabel.qml
     ${CMAKE_CURRENT_LIST_DIR}/controls/PDPanelCard.qml
+    ${CMAKE_CURRENT_LIST_DIR}/controls/PDGlowedRectangle.qml
     ${CMAKE_CURRENT_LIST_DIR}/controls/CircularButton.qml
     ${CMAKE_CURRENT_LIST_DIR}/controls/RectangleAreaHandle.qml
     ${CMAKE_CURRENT_LIST_DIR}/views/ActivityListView.qml

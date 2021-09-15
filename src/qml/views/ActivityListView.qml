@@ -16,7 +16,7 @@ ListView {
     }
     clip: true
     spacing: 20
-    delegate: PDPanelCard {
+    delegate: PDGlowedRectangle {
         implicitHeight: layout.implicitHeight + 30
         width: list.width - 20
 
