@@ -159,7 +159,7 @@ bool PDPluginManager::loadPluginInstanceObject(const QString &fullPath, QObject 
     PluginInfo info;
     info.libraryPath = fullPath;
     info.loader = loader;
-    info.pinterface = qobject_cast<PDPluginInterface *>(instance);
+    info.pinterface = qobject_cast<PD::Plugin::PDPluginInterface *>(instance);
 
     if (!info.pinterface)
     {

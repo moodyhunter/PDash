@@ -60,7 +60,6 @@ set(PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.hpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.hpp
-#    ${CMAKE_CURRENT_SOURCE_DIR}/src/qml.qrc
     )
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/PluginInterface)

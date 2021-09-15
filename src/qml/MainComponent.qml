@@ -63,7 +63,7 @@ Item {
                     radius: 5
                 }
 
-                PanelGrid {
+                GridPanelsView {
                     SplitView.fillWidth: true
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -89,6 +89,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.leftMargin: 10
                     }
+
                     Rectangle {
                         Layout.fillWidth: true
                         height: 60
@@ -97,22 +98,19 @@ Item {
                             anchors.fill: parent
                             text: "Bottom Footer"
                         }
-                        Loader {
-                            anchors.fill: parent
-                            source: "/PDPlugins/Clock/ClockItem.qml"
-                        }
                     }
                 }
             }
         }
     }
 
-    LoginPage {
+    LoginView {
         id: login
         parent: rootWindow.contentItem
         width: rootComponent.width
         height: rootComponent.height
     }
+
     Component.onCompleted: {
         login.open()
         login.makeFocus()

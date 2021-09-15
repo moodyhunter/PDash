@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/PDBaseListModel.hpp"
+#include "PDPlugin/PluginBase/PDBaseTypes.hpp"
 
 namespace PD::Models
 {
@@ -16,5 +17,11 @@ namespace PD::Models
       public:
         explicit PanelModel(QObject *parent = nullptr);
         virtual ~PanelModel() = default;
+
+        Q_INVOKABLE QVariantMap getQmlInfoFromType(const QString &type);
+        Q_INVOKABLE QStringList getAllQmlTypes() const;
+
+      private:
+        QMap<QString, PD::Plugin::Types::PDPluginQmlTypeInfo> m_typeinfo;
     };
 } // namespace PD::Models

@@ -1,11 +1,12 @@
 list(APPEND QML_FILES
-    ${CMAKE_CURRENT_LIST_DIR}/LoginPage.qml
     ${CMAKE_CURRENT_LIST_DIR}/MainComponent.qml
-    ${CMAKE_CURRENT_LIST_DIR}/components/ActivityListView.qml
-    ${CMAKE_CURRENT_LIST_DIR}/components/CircularButton.qml
-    ${CMAKE_CURRENT_LIST_DIR}/components/PDPanelCard.qml
-    ${CMAKE_CURRENT_LIST_DIR}/components/PanelGrid.qml
-    ${CMAKE_CURRENT_LIST_DIR}/components/RectangleAreaHandle.qml
+    ${CMAKE_CURRENT_LIST_DIR}/controls/PDPanelCard.qml
+    ${CMAKE_CURRENT_LIST_DIR}/controls/CircularButton.qml
+    ${CMAKE_CURRENT_LIST_DIR}/controls/RectangleAreaHandle.qml
+    ${CMAKE_CURRENT_LIST_DIR}/views/ActivityListView.qml
+    ${CMAKE_CURRENT_LIST_DIR}/views/GridPanelsView.qml
+    ${CMAKE_CURRENT_LIST_DIR}/views/LoginView.qml
+    ${CMAKE_CURRENT_LIST_DIR}/views/PluginTypeView.qml
     )
 
 foreach(qml ${QML_FILES})

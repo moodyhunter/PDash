@@ -1,19 +1,16 @@
 #include "Clock.hpp"
 
-#include <QQmlComponent>
-
-PDClock::PDClock(QObject *parent) : QObject(parent)
-{
-}
-
-PDClock::~PDClock()
-{
-}
-
 void PDClock::RegisterQMLTypes()
 {
-    qmlRegisterSingletonInstance<PDClockProp>(PDPLUGIN_QML_URI, 1, 0, "ClockProp", new PDClockProp);
+    qmlRegisterSingletonInstance<PDClockProp>(PDPLUGIN_QML_URI, 1, 0, "ClockProp", new PDClockProp(this));
     qmlRegisterModule(PDPLUGIN_QML_URI, 1, 0);
+}
+
+QMap<QString, PD::Plugin::Types::PDPluginQmlTypeInfo> PDClock::QmlComponentTypes()
+{
+    return {
+        { u"PDClock"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"ClockItem.qml"_qs, u""_qs } },
+    };
 }
 
 // =====================================================================
@@ -30,11 +27,7 @@ void PDClockProp::setVal(int newVal)
     emit valChanged();
 }
 
-PDClockProp::PDClockProp()
+PDClockProp::PDClockProp(QObject *parent) : QObject(parent)
 {
     setVal(100);
-}
-
-PDClockProp::~PDClockProp()
-{
 }

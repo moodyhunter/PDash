@@ -19,18 +19,6 @@ PDApplication::PDApplication(int &argc, char *argv[])
       m_pluginManager(new Core::PDPluginManager(this)),   //
       m_mainWindow(new PDMainWindow)
 {
-    pdRegisterModelType<Models::ActivityModel>();
-    qmlRegisterSingletonInstance<Models::ActivityModel>(PD_QML_URI, 1, 0, "ActivityModel", new Models::ActivityModel(this));
-
-    pdRegisterModelType<Models::PanelModel>();
-    qmlRegisterSingletonInstance<Models::PanelModel>(PD_QML_URI, 1, 0, "PanelModel", new Models::PanelModel(this));
-
-    qpmRegisterType<AppThemeModel>();
-    qmlRegisterSingletonInstance<AppThemeModel>(PD_QML_URI, 1, 0, "AppTheme", new AppThemeModel(this));
-
-    qmlRegisterSingletonInstance<PDApplication>(PD_QML_URI, 1, 0, "PDApp", this);
-    qmlRegisterSingletonInstance<Database::PDDatabaseManager>(PD_QML_URI, 1, 0, "DBManager", m_dbManager);
-    qmlRegisterModule(PD_QML_URI, 1, 0);
 }
 
 PDApplication::~PDApplication()
@@ -57,6 +45,19 @@ void PDApplication::initialize()
     } while (false);
 
     m_pluginManager->LoadPlugins();
+
+    pdRegisterModelType<Models::ActivityModel>();
+    qmlRegisterSingletonInstance<Models::ActivityModel>(PD_QML_URI, 1, 0, "ActivityModel", new Models::ActivityModel(this));
+
+    pdRegisterModelType<Models::PanelModel>();
+    qmlRegisterSingletonInstance<Models::PanelModel>(PD_QML_URI, 1, 0, "PanelModel", new Models::PanelModel(this));
+
+    qpmRegisterType<AppThemeModel>();
+    qmlRegisterSingletonInstance<AppThemeModel>(PD_QML_URI, 1, 0, "AppTheme", new AppThemeModel(this));
+
+    qmlRegisterSingletonInstance<PDApplication>(PD_QML_URI, 1, 0, "PDApp", this);
+    qmlRegisterSingletonInstance<Database::PDDatabaseManager>(PD_QML_URI, 1, 0, "DBManager", m_dbManager);
+    qmlRegisterModule(PD_QML_URI, 1, 0);
 }
 
 int PDApplication::exec()

@@ -147,7 +147,7 @@ int PDDatabaseManager::Insert(const QString &table, const QStringList &fields, c
 
     if (!q.exec())
     {
-        qWarning() << "Failed to execute query";
+        qWarning() << "Failed to execute query" << query;
         return -1;
     }
 

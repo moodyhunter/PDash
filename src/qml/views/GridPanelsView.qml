@@ -25,8 +25,8 @@ Item {
         id: baseGrid
         anchors.fill: parent
 
-        rows: totalRows
-        columns: totalColumns
+        rows: root.totalRows
+        columns: root.totalColumns
         columnSpacing: root.columnSpacing
         rowSpacing: root.rowSpacing
 
@@ -36,12 +36,12 @@ Item {
         property real rowHeight: (height - rowSpacing * (rows - 1)) / rows
 
         Repeater {
-            model: totalRows * totalColumns
+            model: root.totalRows * root.totalColumns
             delegate: Item {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                Layout.row: Math.floor(index / totalRows)
-                Layout.column: index % totalColumns
+                Layout.row: Math.floor(index / root.totalRows)
+                Layout.column: index % root.totalColumns
             }
         }
     }
@@ -56,14 +56,14 @@ Item {
 
             MouseArea {
                 id: mouse
-                visible: editMode
+                visible: root.editMode
                 hoverEnabled: true
                 anchors.fill: parent
                 onEntered: {
-                    if (!itemMoving) {
-                        selectedPanel = parent
-                        if (editMode) {
-                            syncSizeHandleSizes()
+                    if (!root.itemMoving) {
+                        root.selectedPanel = parent
+                        if (root.editMode) {
+                            root.syncSizeHandleSizes()
                         }
                     }
                 }
@@ -71,86 +71,87 @@ Item {
 
             property var _model: model
             property var _index: index
-            property int cid: model.row * totalColumns + model.column
+            property int cid: model.row * root.totalColumns + model.column
 
             x: baseGrid.children[cid].x
             y: baseGrid.children[cid].y
-            width: model.columnSpan * (baseGrid.columnWidth + columnSpacing) - columnSpacing
-            height: model.rowSpan * (baseGrid.rowHeight + rowSpacing) - rowSpacing
+            width: model.columnSpan * (baseGrid.columnWidth + root.columnSpacing)
+                   - root.columnSpacing
+            height: model.rowSpan * (baseGrid.rowHeight + root.rowSpacing) - root.rowSpacing
         }
     }
 
     RectangleAreaHandle {
         id: sizehandle
         z: 99
-        visible: editMode && selectedPanel != null
+        visible: root.editMode && root.selectedPanel != null
         reverseAllowed: false
         anchors.fill: parent
         handleSize: 20
 
         Column {
-            x: selectedPanel == null ? 0 : selectedPanel.x + selectedPanel.width
-                                       / 2 - implicitWidth / 2
-            y: selectedPanel == null ? 0 : selectedPanel.y + selectedPanel.height
-                                       / 2 - implicitHeight / 2
+            x: root.selectedPanel == null ? 0 : root.selectedPanel.x
+                                            + root.selectedPanel.width / 2 - implicitWidth / 2
+            y: root.selectedPanel == null ? 0 : root.selectedPanel.y + root.selectedPanel.height
+                                            / 2 - implicitHeight / 2
             spacing: 10
             id: column
             Text {
                 anchors.horizontalCenter: column.horizontalCenter
                 color: AppTheme.text
                 visible: parent.visible
-                text: (selectedPanel == null || selectedPanel._model
-                       === null) ? "N/A" : "x = " + selectedPanel._model.column
-                                   + ", y = " + selectedPanel._model.row
-                                   + "\nSize: " + selectedPanel._model.columnSpan
-                                   + "x" + selectedPanel._model.rowSpan
+                text: (root.selectedPanel == null || root.selectedPanel._model
+                       === null) ? "N/A" : "x = " + root.selectedPanel._model.column
+                                   + ", y = " + root.selectedPanel._model.row
+                                   + "\nSize: " + root.selectedPanel._model.columnSpan
+                                   + "x" + root.selectedPanel._model.rowSpan
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
             }
             CircularButton {
                 text: qsTr("Delete")
                 anchors.horizontalCenter: column.horizontalCenter
-                onClicked: PanelModel.removeItem(selectedPanel._index)
+                onClicked: PanelModel.removeItem(root.selectedPanel._index)
             }
         }
 
         onReleased: {
-            itemMoving = false
-            syncSizeHandleSizes()
+            root.itemMoving = false
+            root.syncSizeHandleSizes()
         }
         onMoved: function (start, end) {
-            if (!selectedPanel)
+            if (!root.selectedPanel)
                 return
 
-            if (!itemMoving)
-                itemMoving = true
+            if (!root.itemMoving)
+                root.itemMoving = true
 
-            selectedPanel._model.column = Math.round(
-                        sizehandle.realStartX / (baseGrid.columnWidth + columnSpacing))
-            selectedPanel._model.row = Math.round(
-                        sizehandle.realStartY / (baseGrid.rowHeight + rowSpacing))
-            selectedPanel._model.columnSpan = Math.round(
+            root.selectedPanel._model.column = Math.round(
+                        sizehandle.realStartX / (baseGrid.columnWidth + root.columnSpacing))
+            root.selectedPanel._model.row = Math.round(
+                        sizehandle.realStartY / (baseGrid.rowHeight + root.rowSpacing))
+            root.selectedPanel._model.columnSpan = Math.round(
                         (sizehandle.realEndX - sizehandle.realStartX)
-                        / (baseGrid.columnWidth + columnSpacing))
-            selectedPanel._model.rowSpan = Math.round(
+                        / (baseGrid.columnWidth + root.columnSpacing))
+            root.selectedPanel._model.rowSpan = Math.round(
                         (sizehandle.realEndY - sizehandle.realStartY)
-                        / (baseGrid.rowHeight + rowSpacing))
+                        / (baseGrid.rowHeight + root.rowSpacing))
         }
     }
 
     CircularButton {
         id: editButton
         z: 99
-        backgroundcolor: editMode ? AppTheme.highlight : AppTheme.background
-        textcolor: editMode ? AppTheme.background : AppTheme.highlight
+        backgroundcolor: root.editMode ? AppTheme.highlight : AppTheme.background
+        textcolor: root.editMode ? AppTheme.background : AppTheme.highlight
         anchors.margins: 10
         anchors.right: root.right
         anchors.bottom: root.bottom
         text: qsTr("Edit")
         onClicked: {
-            if (editMode)
+            if (root.editMode)
                 PanelModel.saveToDatabase()
-            editMode = !editMode
+            root.editMode = !root.editMode
         }
     }
 
@@ -161,7 +162,7 @@ Item {
         anchors.bottom: root.bottom
         anchors.margins: 10
         text: qsTr("Add")
-        state: editMode ? "visible" : "hidden"
+        state: root.editMode ? "visible" : "hidden"
         states: [
             State {
                 name: "visible"
@@ -193,7 +194,9 @@ Item {
                                       "row": 2,
                                       "column": 2,
                                       "rowSpan": 4,
-                                      "columnSpan": 4
+                                      "columnSpan": 4,
+                                      "contentType": "something",
+                                      "contentData": ""
                                   })
         }
     }

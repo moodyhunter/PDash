@@ -1,13 +1,12 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-
-import pd.mooody.me as PD
-
 import QtGraphicalEffects
 
+import pd.mooody.me
+
 ListView {
-    model: PD.ActivityModel
+    model: ActivityModel
     id: list
     Layout.fillHeight: true
     Layout.fillWidth: true
@@ -26,25 +25,25 @@ ListView {
             anchors.fill: parent
             anchors.margins: 15
             Label {
-                color: PD.AppTheme.text
+                color: AppTheme.text
                 Layout.fillWidth: true
                 text: model.type
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
             }
             Label {
-                color: PD.AppTheme.text
+                color: AppTheme.text
                 Layout.fillWidth: true
                 text: model.title
                 wrapMode: Text.WrapAnywhere
             }
             Label {
-                color: PD.AppTheme.text
+                color: AppTheme.text
                 Layout.fillWidth: true
                 text: model.content
                 wrapMode: Text.WrapAnywhere
             }
             Label {
-                color: PD.AppTheme.text
+                color: AppTheme.text
                 Layout.fillWidth: true
                 text: model.date
                 wrapMode: Text.WrapAnywhere

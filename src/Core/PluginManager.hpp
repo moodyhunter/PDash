@@ -11,7 +11,7 @@ namespace PD::Core
         QString libraryPath;
         QPluginLoader *loader;
         PDPluginId id;
-        PDPluginInterface *pinterface = nullptr;
+        PD::Plugin::PDPluginInterface *pinterface = nullptr;
     };
 
     class PDPluginManager : public QObject
