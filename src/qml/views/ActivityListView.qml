@@ -24,26 +24,22 @@ ListView {
             id: layout
             anchors.fill: parent
             anchors.margins: 15
-            Label {
-                color: AppTheme.text
+            PDLabel {
                 Layout.fillWidth: true
                 text: model.type
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
             }
-            Label {
-                color: AppTheme.text
+            PDLabel {
                 Layout.fillWidth: true
                 text: model.title
                 wrapMode: Text.WrapAnywhere
             }
-            Label {
-                color: AppTheme.text
+            PDLabel {
                 Layout.fillWidth: true
                 text: model.content
                 wrapMode: Text.WrapAnywhere
             }
-            Label {
-                color: AppTheme.text
+            PDLabel {
                 Layout.fillWidth: true
                 text: model.date
                 wrapMode: Text.WrapAnywhere

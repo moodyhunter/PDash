@@ -32,7 +32,7 @@ Item {
             Layout.fillHeight: true
 
             RowLayout {
-                Label {
+                PDLabel {
                     text: qsTr("Dashboard")
                     Layout.leftMargin: 10
                     Layout.topMargin: 5
@@ -94,7 +94,7 @@ Item {
                         Layout.fillWidth: true
                         height: 60
                         color: AppTheme.background
-                        Label {
+                        PDLabel {
                             anchors.fill: parent
                             text: "Bottom Footer"
                         }

@@ -44,7 +44,7 @@ Popup {
             anchors.fill: parent
             spacing: 0
 
-            Label {
+            PDLabel {
                 font.pixelSize: 20
                 text: qsTr("Enter Your Password")
                 Layout.alignment: Qt.AlignCenter
@@ -70,7 +70,7 @@ Popup {
                 Keys.onReturnPressed: parent.submit()
             }
 
-            Label {
+            PDLabel {
                 id: errmsgLabel
                 color: "red"
                 visible: false
