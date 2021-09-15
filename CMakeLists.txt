@@ -76,7 +76,8 @@ add_subdirectory(src/PDPlugins)
 qt_add_executable(PD ${PROJECT_SOURCES})
 qt_add_translations(PD
     TS_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/translation/PD_zh_CN.ts
+        ${CMAKE_CURRENT_SOURCE_DIR}/translations/PD_en_US.ts
+        ${CMAKE_CURRENT_SOURCE_DIR}/translations/PD_zh_CN.ts
     RESOURCE_PREFIX "/translations")
 
 include(src/qml/qml.cmake)

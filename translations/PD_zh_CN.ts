@@ -1,141 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="zh_CN">
-<context>
+<TS version="2.1" language="zh-CN" sourcelanguage="en">
+  <context>
     <name>LoginPage</name>
     <message>
-        <location filename="../src/qml/LoginPage.qml" line="49"/>
-        <source>Enter Your Password</source>
-        <translation type="unfinished"></translation>
+      <source>Enter Your Password</source>
+      <translation type="unfinished">Enter Your Password</translation>
     </message>
     <message>
-        <location filename="../src/qml/LoginPage.qml" line="82"/>
-        <source>Unlock Database</source>
-        <translation type="unfinished"></translation>
+      <source>Unlock Database</source>
+      <translation type="unfinished">Unlock Database</translation>
     </message>
     <message>
-        <location filename="../src/qml/LoginPage.qml" line="93"/>
-        <source>Failed to Open Database</source>
-        <translation type="unfinished"></translation>
+      <source>Failed to Open Database</source>
+      <translation type="unfinished">Failed to Open Database</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MainComponent</name>
     <message>
-        <location filename="../src/qml/MainComponent.qml" line="36"/>
-        <source>Dashboard</source>
-        <translation type="unfinished"></translation>
+      <source>Dashboard</source>
+      <translation type="unfinished">Dashboard</translation>
     </message>
     <message>
-        <location filename="../src/qml/MainComponent.qml" line="81"/>
-        <source>All activity</source>
-        <translation type="unfinished"></translation>
+      <source>All activity</source>
+      <translation type="unfinished">All activity</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PD::PDMainWindow</name>
     <message>
-        <location filename="../src/MainWindow.cpp" line="52"/>
-        <source>PD - The Personal Dashboard</source>
-        <translation type="unfinished"></translation>
+      <source>PD - The Personal Dashboard</source>
+      <translation type="unfinished">PD - The Personal Dashboard</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PanelGrid</name>
     <message>
-        <location filename="../src/qml/components/PanelGrid.qml" line="111"/>
-        <source>Delete</source>
-        <translation type="unfinished"></translation>
+      <source>Delete</source>
+      <translation type="unfinished">Delete</translation>
     </message>
     <message>
-        <location filename="../src/qml/components/PanelGrid.qml" line="149"/>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
+      <source>Edit</source>
+      <translation type="unfinished">Edit</translation>
     </message>
     <message>
-        <location filename="../src/qml/components/PanelGrid.qml" line="163"/>
-        <source>Add</source>
-        <translation type="unfinished"></translation>
+      <source>Add</source>
+      <translation type="unfinished">Add</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="266"/>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="315"/>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="322"/>
-        <source>QSQLiteResult</source>
-        <comment>Unable to fetch row</comment>
-        <translation type="unfinished"></translation>
+      <source>QSQLiteResult</source>
+      <comment>Unable to fetch row</comment>
+      <translation type="unfinished">QSQLiteResult</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="266"/>
-        <source>QSQLiteResult</source>
-        <comment>No query</comment>
-        <translation type="unfinished"></translation>
+      <source>QSQLiteResult</source>
+      <comment>No query</comment>
+      <translation type="unfinished">QSQLiteResult</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="377"/>
-        <source>QSQLiteResult</source>
-        <comment>Unable to execute statement</comment>
-        <translation type="unfinished"></translation>
+      <source>QSQLiteResult</source>
+      <comment>Unable to execute statement</comment>
+      <translation type="unfinished">QSQLiteResult</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="383"/>
-        <source>QSQLiteResult</source>
-        <comment>Unable to execute multiple statements at a time</comment>
-        <translation type="unfinished"></translation>
+      <source>QSQLiteResult</source>
+      <comment>Unable to execute multiple statements at a time</comment>
+      <translation type="unfinished">QSQLiteResult</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="430"/>
-        <source>QSQLiteResult</source>
-        <comment>Unable to reset statement</comment>
-        <translation type="unfinished"></translation>
+      <source>QSQLiteResult</source>
+      <comment>Unable to reset statement</comment>
+      <translation type="unfinished">QSQLiteResult</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="533"/>
-        <source>QSQLiteResult</source>
-        <comment>Unable to bind parameters</comment>
-        <translation type="unfinished"></translation>
+      <source>QSQLiteResult</source>
+      <comment>Unable to bind parameters</comment>
+      <translation type="unfinished">QSQLiteResult</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="541"/>
-        <source>QSQLiteResult</source>
-        <comment>Parameter count mismatch</comment>
-        <translation type="unfinished"></translation>
+      <source>QSQLiteResult</source>
+      <comment>Parameter count mismatch</comment>
+      <translation type="unfinished">QSQLiteResult</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QSQLCipherDriver</name>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="790"/>
-        <source>Incorrect Password</source>
-        <translation type="unfinished"></translation>
+      <source>Incorrect Password</source>
+      <translation type="unfinished">Incorrect Password</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="802"/>
-        <source>Error opening database</source>
-        <translation type="unfinished"></translation>
+      <source>Error opening database</source>
+      <translation type="unfinished">Error opening database</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="832"/>
-        <source>Error closing database</source>
-        <translation type="unfinished"></translation>
+      <source>Error closing database</source>
+      <translation type="unfinished">Error closing database</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="852"/>
-        <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+      <source>Unable to begin transaction</source>
+      <translation type="unfinished">Unable to begin transaction</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="867"/>
-        <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+      <source>Unable to commit transaction</source>
+      <translation type="unfinished">Unable to commit transaction</translation>
     </message>
     <message>
-        <location filename="../src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp" line="882"/>
-        <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+      <source>Unable to rollback transaction</source>
+      <translation type="unfinished">Unable to rollback transaction</translation>
     </message>
-</context>
+  </context>
 </TS>
