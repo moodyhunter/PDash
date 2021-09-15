@@ -7,24 +7,24 @@
 
 using namespace PD::Database;
 
-const static auto ConnectionName = u"PDData"_qs;
+const static auto DBConnectionName = u"PDData"_qs;
+const static auto QSqlCipherDBType = u"PD_QSQLCIPHER"_qs;
 
 PDDatabaseManager::PDDatabaseManager(QObject *parent) : QObject(parent)
 {
-    const static auto dbType = u"PD_QSQLCIPHER"_qs;
-    QSqlDatabase::registerSqlDriver(dbType, new QSqlDriverCreator<QSQLCipherDriver>);
-    QSqlDatabase::addDatabase(dbType, ConnectionName);
+    QSqlDatabase::registerSqlDriver(QSqlCipherDBType, new QSqlDriverCreator<QSQLCipherDriver>);
+    QSqlDatabase::addDatabase(QSqlCipherDBType, DBConnectionName);
 }
 
 PDDatabaseManager::~PDDatabaseManager()
 {
-    QSqlDatabase::removeDatabase(ConnectionName);
+    QSqlDatabase::removeDatabase(DBConnectionName);
 }
 
 bool PDDatabaseManager::openDatabase(const QString &dbName, const QString &password)
 {
-    auto db = QSqlDatabase::database(ConnectionName);
-    db.setDatabaseName(u"/home/leroy/pd_"_qs + dbName + u".db"_qs);
+    auto db = QSqlDatabase::database(DBConnectionName);
+    db.setDatabaseName(u"/home/leroy/pd_" + dbName + u".db");
     qDebug() << db.databaseName();
     const auto result = db.open({}, password);
 
@@ -45,7 +45,7 @@ qlonglong PDDatabaseManager::GetTableSize(const QString &table)
 {
     if (!m_isDatabaseOpened)
         return {};
-    auto db = QSqlDatabase::database(ConnectionName);
+    auto db = QSqlDatabase::database(DBConnectionName);
 
     auto q = db.exec(u"SELECT COUNT(*) FROM %1;"_qs.arg(table));
     if (!q.isActive())
@@ -58,7 +58,7 @@ QMap<int, QVariantMap> PDDatabaseManager::Select(const QString &table, const QSt
 {
     if (!m_isDatabaseOpened)
         return {};
-    auto db = QSqlDatabase::database(ConnectionName);
+    auto db = QSqlDatabase::database(DBConnectionName);
 
     auto query = u"SELECT id,%1 FROM %2 ORDER BY id "_qs.arg(fields.join(u", "_qs), table);
     if (limit > 0)
@@ -86,7 +86,7 @@ QMap<int, QVariantMap> PDDatabaseManager::Select(const QString &table, const QSt
 void PDDatabaseManager::Update(const QString &table, int id, const QStringList &fields, const QVariantList &fieldData)
 {
     Q_ASSERT_X(fields.size() == fieldData.size(), Q_FUNC_INFO, "Size of data doesn't equal to size of fields.");
-    auto db = QSqlDatabase::database(ConnectionName);
+    auto db = QSqlDatabase::database(DBConnectionName);
     if (!db.isOpen())
     {
         qWarning() << "Database not opened";
@@ -122,7 +122,7 @@ void PDDatabaseManager::Update(const QString &table, int id, const QStringList &
 
 int PDDatabaseManager::Insert(const QString &table, const QStringList &fields, const QVariantList &data)
 {
-    auto db = QSqlDatabase::database(ConnectionName);
+    auto db = QSqlDatabase::database(DBConnectionName);
     if (!db.isOpen())
     {
         qWarning() << "Database not opened";
@@ -158,7 +158,7 @@ int PDDatabaseManager::Insert(const QString &table, const QStringList &fields, c
 
 void PDDatabaseManager::Delete(const QString &table, int id)
 {
-    auto db = QSqlDatabase::database(ConnectionName);
+    auto db = QSqlDatabase::database(DBConnectionName);
     if (!db.isOpen())
     {
         qWarning() << "Database not opened";
@@ -171,7 +171,7 @@ bool PDDatabaseManager::CheckAndCreateTable()
 {
     static const auto DBFieldTypeMetaEnum = QMetaEnum::fromType<DBFieldType>();
 
-    auto db = QSqlDatabase::database(ConnectionName);
+    auto db = QSqlDatabase::database(DBConnectionName);
     if (!db.isOpen())
     {
         qWarning() << "Database not opened";

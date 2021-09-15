@@ -16,10 +16,9 @@ using namespace PD;
 PDApplication::PDApplication(int &argc, char *argv[])
     : SingleApplication(argc, argv),                      //
       m_dbManager(new Database::PDDatabaseManager(this)), //
-      m_pluginManager(new Core::PDPluginManager(this))
+      m_pluginManager(new Core::PDPluginManager(this)),   //
+      m_mainWindow(new PDMainWindow)
 {
-    QQuickWindow::setDefaultAlphaBuffer(true);
-    m_mainWindow = new PDMainWindow;
     pdRegisterModelType<Models::ActivityModel>();
     qmlRegisterSingletonInstance<Models::ActivityModel>(PD_QML_URI, 1, 0, "ActivityModel", new Models::ActivityModel(this));
 
