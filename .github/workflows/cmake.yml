@@ -96,9 +96,11 @@ jobs:
         cmake --install .
 
     - name: Generate 7zip
+      if: matrix.config.has_release
       run: cd build && 7z a ../PD.7z -- ./PD_Installed
 
     - name: Upload a Build Artifact
+      if: matrix.config.has_release
       uses: actions/upload-artifact@v2.2.3
       with:
         name: PD-${{ github.sha }}-${{ matrix.config.artifact }}.7z
