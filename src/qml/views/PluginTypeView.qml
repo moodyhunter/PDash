@@ -6,19 +6,21 @@ import pd.mooody.me
 
 Popup {
     id: root
+    readonly property int _paddingH: root.width / 2 - 250
+    readonly property int _paddingV: root.height / 2 - 200
+
+    bottomPadding: _paddingV
+    topPadding: _paddingV
+    leftPadding: _paddingH
+    rightPadding: _paddingH
+
     parent: Overlay.overlay
     width: parent.width
     height: parent.height
     closePolicy: Popup.NoAutoClose
     modal: true
-    signal itemSelected(string itemType)
 
-    readonly property int _paddingH: parent.width / 2 - 250
-    readonly property int _paddingV: parent.height / 2 - 200
-    bottomPadding: _paddingV
-    topPadding: _paddingV
-    leftPadding: _paddingH
-    rightPadding: _paddingH
+    signal itemSelected(string itemType)
 
     background: Rectangle {
         color: "transparent"
@@ -45,12 +47,14 @@ Popup {
                 Layout.fillHeight: true
                 model: PanelModel.getAllQmlTypes()
                 delegate: PDGlowedRectangle {
+                    hoverEnabled: false
                     width: parent.width
 
                     MouseArea {
                         anchors.fill: content
                         onClicked: {
                             console.log("clicked: " + modelData)
+                            root.itemSelected(modelData)
                         }
                     }
 
@@ -62,10 +66,12 @@ Popup {
                         anchors.margins: 5
                         spacing: 10
                         Image {
+                            Layout.preferredHeight: 96
+                            Layout.preferredWidth: 96
                             Layout.fillHeight: true
-                            source: "file:///home/leroy/Work/Qv2ray/assets/icons/qv2ray.png" // content._data.iconPath
-                            sourceSize.width: 96
-                            sourceSize.height: 96
+                            source: content._data.iconPath
+                            sourceSize.width: 80
+                            sourceSize.height: 80
                         }
 
                         ColumnLayout {
@@ -83,7 +89,7 @@ Popup {
 
                             PDLabel {
                                 Layout.fillWidth: true
-                                text: qsTr("Description:") + " " + content._data.description
+                                text: content._data.description
                             }
 
                             PDLabel {

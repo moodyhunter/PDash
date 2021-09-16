@@ -11,7 +11,7 @@ Item {
     property int columnSpacing: 15
 
     property bool editMode: false
-    property PDPanelCard selectedPanel: null
+    property PDGlowedRectangle selectedPanel: null
     property bool itemMoving: false
 
     function syncSizeHandleSizes() {
@@ -49,10 +49,27 @@ Item {
     Repeater {
         id: repeater
         model: PanelModel
-        PDPanelCard {
+        PDGlowedRectangle {
             z: 10
             hoverEnabled: true
             parent: root
+
+            Loader {
+                anchors.fill: parent
+                anchors.margins: 10
+                source: PanelModel.getQmlInfoFromType(
+                            _model.contentType).qmlPath
+            }
+
+            property var _model: model
+            property var _index: index
+            property int cid: model.row * root.totalColumns + model.column
+
+            x: baseGrid.children[cid].x
+            y: baseGrid.children[cid].y
+            width: model.columnSpan * (baseGrid.columnWidth + root.columnSpacing)
+                   - root.columnSpacing
+            height: model.rowSpan * (baseGrid.rowHeight + root.rowSpacing) - root.rowSpacing
 
             MouseArea {
                 id: mouse
@@ -68,16 +85,6 @@ Item {
                     }
                 }
             }
-
-            property var _model: model
-            property var _index: index
-            property int cid: model.row * root.totalColumns + model.column
-
-            x: baseGrid.children[cid].x
-            y: baseGrid.children[cid].y
-            width: model.columnSpan * (baseGrid.columnWidth + root.columnSpacing)
-                   - root.columnSpacing
-            height: model.rowSpan * (baseGrid.rowHeight + root.rowSpacing) - root.rowSpacing
         }
     }
 
@@ -119,6 +126,7 @@ Item {
             root.itemMoving = false
             root.syncSizeHandleSizes()
         }
+
         onMoved: function (start, end) {
             if (!root.selectedPanel)
                 return
@@ -191,18 +199,21 @@ Item {
         ]
         onClicked: {
             pluginTypeSelector.open()
-            //            PanelModel.appendItem({
-            //                                      "row": 2,
-            //                                      "column": 2,
-            //                                      "rowSpan": 4,
-            //                                      "columnSpan": 4,
-            //                                      "contentType": "something",
-            //                                      "contentData": ""
-            //                                  })
         }
     }
 
     PluginTypeView {
         id: pluginTypeSelector
+        onItemSelected: function (type) {
+            PanelModel.appendItem({
+                                      "row": 2,
+                                      "column": 2,
+                                      "rowSpan": 4,
+                                      "columnSpan": 4,
+                                      "contentType": type,
+                                      "contentData": ""
+                                  })
+            pluginTypeSelector.close()
+        }
     }
 }

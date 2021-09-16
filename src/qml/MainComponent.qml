@@ -20,11 +20,30 @@ Item {
             opacity: AppTheme.backgroundOpacity
             Layout.fillHeight: true
 
-            Rectangle {
-                width: 2
-                color: Qt.darker(parent.color, 2)
-                Layout.fillHeight: true
+            ListView {
+                anchors.fill: parent
+                spacing: 5
+                boundsBehavior: Flickable.StopAtBounds
+                model: ["Dashboard", "PDClock", "PDClock2", "Settings", "About"]
+                delegate: Rectangle {
+                    border.color: AppTheme.border
+                    width: parent.width
+                    height: width
+                    color: AppTheme.background
+                    PDLabel {
+                        anchors.fill: parent
+                        text: modelData
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
             }
+        }
+
+        Rectangle {
+            width: 2
+            color: Qt.darker(AppTheme.background, 1.5)
+            Layout.fillHeight: true
         }
 
         ColumnLayout {

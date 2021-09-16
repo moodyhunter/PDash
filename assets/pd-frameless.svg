@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 135.46667 135.46667"
+   version="1.1"
+   id="svg5"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient17559">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop17557" />
+    </linearGradient>
+    <rect
+       x="101.48026"
+       y="110.83114"
+       width="275.77479"
+       height="241.4371"
+       id="rect1199" />
+    <linearGradient
+       id="linearGradient6758">
+      <stop
+         style="stop-color:#232323;stop-opacity:1"
+         offset="0"
+         id="stop6754" />
+      <stop
+         style="stop-color:#e2e2e2;stop-opacity:1"
+         offset="1"
+         id="stop6756" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient6758"
+       id="linearGradient7577"
+       x1="153.45834"
+       y1="153.45834"
+       x2="-11.356446"
+       y2="-17.908691"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     id="layer1"
+     style="display:inline">
+    <g
+       aria-label="pd"
+       transform="matrix(2.3874476,0,0,2.1706434,-216.38816,-226.88211)"
+       id="text1197"
+       style="font-size:40px;line-height:1.25;white-space:pre;shape-inside:url(#rect1199)">
+      <path
+         d="m 105.11495,149.66576 v -28.15934 l 10.84559,-0.0596 2.52789,2.49462 v 9.5461 l -2.52789,2.52789 h -7.88301 v 13.59073 z m 10.32428,-16.57305 v -8.58785 l -7.3617,-0.84272 v 10.1047 z"
+         style="font-family:'TerminessTTF Nerd Font';-inkscape-font-specification:'TerminessTTF Nerd Font';fill:#484848;fill-opacity:1;stroke:#ebebeb;stroke-width:0.929804;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+         id="path5150" />
+      <path
+         d="m 130.09339,134.8455 v -11.80009 l 2.90839,-0.0596 v 26.3687 l -10.7914,0.0596 -2.52789,-2.52789 v -9.5461 l 2.52789,-2.49462 z m 0,12.19358 v -9.62559 h -6.96257 l -1.03111,2.42126 0.63197,6.57235 z"
+         style="font-family:'TerminessTTF Nerd Font';-inkscape-font-specification:'TerminessTTF Nerd Font';fill:#4f4f4f;fill-opacity:1;stroke:#f3f3f3;stroke-width:0.929804;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+         id="path5152" />
+    </g>
+  </g>
+</svg>

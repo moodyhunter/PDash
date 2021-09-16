@@ -3,6 +3,7 @@
 #include "QSQLCipherDriver/QSQLCipherDriver.hpp"
 
 #include <QMetaEnum>
+#include <QStandardPaths>
 #include <QtSql>
 
 using namespace PD::Database;
@@ -23,8 +24,11 @@ PDDatabaseManager::~PDDatabaseManager()
 
 bool PDDatabaseManager::openDatabase(const QString &dbName, const QString &password)
 {
+    const auto configDir = QStandardPaths::writableLocation(QStandardPaths::StandardLocation::AppConfigLocation);
+    if (QDir d(configDir); !d.exists())
+        d.mkpath(configDir);
     auto db = QSqlDatabase::database(DBConnectionName);
-    db.setDatabaseName(u"/home/leroy/pd_" + dbName + u".db");
+    db.setDatabaseName(u"%1/pd_%2.db"_qs.arg(configDir, dbName));
     qDebug() << db.databaseName();
     const auto result = db.open({}, password);
 

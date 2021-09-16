@@ -24,7 +24,7 @@ list(APPEND QML_DIRS "${CMAKE_CURRENT_BINARY_DIR}")
 set(QML_IMPORT_PATH "${QML_DIRS}" CACHE STRING "Qt Creator extra qml import paths")
 add_compile_definitions($<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
-set(PROJECT_SOURCES
+list(APPEND PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PDBaseListModel.cpp
@@ -58,26 +58,36 @@ set(PROJECT_SOURCES
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.hpp
-
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.hpp
     )
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/PluginInterface)
-
+list(APPEND PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.hpp)
 if(APPLE)
     list(APPEND PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.mm)
 else()
     list(APPEND PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.cpp)
 endif()
 
+# Plugin Interface and Builtin Plugins
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/PluginInterface)
 add_subdirectory(src/PDPlugins)
 
 qt_add_executable(PD ${PROJECT_SOURCES})
 qt_add_translations(PD
+    RESOURCE_PREFIX "/translations"
     TS_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/translations/PD_en_US.ts
         ${CMAKE_CURRENT_SOURCE_DIR}/translations/PD_zh_CN.ts
-    RESOURCE_PREFIX "/translations")
+    )
+
+qt_add_resources(PD assets
+    PREFIX "/assets"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}/assets
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/pd.svg
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/pd.png
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/pd-frameless.svg
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/pd-frameless.png
+    )
 
 include(src/qml/qml.cmake)
 

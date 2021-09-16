@@ -23,8 +23,6 @@ QStringList GetAssetsPath(const QString &dirName)
 
     list << u":/" + dirName;
 
-    list << u"/home/leroy/.local/build_temp/build-PD-Qt_6_System-Debug/src/Plugins/PDClock"_qs;
-
     list << QStandardPaths::locateAll(QStandardPaths::AppDataLocation, dirName, QStandardPaths::LocateDirectory);
     list << QStandardPaths::locateAll(QStandardPaths::AppConfigLocation, dirName, QStandardPaths::LocateDirectory);
 
