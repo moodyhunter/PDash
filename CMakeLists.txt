@@ -12,9 +12,19 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt6 6.2.0 COMPONENTS Core Gui Network Quick LinguistTools Sql REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(SQLCipher IMPORTED_TARGET REQUIRED sqlcipher)
+find_package(Qt6 6.2 COMPONENTS Core Gui Network Quick LinguistTools Sql REQUIRED)
+
+add_library(_PD_SqlCipher INTERFACE)
+add_library(PD::SqlCipher ALIAS _PD_SqlCipher)
+
+if(WIN32)
+    find_package(sqlcipher CONFIG REQUIRED)
+    target_link_libraries(_PD_SqlCipher INTERFACE sqlcipher::sqlcipher)
+else()
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(SQLCipher IMPORTED_TARGET REQUIRED sqlcipher)
+    target_link_libraries(_PD_SqlCipher INTERFACE PkgConfig::SQLCipher)
+endif()
 
 set(QAPPLICATION_CLASS QGuiApplication)
 add_subdirectory(3rdparty/SingleApplication)
@@ -94,9 +104,6 @@ include(src/qml/qml.cmake)
 # For Android deployment, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 # set_property(TARGET PD APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android)
 
-# For macOS deployment
-# ~/Qt/6.2.0/macos/bin/macdeployqt ./PD.app/ -qmldir=${CMAKE_CURRENT_SOURCE_DIR}/src/qml/ -qmlimport=.
-
 target_compile_definitions(PD PRIVATE
     -DQT_DISABLE_DEPRECATED_BEFORE=0x060200
     -DQT_USE_QSTRINGBUILDER=1
@@ -106,7 +113,14 @@ set_target_properties(PD PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
     MACOSX_BUNDLE_GUI_IDENTIFIER "pd.moody.me"
+    MACOSX_BUNDLE_BUNDLE_NAME "The Personal Dashboard"
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+#    MACOSX_BUNDLE_INFO_PLIST ${MACOSX_PLIST}
+    MACOSX_BUNDLE_BUNDLE_VERSION ${CMAKE_PROJECT_VERSION}
+    MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2021 Moody"
+#    MACOSX_BUNDLE_ICON_FILE ".icns"
+    MACOSX_BUNDLE_INFO_STRING "Created by Moody"
+    MACOSX_BUNDLE_LONG_VERSION_STRING ${CMAKE_PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     )
 
@@ -121,6 +135,14 @@ target_link_libraries(PD
         Qt::Sql
         Qt::SqlPrivate
         SingleApplication::SingleApplication
-        PkgConfig::SQLCipher
+        PD::SqlCipher
         PD::AllPlugins
         PD::PDPluginInterface)
+
+
+# Installation
+if(WIN32)
+    include(cmake/windows.cmake)
+elseif(APPLE)
+    include(cmake/macOS.cmake)
+endif()

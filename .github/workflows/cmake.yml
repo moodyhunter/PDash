@@ -1,0 +1,120 @@
+name: Build PD for Desktop
+
+on:
+  push:
+    branches:
+      - '**'
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+  release:
+    types: [prereleased]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    env:
+      CC: ${{ matrix.config.cc }}
+      CXX: ${{ matrix.config.cxx }}
+    name: '${{ matrix.config.name }}'
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            name: "Windows MSVC", artifact: "Windows",
+            os: windows-latest,
+            cc: "cl.exe", cxx: "cl.exe",
+            arch: "win64_msvc2019_64",
+            setup_script: "",
+            configure_script: "-DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake",
+            has_msvc: true,
+            has_release: true
+          }
+        - {
+            name: "Ubuntu", artifact: "Linux",
+            os: ubuntu-latest,
+            setup_script: "sudo apt update && sudo apt install -y pkg-config sqlcipher libsqlcipher-dev",
+            has_release: false
+          }
+        - {
+            name: "macOS", artifact: "macOS",
+            os: macos-latest,
+            setup_script: "brew install pkg-config sqlcipher",
+            has_release: true
+          }
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+
+    - name: Install ninja-build tool
+      uses: seanmiddleditch/gha-setup-ninja@v3
+
+    - name: Install Packages
+      run: ${{ matrix.config.setup_script }}
+
+    - name: run-vcpkg
+      if: matrix.config.has_msvc
+      uses: lukka/run-vcpkg@v7.3
+      with:
+        vcpkgGitCommitId: 5d734efcef674dbf9b7b204484fc8f006101dcb5
+        vcpkgArguments: sqlcipher
+        vcpkgTriplet: 'x64-windows'
+
+    - name: Install MSVC compiler
+      if: matrix.config.has_msvc
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2.14.0
+      with:
+        version: 6.2.0
+        arch: ${{ matrix.config.arch }}
+
+    - name: Build
+      run: |
+        mkdir build; cd build
+        cmake .. \
+          ${{ matrix.config.configure_script }} \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=PD_Installed \
+          -GNinja
+        cmake --build . --parallel
+    - name: Install
+      run: |
+        cd build
+        cmake --install .
+
+    - name: Generate 7zip
+      run: cd build && 7z a ../PD.7z -- ./PD_Installed
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        name: PD-${{ github.sha }}-${{ matrix.config.artifact }}.7z
+        path: PD.7z
+
+    - name: Get the version
+      if: github.event_name == 'release' && matrix.config.has_release
+      id: get_version
+      run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+    - name: Upload to GitHub Release
+      uses: svenstaro/upload-release-action@v2
+      if: github.event_name == 'release' && matrix.config.has_release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: PD.7z
+        asset_name: PD-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.artifact }}.7z
+        tag: ${{ github.ref }}
+        overwrite: true

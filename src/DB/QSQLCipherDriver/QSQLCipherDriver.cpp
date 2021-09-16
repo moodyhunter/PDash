@@ -65,7 +65,11 @@
 
 #define SQLITE_HAS_CODEC
 
+#ifdef Q_OS_MAC
 #include <sqlite3.h>
+#else
+#include <sqlcipher/sqlite3.h>
+#endif
 
 Q_DECLARE_OPAQUE_POINTER(sqlite3 *)
 Q_DECLARE_METATYPE(sqlite3 *)
