@@ -3,15 +3,15 @@
 #include "DB/DBManager.hpp"
 #include "PDApplication.hpp"
 
-PDBaseListModel::PDBaseListModel(QObject *parent) : QObject(parent)
+PDBaseObjectPropertyModel::PDBaseObjectPropertyModel(QObject *parent) : QObject(parent)
 {
     //    connect(pdApp->DatabaseManager(), &PD::Database::PDDatabaseManager::OnDatabaseOpened, this, &PDBaseListModel::p_OnDatabaseOpened);
 }
 
-PDBaseListModel::~PDBaseListModel()
+PDBaseObjectPropertyModel::~PDBaseObjectPropertyModel()
 {
 }
 
-void PDBaseListModel::p_OnDatabaseOpened()
+void PDBaseObjectPropertyModel::p_OnDatabaseOpened()
 {
 }

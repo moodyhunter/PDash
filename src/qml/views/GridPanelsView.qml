@@ -50,20 +50,41 @@ Item {
         id: repeater
         model: PanelModel
         PDGlowedRectangle {
+            id: panelRectangle
             z: 10
             hoverEnabled: true
             parent: root
 
-            Loader {
-                anchors.fill: parent
-                anchors.margins: 10
-                source: PanelModel.getQmlInfoFromType(
-                            _model.contentType).qmlPath
-            }
-
             property var _model: model
             property var _index: index
             property int cid: model.row * root.totalColumns + model.column
+
+            Loader {
+                Component {
+                    id: unknownComponentErrorComponent
+                    PDLabel {
+                        anchors.fill: parent
+                        text: qsTr("Unknown Plugin Component") + "\n'"
+                              + panelRectangle._model.contentType + "'"
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
+
+                id: _loader
+                anchors.fill: parent
+                anchors.margins: 10
+                Component.onCompleted: {
+                    var qmlTypeInfo = PanelModel.getQmlInfoFromType(
+                                parent._model.contentType)
+                    if (qmlTypeInfo.qmlPath === "") {
+                        _loader.sourceComponent = unknownComponentErrorComponent
+                    } else {
+                        _loader.setSource(qmlTypeInfo.qmlPath,
+                                          qmlTypeInfo.initialProperties)
+                    }
+                }
+            }
 
             x: baseGrid.children[cid].x
             y: baseGrid.children[cid].y
@@ -102,9 +123,8 @@ Item {
             y: root.selectedPanel == null ? 0 : root.selectedPanel.y + root.selectedPanel.height
                                             / 2 - implicitHeight / 2
             spacing: 10
-            id: column
             Text {
-                anchors.horizontalCenter: column.horizontalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
                 color: AppTheme.text
                 visible: parent.visible
                 text: (root.selectedPanel == null || root.selectedPanel._model
@@ -117,7 +137,7 @@ Item {
             }
             CircularButton {
                 text: qsTr("Delete")
-                anchors.horizontalCenter: column.horizontalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: PanelModel.removeItem(root.selectedPanel._index)
             }
         }

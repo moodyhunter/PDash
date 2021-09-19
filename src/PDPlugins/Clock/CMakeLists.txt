@@ -9,4 +9,4 @@ pd_add_plugin(Clock
         Clock.cpp
         Clock.hpp
     QML_FILES
-        ClockItem.qml)
+        qml/ClockItem.qml)

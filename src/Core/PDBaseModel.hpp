@@ -6,13 +6,13 @@
 #include <QMap>
 #include <QObject>
 
-class PDBaseListModel : public QObject
+class PDBaseObjectPropertyModel : public QObject
 {
     Q_OBJECT
 
   protected:
-    PDBaseListModel(QObject *parent = nullptr);
-    virtual ~PDBaseListModel();
+    PDBaseObjectPropertyModel(QObject *parent = nullptr);
+    virtual ~PDBaseObjectPropertyModel();
     virtual void OnDatabaseOpened(){};
     virtual QString CreateDBCommand()
     {

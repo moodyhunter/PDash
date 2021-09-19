@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Core/PDBaseModel.hpp"
-#include "Core/QMLPropertyHelpers.hpp"
+#include "PDPlugin/PluginBase/QObjectPropertyHelpers.hpp"
 
 #include <QColor>
 
-class AppThemeModel : public PDBaseListModel
+class AppThemeModel : public PDBaseObjectPropertyModel
 {
     Q_OBJECT
   public:

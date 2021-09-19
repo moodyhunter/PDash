@@ -1,6 +1,8 @@
+#include "PDPlugin/PluginBase/QObjectPropertyHelpers.hpp"
 #include "PDPlugin/PluginInterface.hpp"
 
 #include <QQmlEngine>
+#include <QQuickItem>
 
 class PDClock
     : public QObject
@@ -12,26 +14,31 @@ class PDClock
     Q_DISABLE_COPY_MOVE(PDClock)
 
   public:
+    enum ClockType
+    {
+        DateTime,
+        Date,
+        Time,
+        Week,
+        CountDown,
+        CountUp,
+    };
+    Q_ENUM(ClockType)
+
+  public:
     PDClock(QObject *parent = nullptr) : QObject(parent){};
     virtual ~PDClock(){};
     virtual void RegisterQMLTypes() override;
     virtual QMap<QString, PD::Plugin::Types::PDPluginQmlTypeInfo> QmlComponentTypes() override;
 };
 
-class PDClockProp : public QObject
+class PDClockItem : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(int val READ getVal WRITE setVal NOTIFY valChanged)
+
+    PD_PROPERTY(PDClock::ClockType, clockType, ClockType)
 
   public:
-    PDClockProp(QObject *parent = nullptr);
-    virtual ~PDClockProp(){};
-
-    int getVal() const;
-    void setVal(int newVal);
-  signals:
-    void valChanged();
-
-  private:
-    int val;
+    PDClockItem(QQuickItem *parent = nullptr);
+    virtual ~PDClockItem(){};
 };

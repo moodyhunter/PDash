@@ -18,7 +18,7 @@ namespace PD::Models
         explicit PanelModel(QObject *parent = nullptr);
         virtual ~PanelModel() = default;
 
-        Q_INVOKABLE QVariantMap getQmlInfoFromType(const QString &type);
+        Q_INVOKABLE QVariantMap getQmlInfoFromType(const QString &type) const;
         Q_INVOKABLE QStringList getAllQmlTypes() const;
 
       private:

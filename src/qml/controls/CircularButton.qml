@@ -16,11 +16,11 @@ RoundButton {
 
     background: Rectangle {
         readonly property real _colorratio: 1.2
-        color: down ? Qt.darker(
-                          root.backgroundcolor,
-                          _colorratio) : (root.hovered ? Qt.lighter(
-                                                             root.backgroundcolor,
-                                                             _colorratio) : root.backgroundcolor)
+        color: root.down ? Qt.darker(
+                               root.backgroundcolor,
+                               _colorratio) : (root.hovered ? Qt.lighter(
+                                                                  root.backgroundcolor,
+                                                                  _colorratio) : root.backgroundcolor)
         anchors.fill: root
         radius: root.size
         border.width: 1

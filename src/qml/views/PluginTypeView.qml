@@ -41,6 +41,7 @@ Popup {
             }
 
             ListView {
+                id: list
                 clip: true
                 spacing: 10
                 Layout.fillWidth: true

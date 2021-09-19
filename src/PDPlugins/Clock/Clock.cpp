@@ -2,37 +2,25 @@
 
 void PDClock::RegisterQMLTypes()
 {
-    qmlRegisterSingletonInstance<PDClockProp>(PDPLUGIN_QML_URI, 1, 0, "ClockProp", new PDClockProp(this));
+    qRegisterMetaType<ClockType>();
+    qmlRegisterType<ClockType>(PDPLUGIN_QML_URI, 1, 0, "ClockType");
+    qmlRegisterType<PDClockItem>(PDPLUGIN_QML_URI, 1, 0, "Clock");
     qmlRegisterModule(PDPLUGIN_QML_URI, 1, 0);
 }
 
 QMap<QString, PD::Plugin::Types::PDPluginQmlTypeInfo> PDClock::QmlComponentTypes()
 {
+    static const QVariantMap empty{ { u"clockType"_qs, ClockType::DateTime } };
     return {
-        { u"PDClock 1"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs } },
-        { u"PDClock 2"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs } },
-        { u"PDClock 3"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs } },
-        { u"PDClock 4"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs } },
-        { u"PDClock 5"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs } },
-        { u"PDClock 6"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs } },
+        { u"Clock 1"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
+        { u"Clock 2"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
+        { u"Clock 3"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
+        { u"Clock 4"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
+        { u"Clock 5"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
+        { u"Clock 6"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
     };
 }
 
-// =====================================================================
-int PDClockProp::getVal() const
+PDClockItem::PDClockItem(QQuickItem *parent) : QQuickItem(parent), m_clockType(PDClock::ClockType::DateTime)
 {
-    return val;
-}
-
-void PDClockProp::setVal(int newVal)
-{
-    if (val == newVal)
-        return;
-    val = newVal;
-    emit valChanged();
-}
-
-PDClockProp::PDClockProp(QObject *parent) : QObject(parent)
-{
-    setVal(100);
 }

@@ -1,6 +1,6 @@
 #include "ThemesModel.hpp"
 
-AppThemeModel::AppThemeModel(QObject *parent) : PDBaseListModel(parent)
+AppThemeModel::AppThemeModel(QObject *parent) : PDBaseObjectPropertyModel(parent)
 {
     setBackground("#3B4252");
     setDark("#2E3440");

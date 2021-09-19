@@ -4,8 +4,6 @@
 #include "DB/DBManager.hpp"
 #include "PDApplication.hpp"
 
-#include <QVariantMap>
-
 using namespace PD::Models;
 using namespace PD::Database;
 
@@ -40,13 +38,16 @@ PanelModel::PanelModel(QObject *parent) : Base::PDBaseListModel<PanelModel>(pare
         m_typeinfo.insert(plugin->pinterface->QmlComponentTypes());
 }
 
-QVariantMap PanelModel::getQmlInfoFromType(const QString &type)
+QVariantMap PanelModel::getQmlInfoFromType(const QString &type) const
 {
+    if (!m_typeinfo.contains(type))
+        qWarning() << "Unknown plugin component type:" << type;
     const auto &typeinfo = m_typeinfo[type];
     return {
         { u"iconPath"_qs, typeinfo.IconPath },
         { u"description"_qs, typeinfo.Description },
         { u"qmlPath"_qs, typeinfo.QmlFilePath },
+        { u"initialProperties"_qs, typeinfo.InitialProperties },
     };
 }
 
