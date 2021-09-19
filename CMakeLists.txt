@@ -46,8 +46,6 @@ list(APPEND PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PluginManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/PluginManager.hpp
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/QObjectPropertyMap.hpp
-
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/DBManager.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp

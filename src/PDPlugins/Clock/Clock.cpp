@@ -1,7 +1,10 @@
 #include "Clock.hpp"
 
+#include "PDPlugin/PluginBase/QObjectPropertyMap.hpp"
+
 void PDClock::RegisterQMLTypes()
 {
+    qpmRegisterType<PDClockItem>();
     qRegisterMetaType<ClockType>();
     qmlRegisterType<ClockType>(PDPLUGIN_QML_URI, 1, 0, "ClockType");
     qmlRegisterType<PDClockItem>(PDPLUGIN_QML_URI, 1, 0, "Clock");

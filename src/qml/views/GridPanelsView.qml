@@ -72,6 +72,7 @@ Item {
                 }
 
                 id: _loader
+                clip: true
                 anchors.fill: parent
                 anchors.margins: 10
                 Component.onCompleted: {

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "QObjectPropertyMap.hpp"
-
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QObject>

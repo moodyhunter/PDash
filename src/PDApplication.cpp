@@ -52,7 +52,6 @@ void PDApplication::initialize()
     pdRegisterModelType<Models::PanelModel>();
     qmlRegisterSingletonInstance<Models::PanelModel>(PD_QML_URI, 1, 0, "PanelModel", new Models::PanelModel(this));
 
-    qpmRegisterType<AppThemeModel>();
     qmlRegisterSingletonInstance<AppThemeModel>(PD_QML_URI, 1, 0, "AppTheme", new AppThemeModel(this));
 
     qmlRegisterSingletonInstance<PDApplication>(PD_QML_URI, 1, 0, "PDApp", this);
