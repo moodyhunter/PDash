@@ -30,7 +30,7 @@ PDMainWindow::PDMainWindow() : QQuickView(), quickWindow(this)
 #ifdef QT_DEBUG
     quickWindow->engine()->addImportPath(qApp->applicationDirPath() + u"/../../../");
 #endif
-    quickWindow->rootContext()->setContextProperty(prop_RootWindow, this);
+    quickWindow->rootContext()->setContextProperty(prop_RootWindow, quickWindow);
     quickWindow->rootContext()->setContextProperty(prop_hasBackgroundEffect, false);
     quickWindow->rootContext()->setContextProperty(u"fixedFont"_qs, QFontDatabase::systemFont(QFontDatabase::FixedFont));
 }
@@ -40,12 +40,12 @@ void PDMainWindow::Open()
     const static QUrl MainComponent{ u"qrc:/pd/mooody/me/MainComponent.qml"_qs };
     quickWindow->setSource(MainComponent);
 #ifdef Q_OS_MACOS
-    quickWindow->show();
-    quickWindow->requestActivate();
     m_effectsBackgroundWindow = Platform::PDPlatformAPI::getEffectBackgroundWindow();
     m_effectsBackgroundWindow->setParent(this);
     m_effectsBackgroundWindow->show();
     m_effectsBackgroundWindow->lower();
+    quickWindow->show();
+    quickWindow->requestActivate();
 #endif
     setWidth(WINDOW_WIDTH);
     setHeight(WINDOW_HEIGHT);

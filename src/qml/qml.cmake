@@ -15,7 +15,7 @@ foreach(qml ${QML_FILES})
     set_source_files_properties(${qml} PROPERTIES QT_RESOURCE_ALIAS ${qml_alias})
 endforeach(qml)
 
-qt_add_qml_module(PD
+qt_add_qml_module(PDash
     URI "pd.mooody.me"
     VERSION 1.0
     RESOURCE_PREFIX "/"

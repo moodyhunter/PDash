@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(PD VERSION 0.1 LANGUAGES CXX)
+project(PDash VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -78,15 +78,15 @@ endif()
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/PluginInterface)
 add_subdirectory(src/PDPlugins)
 
-qt_add_executable(PD ${PROJECT_SOURCES})
-qt_add_translations(PD
+qt_add_executable(PDash ${PROJECT_SOURCES})
+qt_add_translations(PDash
     RESOURCE_PREFIX "/translations"
     TS_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/translations/PD_en_US.ts
         ${CMAKE_CURRENT_SOURCE_DIR}/translations/PD_zh_CN.ts
     )
 
-qt_add_resources(PD assets
+qt_add_resources(PDash assets
     PREFIX "/assets"
     BASE ${CMAKE_CURRENT_SOURCE_DIR}/assets
     FILES
@@ -101,12 +101,12 @@ include(src/qml/qml.cmake)
 # For Android deployment, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 # set_property(TARGET PD APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android)
 
-target_compile_definitions(PD PRIVATE
+target_compile_definitions(PDash PRIVATE
     -DQT_DISABLE_DEPRECATED_BEFORE=0x060200
     -DQT_USE_QSTRINGBUILDER=1
     -DQT_NO_CAST_FROM_ASCII)
 
-set_target_properties(PD PROPERTIES
+set_target_properties(PDash PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
     MACOSX_BUNDLE_GUI_IDENTIFIER "pd.moody.me"
@@ -121,9 +121,9 @@ set_target_properties(PD PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     )
 
-target_include_directories(PD PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(PDash PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-target_link_libraries(PD
+target_link_libraries(PDash
     PRIVATE
         Qt::Core
         Qt::Gui

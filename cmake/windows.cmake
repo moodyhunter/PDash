@@ -1,4 +1,4 @@
-install(TARGETS PD RUNTIME DESTINATION .)
+install(TARGETS PDash RUNTIME DESTINATION .)
 
 # For Global Target
 list(APPEND DIRS "${CMAKE_BINARY_DIR}")
@@ -26,7 +26,7 @@ install(DIRECTORY "${Qt6Core_DIR}/../../../plugins/tls/" DESTINATION "${CMAKE_IN
 
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION .)
 
-set(APP "${CMAKE_INSTALL_PREFIX}/PD.exe")
+set(APP "${CMAKE_INSTALL_PREFIX}/PDash.exe")
 install(CODE "include(BundleUtilities)")
 install(CODE "fixup_bundle(\"${APP}\"   \"\"   \"${DIRS}\")")
 install(CODE "message(\"\")")
