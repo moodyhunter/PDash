@@ -1,6 +1,3 @@
-# Qt network backend should be installed before copying the bundle.
-install(DIRECTORY "${Qt6Core_DIR}/../../../plugins/tls/" DESTINATION "$<TARGET_BUNDLE_DIR:PDash>/Contents/PlugIns/tls/")
-
 ## Destination paths below are relative to ${CMAKE_INSTALL_PREFIX}
 install(TARGETS PDash BUNDLE DESTINATION .)
 
