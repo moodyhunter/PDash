@@ -59,10 +59,6 @@ void PDApplication::initialize()
     qmlRegisterSingletonInstance<PDApplication>(PD_QML_URI, 1, 0, "PDApp", this);
     qmlRegisterSingletonInstance<Database::PDDatabaseManager>(PD_QML_URI, 1, 0, "DBManager", m_dbManager);
     qmlRegisterModule(PD_QML_URI, 1, 0);
-}
-
-int PDApplication::exec()
-{
 #if defined(Q_OS_MAC) && defined(QT_DEBUG)
     m_engine->addImportPath(qApp->applicationDirPath() + u"/../../../");
 #endif
@@ -71,8 +67,6 @@ int PDApplication::exec()
 
     const static QUrl MainComponent{ u"qrc:/pd/mooody/me/MainComponent.qml"_qs };
     m_engine->load(MainComponent);
-
-    return QCoreApplication::exec();
 }
 
 Database::PDDatabaseManager *PDApplication::DatabaseManager() const
