@@ -51,9 +51,6 @@ list(APPEND PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DB/QSQLCipherDriver/QSQLCipherDriver.hpp
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/MainWindow.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/MainWindow.hpp
-
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.hpp
 
@@ -66,13 +63,6 @@ list(APPEND PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PDApplication.hpp
     )
-
-list(APPEND PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.hpp)
-if(APPLE)
-    list(APPEND PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.mm)
-else()
-    list(APPEND PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/platforms/Platform.cpp)
-endif()
 
 # Plugin Interface and Builtin Plugins
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/PluginInterface)

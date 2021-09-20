@@ -7,6 +7,10 @@ namespace PD::Core { class PDPluginManager; }
 namespace PD { class PDMainWindow; }
 // clang-format on
 
+QT_BEGIN_NAMESPACE
+class QQmlApplicationEngine;
+QT_END_NAMESPACE
+
 namespace PD
 {
     class PDApplication : public SingleApplication
@@ -25,7 +29,7 @@ namespace PD
       private:
         PD::Database::PDDatabaseManager *m_dbManager;
         PD::Core::PDPluginManager *m_pluginManager;
-        PD::PDMainWindow *m_mainWindow;
+        QQmlApplicationEngine *m_engine;
     };
 } // namespace PD
 

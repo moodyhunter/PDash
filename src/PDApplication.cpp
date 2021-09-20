@@ -2,11 +2,13 @@
 
 #include "Core/PluginManager.hpp"
 #include "DB/DBManager.hpp"
-#include "MainWindow.hpp"
 #include "Models/ActivitiesModel.hpp"
 #include "Models/PanelModel.hpp"
 #include "Models/ThemesModel.hpp"
 
+#include <QFontDatabase>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include <QTranslator>
 
 #define PD_QML_URI "pd.mooody.me"
@@ -17,13 +19,13 @@ PDApplication::PDApplication(int &argc, char *argv[])
     : SingleApplication(argc, argv),                      //
       m_dbManager(new Database::PDDatabaseManager(this)), //
       m_pluginManager(new Core::PDPluginManager(this)),   //
-      m_mainWindow(new PDMainWindow)
+      m_engine(new QQmlApplicationEngine(this))
 {
+    connect(pdApp->PluginManager(), &Core::PDPluginManager::OnQmlImportPathAdded, m_engine, &QQmlApplicationEngine::addImportPath);
 }
 
 PDApplication::~PDApplication()
 {
-    delete m_mainWindow;
 }
 
 void PDApplication::initialize()
@@ -61,7 +63,14 @@ void PDApplication::initialize()
 
 int PDApplication::exec()
 {
-    m_mainWindow->Open();
+#if defined(Q_OS_MAC) && defined(QT_DEBUG)
+    m_engine->addImportPath(qApp->applicationDirPath() + u"/../../../");
+#endif
+    m_engine->rootContext()->setContextProperty(u"fixedFont"_qs, QFontDatabase::systemFont(QFontDatabase::FixedFont));
+
+    const static QUrl MainComponent{ u"qrc:/pd/mooody/me/MainComponent.qml"_qs };
+    m_engine->load(MainComponent);
+
     return QCoreApplication::exec();
 }
 
