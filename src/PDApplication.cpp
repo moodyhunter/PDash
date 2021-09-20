@@ -67,6 +67,7 @@ int PDApplication::exec()
     m_engine->addImportPath(qApp->applicationDirPath() + u"/../../../");
 #endif
     m_engine->rootContext()->setContextProperty(u"fixedFont"_qs, QFontDatabase::systemFont(QFontDatabase::FixedFont));
+    m_engine->rootContext()->setProperty("QtVersion", QStringLiteral(QT_VERSION_STR));
 
     const static QUrl MainComponent{ u"qrc:/pd/mooody/me/MainComponent.qml"_qs };
     m_engine->load(MainComponent);
