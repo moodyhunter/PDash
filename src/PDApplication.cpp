@@ -6,12 +6,20 @@
 #include "Models/PanelModel.hpp"
 #include "Models/ThemesModel.hpp"
 
+#include <QDir>
 #include <QFontDatabase>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QStandardPaths>
 #include <QTranslator>
 
 #define PD_QML_URI "pd.mooody.me"
+
+#ifdef QT_DEBUG
+const static auto DEBUG_SUFFIX = u"debug";
+#else
+const static auto DEBUG_SUFFIX = u"";
+#endif
 
 using namespace PD;
 
@@ -77,4 +85,47 @@ Database::PDDatabaseManager *PDApplication::DatabaseManager() const
 Core::PDPluginManager *PDApplication::PluginManager() const
 {
     return m_pluginManager;
+}
+
+QStringList PDApplication::GetAssetsPath(const QString &dirName)
+{
+    static constexpr auto makeAbs = [](const QString &p) { return QDir(p).absolutePath(); };
+
+    QStringList list;
+    // Default behavior on Windows
+    list << makeAbs(QCoreApplication::applicationDirPath() + u"/" + dirName);
+
+    list << u":/" + dirName;
+
+    list << QStandardPaths::locateAll(QStandardPaths::AppDataLocation, dirName, QStandardPaths::LocateDirectory);
+    list << QStandardPaths::locateAll(QStandardPaths::AppConfigLocation, dirName, QStandardPaths::LocateDirectory);
+
+    if (qEnvironmentVariableIsSet("XDG_DATA_DIRS"))
+        list << makeAbs(qEnvironmentVariable("XDG_DATA_DIRS") + u"/" + dirName);
+
+#ifdef Q_OS_UNIX
+    if (qEnvironmentVariableIsSet("APPIMAGE"))
+        list << makeAbs(QCoreApplication::applicationDirPath() + u"/../share/PersonalDashboard" + DEBUG_SUFFIX + dirName);
+
+    if (qEnvironmentVariableIsSet("SNAP"))
+        list << makeAbs(qEnvironmentVariable("SNAP") + u"/usr/share/PersonalDashboard" + DEBUG_SUFFIX + dirName);
+
+    list << makeAbs(u"/usr/local/share/PersonalDashboard"_qs + DEBUG_SUFFIX + dirName);
+    list << makeAbs(u"/usr/local/lib64/PersonalDashboard"_qs + DEBUG_SUFFIX + dirName);
+    list << makeAbs(u"/usr/local/lib/PersonalDashboard"_qs + DEBUG_SUFFIX + dirName);
+
+    list << makeAbs(u"/usr/share/PersonalDashboard"_qs + DEBUG_SUFFIX + dirName);
+    list << makeAbs(u"/usr/lib64/PersonalDashboard"_qs + DEBUG_SUFFIX + dirName);
+    list << makeAbs(u"/usr/lib/PersonalDashboard"_qs + DEBUG_SUFFIX + dirName);
+
+    list << makeAbs(u"/lib64/PersonalDashboard"_qs + DEBUG_SUFFIX + dirName);
+    list << makeAbs(u"/lib/PersonalDashboard"_qs + DEBUG_SUFFIX + dirName);
+#endif
+
+#ifdef Q_OS_MAC
+    // macOS platform directories.
+    list << QDir(QCoreApplication::applicationDirPath() + u"/../Resources/" + dirName).absolutePath();
+#endif
+    list.removeDuplicates();
+    return list;
 }

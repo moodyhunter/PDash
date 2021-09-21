@@ -1,9 +1,9 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Templates as T
 
 import pd.mooody.me
 
-RoundButton {
+T.RoundButton {
     id: root
     property int size: 50
     property color textcolor: AppTheme.text

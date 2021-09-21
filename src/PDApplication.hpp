@@ -23,6 +23,7 @@ namespace PD
 
         PD::Database::PDDatabaseManager *DatabaseManager() const;
         PD::Core::PDPluginManager *PluginManager() const;
+        static QStringList GetAssetsPath(const QString &dirName);
 
       private:
         PD::Database::PDDatabaseManager *m_dbManager;

@@ -30,10 +30,9 @@ namespace PD::Core
         void OnQmlImportPathAdded(const QString &path);
 
       private:
-        bool tryLoadPlugin(const QString &pluginFullPath);
         bool loadPluginInstanceObject(const QString &fullPath, QObject *instance, QPluginLoader *loader);
 
       private:
-        QHash<PDPluginId, PluginInfo> plugins;
+        QHash<PDPluginId, PluginInfo> m_plugins;
     };
 } // namespace PD::Core
