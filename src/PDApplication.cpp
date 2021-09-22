@@ -26,17 +26,15 @@ using namespace PD;
 PDApplication::PDApplication(int &argc, char *argv[])
     : SingleApplication(argc, argv),                      //
       m_dbManager(new Database::PDDatabaseManager(this)), //
-      m_pluginManager(new Core::PDPluginManager(this)),   //
-      m_engine(new QQmlApplicationEngine(this))
+      m_pluginManager(new Core::PDPluginManager(this))    //
 {
-    connect(pdApp->PluginManager(), &Core::PDPluginManager::OnQmlImportPathAdded, m_engine, &QQmlApplicationEngine::addImportPath);
 }
 
 PDApplication::~PDApplication()
 {
 }
 
-void PDApplication::initialize()
+int PDApplication::run()
 {
     do
     {
@@ -54,8 +52,6 @@ void PDApplication::initialize()
         delete translator;
     } while (false);
 
-    m_pluginManager->LoadPlugins();
-
     pdRegisterModelType<Models::ActivityModel>();
     qmlRegisterSingletonInstance<Models::ActivityModel>(PD_QML_URI, 1, 0, "ActivityModel", new Models::ActivityModel(this));
 
@@ -67,14 +63,29 @@ void PDApplication::initialize()
     qmlRegisterSingletonInstance<PDApplication>(PD_QML_URI, 1, 0, "PDApp", this);
     qmlRegisterSingletonInstance<Database::PDDatabaseManager>(PD_QML_URI, 1, 0, "DBManager", m_dbManager);
     qmlRegisterModule(PD_QML_URI, 1, 0);
+
+    QQmlApplicationEngine engine;
+    QObject::connect(pdApp->PluginManager(), &Core::PDPluginManager::OnQmlImportPathAdded, &engine, &QQmlApplicationEngine::addImportPath);
+    m_pluginManager->LoadPlugins();
+
 #if defined(Q_OS_MAC) && defined(QT_DEBUG)
     m_engine->addImportPath(qApp->applicationDirPath() + u"/../../../");
 #endif
-    m_engine->rootContext()->setContextProperty(u"fixedFont"_qs, QFontDatabase::systemFont(QFontDatabase::FixedFont));
-    m_engine->rootContext()->setProperty("QtVersion", QStringLiteral(QT_VERSION_STR));
+    engine.rootContext()->setContextProperty(u"fixedFont"_qs, QFontDatabase::systemFont(QFontDatabase::FixedFont));
+    engine.rootContext()->setProperty("QtVersion", QStringLiteral(QT_VERSION_STR));
 
-    const static QUrl MainComponent{ u"qrc:/pd/mooody/me/MainComponent.qml"_qs };
-    m_engine->load(MainComponent);
+    const QUrl MainComponent{ u"qrc:/pd/mooody/me/MainComponent.qml"_qs };
+    QObject::connect(
+        &engine, &QQmlApplicationEngine::objectCreated, this,
+        [&](QObject *obj, const QUrl &objUrl)
+        {
+            if (!obj && MainComponent == objUrl)
+                QCoreApplication::exit(-1);
+        },
+        Qt::QueuedConnection);
+
+    engine.load(MainComponent);
+    return exec();
 }
 
 Database::PDDatabaseManager *PDApplication::DatabaseManager() const

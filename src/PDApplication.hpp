@@ -19,7 +19,7 @@ namespace PD
       public:
         explicit PDApplication(int &argc, char *argv[]);
         virtual ~PDApplication();
-        void initialize();
+        int run();
 
         PD::Database::PDDatabaseManager *DatabaseManager() const;
         PD::Core::PDPluginManager *PluginManager() const;
@@ -28,7 +28,6 @@ namespace PD
       private:
         PD::Database::PDDatabaseManager *m_dbManager;
         PD::Core::PDPluginManager *m_pluginManager;
-        QQmlApplicationEngine *m_engine;
     };
 } // namespace PD
 
