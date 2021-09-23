@@ -25,11 +25,9 @@ namespace PD::Models::Base
 {
     class PDBaseListModelImpl : public QAbstractListModel
     {
-        constexpr static auto F_CLEAN = 0;
-        constexpr static auto F_DIRTY = 1;
-        typedef QAtomicInteger<int> AtomicFieldState;
-
         Q_OBJECT
+        typedef QAtomicInteger<bool> PDAtomicDirtyState;
+
       public:
         explicit PDBaseListModelImpl(const PDModelInfo &typeinfo, const QString &table, PDModelOptions flags, QObject *parent = nullptr);
 
@@ -41,27 +39,29 @@ namespace PD::Models::Base
         Q_INVOKABLE void appendItem(const QVariantMap &data);
         Q_INVOKABLE void removeItem(const QVariant &v);
 
-        virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-        virtual bool hasChildren(const QModelIndex &) const override;
-        virtual bool canFetchMore(const QModelIndex &parent) const override;
-        virtual void fetchMore(const QModelIndex &parent = QModelIndex()) override;
+        virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override final;
+        virtual bool hasChildren(const QModelIndex &parent) const override final;
+        virtual bool canFetchMore(const QModelIndex &parent) const override final;
+        virtual void fetchMore(const QModelIndex &parent = QModelIndex()) override final;
 
-        virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-        virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
-        virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
-        virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-        virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+        virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override final;
+        virtual Qt::ItemFlags flags(const QModelIndex &index) const override final;
+        virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override final;
+        virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override final;
+        virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override final;
+
+      protected:
         virtual void timerEvent(QTimerEvent *) override;
 
       private slots:
         void reloadData();
 
       private:
-        const PDModelOptions m_flags;
+        const PDModelOptions m_modelFlags;
 
       private:
-        // ======== id,       role,      roleData, dirtyFlag
-        QList<QPair<int, QMap<int, QPair<QVariant, AtomicFieldState>>>> m_dbCache;
+        // ======== DBID,     Role,      RoleData, DirtyFlag
+        QList<QPair<int, QMap<int, QPair<QVariant, PDAtomicDirtyState>>>> m_dbCache;
         QHash<int, QByteArray> m_roleNamesMap;
         QMap<QString, QString> m_roleDBNamesMap;
         QString m_tableName;

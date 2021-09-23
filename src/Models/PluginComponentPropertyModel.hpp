@@ -4,30 +4,34 @@
 
 #include <QAbstractItemModel>
 
-class PluginComponentPropertyModel : public QAbstractListModel
+namespace PD::Models
 {
-    Q_OBJECT
-    Q_PROPERTY(PD::Plugin::Types::PDPropertyMap propertyMap READ getPropertyMap WRITE setPropertyMap NOTIFY onPropertyMapChanged)
+    typedef QList<PD::Plugin::Types::PDPropertyDescriptor> PDPropertyDescriptorList;
 
-  public:
-    explicit PluginComponentPropertyModel(QObject *parent = nullptr);
+    class PluginComponentPropertyModel : public QAbstractListModel
+    {
+        Q_OBJECT
+        Q_PROPERTY(PDPropertyDescriptorList propertyMap READ getPropertyMap WRITE setPropertyMap NOTIFY onPropertyMapChanged)
 
-    virtual QHash<int, QByteArray> roleNames() const override;
+      public:
+        explicit PluginComponentPropertyModel(QObject *parent = nullptr);
 
-    // Basic functionality:
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+        virtual QHash<int, QByteArray> roleNames() const override;
 
-    // Editable:
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+        // Basic functionality:
+        int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+        QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-    PD::Plugin::Types::PDPropertyMap getPropertyMap() const;
-    void setPropertyMap(const PD::Plugin::Types::PDPropertyMap &newValue);
+        // Editable:
+        bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+        Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    Q_SIGNAL void onPropertyMapChanged(const PD::Plugin::Types::PDPropertyMap &v);
+        PDPropertyDescriptorList getPropertyMap() const;
+        void setPropertyMap(const PDPropertyDescriptorList &newValue);
 
-  private:
-    PD::Plugin::Types::PDPropertyMap m_propertyMap;
-    QList<std::tuple<QString, QString, QVariant>> m_propertyList;
-};
+        Q_SIGNAL void onPropertyMapChanged(const PDPropertyDescriptorList &v);
+
+      private:
+        PDPropertyDescriptorList m_propertyList;
+    };
+} // namespace PD::Models

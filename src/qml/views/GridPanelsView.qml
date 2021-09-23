@@ -15,10 +15,10 @@ Item {
     property bool itemMoving: false
 
     function syncSizeHandleSizes() {
-        sizehandle._start.x = selectedPanel.x / sizehandle.parent.width
-        sizehandle._start.y = selectedPanel.y / sizehandle.parent.height
-        sizehandle._end.x = (selectedPanel.x + selectedPanel.width) / sizehandle.parent.width
-        sizehandle._end.y = (selectedPanel.y + selectedPanel.height) / sizehandle.parent.height
+        sizehandle._start.x = root.selectedPanel.x / root.width
+        sizehandle._start.y = root.selectedPanel.y / root.height
+        sizehandle._end.x = (root.selectedPanel.x + root.selectedPanel.width) / root.width
+        sizehandle._end.y = (root.selectedPanel.y + root.selectedPanel.height) / root.height
     }
 
     GridLayout {
@@ -118,14 +118,14 @@ Item {
         anchors.fill: parent
         handleSize: 20
 
-        Column {
+        ColumnLayout {
             x: root.selectedPanel == null ? 0 : root.selectedPanel.x
                                             + root.selectedPanel.width / 2 - implicitWidth / 2
             y: root.selectedPanel == null ? 0 : root.selectedPanel.y + root.selectedPanel.height
                                             / 2 - implicitHeight / 2
             spacing: 10
             Text {
-                anchors.horizontalCenter: parent.horizontalCenter
+                Layout.fillWidth: true
                 color: AppTheme.text
                 visible: parent.visible
                 text: (root.selectedPanel == null || root.selectedPanel._model
@@ -136,10 +136,22 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
             }
-            CircularButton {
-                text: qsTr("Delete")
-                anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: PanelModel.removeItem(root.selectedPanel._index)
+
+            RowLayout {
+                CircularButton {
+                    Layout.fillHeight: true
+                    text: qsTr("Edit")
+                    onClicked: {
+                        pluginPropertyEditor.componentType = root.selectedPanel._model.contentType
+                        pluginPropertyEditor.open()
+                    }
+                }
+                CircularButton {
+                    Layout.fillHeight: true
+                    text: qsTr("Delete")
+                    textcolor: AppTheme.warn
+                    onClicked: PanelModel.removeItem(root.selectedPanel._index)
+                }
             }
         }
 
@@ -169,8 +181,8 @@ Item {
     }
 
     CircularButton {
-        id: editButton
         z: 99
+        id: editButton
         backgroundcolor: root.editMode ? AppTheme.highlight : AppTheme.background
         textcolor: root.editMode ? AppTheme.background : AppTheme.highlight
         anchors.margins: 10
@@ -236,5 +248,9 @@ Item {
                                   })
             pluginTypeSelector.close()
         }
+    }
+
+    ComponentPropertyEditor {
+        id: pluginPropertyEditor
     }
 }

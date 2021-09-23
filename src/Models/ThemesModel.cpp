@@ -7,7 +7,7 @@ AppThemeModel::AppThemeModel(QObject *parent) : PDBaseObjectPropertyModel(parent
     setHighlight("#5E81AC");
     setHighlightText("#ECEFF4");
     setText("#ECEFF4");
-    setWarn("#BF616A");
+    setWarn("#d54345");
     setShadow("#29000000");
     setBorder("#3381A1C1");
     setDeep("#3B4252");

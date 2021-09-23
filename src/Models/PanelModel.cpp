@@ -45,14 +45,15 @@ QVariantMap PanelModel::getQmlInfoFromType(const QString &type) const
     const auto &typeinfo = m_typeinfo[type];
 
     QVariantMap initialProperties;
-    for (auto it = typeinfo.InitialProperties.constBegin(); it != typeinfo.InitialProperties.constEnd(); it++)
-        initialProperties.insert(it.key(), it->second);
+    for (const auto &[pName, pDescription, pDefaultValue] : typeinfo.Properties)
+        initialProperties.insert(pName, pDefaultValue);
 
     return {
         { u"iconPath"_qs, typeinfo.IconPath },
         { u"description"_qs, typeinfo.Description },
         { u"qmlPath"_qs, typeinfo.QmlFilePath },
         { u"initialProperties"_qs, initialProperties },
+        { u"properties"_qs, QVariant::fromValue(typeinfo.Properties) },
     };
 }
 

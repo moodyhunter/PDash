@@ -13,14 +13,14 @@ void PDClock::RegisterQMLTypes()
 
 QMap<QString, PD::Plugin::Types::PDPluginQmlTypeInfo> PDClock::QmlComponentTypes()
 {
-    static const PD::Plugin::Types::PDPropertyMap empty{ { u"clockType"_qs, { u"Type of the clock"_qs, ClockType::DateTime } } };
+    static const PD::Plugin::Types::PDPropertyDescriptor empty{ u"clockType"_qs, u"Type of the clock"_qs, ClockType::DateTime };
     return {
-        { u"Clock 1"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
-        { u"Clock 2"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
-        { u"Clock 3"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
-        { u"Clock 4"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
-        { u"Clock 5"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
-        { u"Clock 6"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, empty } },
+        { u"Clock 1"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, { empty } } },
+        { u"Clock 2"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, { empty } } },
+        { u"Clock 3"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, { empty } } },
+        { u"Clock 4"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, { empty } } },
+        { u"Clock 5"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, { empty } } },
+        { u"Clock 6"_qs, { u"Shows a Clock"_qs, QmlInternalImportPath() + u"qml/ClockItem.qml"_qs, u"/assets/pd-frameless.svg"_qs, { empty } } },
     };
 }
 

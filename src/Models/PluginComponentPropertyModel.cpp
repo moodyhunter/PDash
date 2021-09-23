@@ -1,5 +1,7 @@
 #include "PluginComponentPropertyModel.hpp"
 
+using namespace PD::Models;
+
 enum Roles
 {
     PropertyName = Qt::UserRole,
@@ -27,7 +29,7 @@ int PluginComponentPropertyModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    return m_propertyMap.size();
+    return m_propertyList.size();
 }
 
 QVariant PluginComponentPropertyModel::data(const QModelIndex &index, int role) const
@@ -65,23 +67,23 @@ Qt::ItemFlags PluginComponentPropertyModel::flags(const QModelIndex &index) cons
     return Qt::ItemIsEditable;
 }
 
-PD::Plugin::Types::PDPropertyMap PluginComponentPropertyModel::getPropertyMap() const
+PDPropertyDescriptorList PluginComponentPropertyModel::getPropertyMap() const
 {
-    return m_propertyMap;
+    return m_propertyList;
 }
 
-void PluginComponentPropertyModel::setPropertyMap(const PD::Plugin::Types::PDPropertyMap &newValue)
+void PluginComponentPropertyModel::setPropertyMap(const PDPropertyDescriptorList &newValue)
 {
-    if (m_propertyMap == newValue)
+    if (m_propertyList == newValue)
         return;
 
-    beginRemoveRows({}, 0, m_propertyMap.size());
-    m_propertyMap.clear();
+    beginRemoveRows({}, 0, m_propertyList.size());
+    m_propertyList.clear();
     endRemoveRows();
 
     beginInsertRows({}, 0, newValue.size());
-    m_propertyMap = newValue;
+    m_propertyList = newValue;
     endInsertRows();
 
-    Q_EMIT onPropertyMapChanged(m_propertyMap);
+    Q_EMIT onPropertyMapChanged(m_propertyList);
 }

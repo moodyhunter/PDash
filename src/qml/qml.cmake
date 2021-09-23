@@ -6,6 +6,7 @@ list(APPEND QML_FILES
     ${CMAKE_CURRENT_LIST_DIR}/controls/RectangleAreaHandle.qml
     ${CMAKE_CURRENT_LIST_DIR}/views/ActivityListView.qml
     ${CMAKE_CURRENT_LIST_DIR}/views/GridPanelsView.qml
+    ${CMAKE_CURRENT_LIST_DIR}/views/ComponentPropertyEditor.qml
     ${CMAKE_CURRENT_LIST_DIR}/views/LoginView.qml
     ${CMAKE_CURRENT_LIST_DIR}/views/PluginTypeView.qml
     )

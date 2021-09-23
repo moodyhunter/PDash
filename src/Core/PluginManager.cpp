@@ -122,7 +122,7 @@ bool PDPluginManager::loadPluginInstanceObject(const QString &fullPath, QObject 
         return false;
     }
 
-    qInfo() << "Loaded plugin:" << info.libraryPath;
+    qInfo() << "Loaded plugin" << info.pinterface->PluginId() << "from" << info.libraryPath;
     m_plugins.insert(info.id, info);
     return true;
 }

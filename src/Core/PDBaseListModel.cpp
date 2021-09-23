@@ -6,8 +6,11 @@
 using namespace PD::Models::Base;
 using namespace std::chrono_literals;
 
+constexpr static auto FState_CLEAN = true;
+constexpr static auto FState_DIRTY = false;
+
 PDBaseListModelImpl::PDBaseListModelImpl(const PDModelInfo &typeinfo, const QString &table, PDModelOptions flags, QObject *parent)
-    : QAbstractListModel(parent), m_flags(flags), m_tableName(u"pd_data_"_qs + table)
+    : QAbstractListModel(parent), m_modelFlags(flags), m_tableName(u"pd_data_"_qs + table)
 {
     for (auto it = typeinfo.begin(); it != typeinfo.end(); it++)
     {
@@ -48,8 +51,8 @@ void PDBaseListModelImpl::saveToDatabase(bool fullSave)
         {
             const auto fieldName = m_roleDBNamesMap[QString::fromUtf8(m_roleNamesMap[it.key()])];
             auto &&[fieldData, roleState] = it.value();
-            if (fullSave || roleState.loadRelaxed() == F_DIRTY)
-                fields << fieldName, fieldsData << fieldData, roleState.storeRelaxed(F_CLEAN);
+            if (fullSave || roleState.loadRelaxed() == FState_DIRTY)
+                fields << fieldName, fieldsData << fieldData, roleState.storeRelaxed(FState_CLEAN);
         }
         if (!fields.isEmpty())
             pdApp->DatabaseManager()->Update(m_tableName, dbId, fields, fieldsData);
@@ -59,12 +62,12 @@ void PDBaseListModelImpl::saveToDatabase(bool fullSave)
 void PDBaseListModelImpl::appendItem(const QVariantMap &data)
 {
     QStringList dbFields;
-    QMap<int, QPair<QVariant, AtomicFieldState>> rolesData;
+    QMap<int, QPair<QVariant, PDAtomicDirtyState>> rolesData;
     for (auto it = data.begin(); it != data.end(); it++)
     {
         const auto roleName = it.key();
         dbFields << m_roleDBNamesMap[roleName];
-        rolesData.insert(m_roleNamesMap.key(roleName.toUtf8()), std::make_pair(it.value(), AtomicFieldState{ F_CLEAN }));
+        rolesData.insert(m_roleNamesMap.key(roleName.toUtf8()), std::make_pair(it.value(), PDAtomicDirtyState{ FState_CLEAN }));
     }
     const auto dbId = pdApp->DatabaseManager()->Insert(m_tableName, dbFields, data.values());
     if (dbId >= 0)
@@ -97,7 +100,7 @@ int PDBaseListModelImpl::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    if (m_flags & MF_FetchDynamically)
+    if (m_modelFlags & MF_FetchDynamically)
         return m_dbCache.size();
 
     return std::max(m_tableSize, 0ll);
@@ -113,7 +116,7 @@ bool PDBaseListModelImpl::canFetchMore(const QModelIndex &) const
     if (m_tableSize < 0)
         return true;
 
-    if (m_flags ^ MF_FetchDynamically)
+    if (m_modelFlags ^ MF_FetchDynamically)
         return false;
 
     return m_dbCache.size() < m_tableSize;
@@ -121,7 +124,7 @@ bool PDBaseListModelImpl::canFetchMore(const QModelIndex &) const
 
 void PDBaseListModelImpl::fetchMore(const QModelIndex &parent)
 {
-    if (m_flags ^ MF_FetchDynamically)
+    if (m_modelFlags ^ MF_FetchDynamically)
     {
         if (m_tableSize < 0)
         {
@@ -132,8 +135,8 @@ void PDBaseListModelImpl::fetchMore(const QModelIndex &parent)
             {
                 const auto dbId = rit.key();
                 const auto dbData = rit.value();
-                QMap<int, QPair<QVariant, AtomicFieldState>> roleValueMap;
-                const static AtomicFieldState CleanState{ F_CLEAN };
+                QMap<int, QPair<QVariant, PDAtomicDirtyState>> roleValueMap;
+                const static PDAtomicDirtyState CleanState{ FState_CLEAN };
                 for (auto it = m_roleNamesMap.begin(); it != m_roleNamesMap.end(); it++)
                     roleValueMap.insert(it.key(), { dbData[m_roleDBNamesMap[QString::fromUtf8(it.value())]], CleanState });
 
@@ -176,7 +179,7 @@ bool PDBaseListModelImpl::setData(const QModelIndex &index, const QVariant &valu
     if (data(index, role) != value)
     {
         m_dbCache[index.row()].second[role].first = value;
-        m_dbCache[index.row()].second[role].second.storeRelaxed(F_DIRTY);
+        m_dbCache[index.row()].second[role].second.storeRelaxed(FState_DIRTY);
         emit dataChanged(index, index, { role });
         return true;
     }

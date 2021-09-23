@@ -14,6 +14,13 @@ T.RoundButton {
     width: root.size
     height: root.size
 
+    contentItem: Text {
+        text: root.text
+        color: textcolor
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+    }
+
     background: Rectangle {
         readonly property real _colorratio: 1.2
         color: root.down ? Qt.darker(

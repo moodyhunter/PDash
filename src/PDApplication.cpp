@@ -36,21 +36,25 @@ PDApplication::~PDApplication()
 
 int PDApplication::run()
 {
-    do
+    QQmlApplicationEngine engine;
+    QObject::connect(m_pluginManager, &Core::PDPluginManager::OnQmlImportPathAdded, &engine, &QQmlApplicationEngine::addImportPath);
+    m_pluginManager->LoadPlugins();
+
+    const auto uiLanguages = QLocale::system().uiLanguages();
+    for (const auto &locale : uiLanguages)
     {
-        auto translator = new QTranslator(this);
-        const auto uiLanguages = QLocale::system().uiLanguages();
-        for (const auto &locale : uiLanguages)
+        const auto fileName = u":/translations/PD_%1.qm"_qs.arg(QLocale(locale).name());
+        if (QFile::exists(fileName))
         {
-            const auto name = QLocale(locale).name();
-            if (translator->load(u":/translations/PD_"_qs + name))
+            auto translator = new QTranslator(this);
+            if (translator->load(fileName))
             {
                 installTranslator(translator);
                 break;
             }
+            delete translator;
         }
-        delete translator;
-    } while (false);
+    }
 
     pdRegisterModelType<Models::ActivityModel>();
     qmlRegisterSingletonInstance<Models::ActivityModel>(PD_QML_URI, 1, 0, "ActivityModel", new Models::ActivityModel(this));
@@ -64,12 +68,8 @@ int PDApplication::run()
     qmlRegisterSingletonInstance<Database::PDDatabaseManager>(PD_QML_URI, 1, 0, "DBManager", m_dbManager);
     qmlRegisterModule(PD_QML_URI, 1, 0);
 
-    QQmlApplicationEngine engine;
-    QObject::connect(pdApp->PluginManager(), &Core::PDPluginManager::OnQmlImportPathAdded, &engine, &QQmlApplicationEngine::addImportPath);
-    m_pluginManager->LoadPlugins();
-
 #if defined(Q_OS_MAC) && defined(QT_DEBUG)
-    m_engine->addImportPath(qApp->applicationDirPath() + u"/../../../");
+    engine.addImportPath(qApp->applicationDirPath() + u"/../../../");
 #endif
     engine.rootContext()->setContextProperty(u"fixedFont"_qs, QFontDatabase::systemFont(QFontDatabase::FixedFont));
     engine.rootContext()->setProperty("QtVersion", QStringLiteral(QT_VERSION_STR));

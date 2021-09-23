@@ -75,7 +75,6 @@ qt_add_executable(PDash ${PROJECT_SOURCES})
 qt_add_translations(PDash
     RESOURCE_PREFIX "/translations"
     TS_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/translations/PD_en_US.ts
         ${CMAKE_CURRENT_SOURCE_DIR}/translations/PD_zh_CN.ts
     )
 
