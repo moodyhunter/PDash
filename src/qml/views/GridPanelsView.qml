@@ -5,8 +5,8 @@ import pd.mooody.me
 
 Item {
     id: root
-    property int totalRows: 20
-    property int totalColumns: 20
+    property int totalRows: 30
+    property int totalColumns: 30
     property int rowSpacing: 15
     property int columnSpacing: 15
 
@@ -21,88 +21,75 @@ Item {
         sizehandle._end.y = (root.selectedPanel.y + root.selectedPanel.height) / root.height
     }
 
-    GridLayout {
+    Item {
         id: baseGrid
         anchors.fill: parent
 
-        rows: root.totalRows
-        columns: root.totalColumns
-        columnSpacing: root.columnSpacing
-        rowSpacing: root.rowSpacing
-
         z: -1
 
-        property real columnWidth: (width - columnSpacing * (columns - 1)) / columns
-        property real rowHeight: (height - rowSpacing * (rows - 1)) / rows
+        property real columnWidth: (baseGrid.width - root.columnSpacing
+                                    * (root.totalColumns - 1)) / root.totalColumns
+        property real rowHeight: (baseGrid.height - root.rowSpacing
+                                  * (root.totalRows - 1)) / root.totalRows
 
         Repeater {
-            model: root.totalRows * root.totalColumns
-            delegate: Item {
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-                Layout.row: Math.floor(index / root.totalRows)
-                Layout.column: index % root.totalColumns
-            }
-        }
-    }
-
-    Repeater {
-        id: repeater
-        model: PanelModel
-        PDGlowedRectangle {
-            id: panelRectangle
-            z: 10
-            hoverEnabled: true
-            parent: root
-
-            property var _model: model
-            property var _index: index
-            property int cid: model.row * root.totalColumns + model.column
-
-            Loader {
-                Component {
-                    id: unknownComponentErrorComponent
-                    PDLabel {
-                        anchors.fill: parent
-                        text: qsTr("Unknown Plugin Component") + "\n'"
-                              + panelRectangle._model.contentType + "'"
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-                }
-
-                id: _loader
-                clip: true
-                anchors.fill: parent
-                anchors.margins: 10
-                Component.onCompleted: {
-                    var qmlTypeInfo = PanelModel.getQmlInfoFromType(
-                                parent._model.contentType)
-                    if (qmlTypeInfo.qmlPath === "") {
-                        _loader.sourceComponent = unknownComponentErrorComponent
-                    } else {
-                        _loader.setSource(qmlTypeInfo.qmlPath,
-                                          qmlTypeInfo.initialProperties)
-                    }
-                }
-            }
-
-            x: baseGrid.children[cid].x
-            y: baseGrid.children[cid].y
-            width: model.columnSpan * (baseGrid.columnWidth + root.columnSpacing)
-                   - root.columnSpacing
-            height: model.rowSpan * (baseGrid.rowHeight + root.rowSpacing) - root.rowSpacing
-
-            MouseArea {
-                id: mouse
-                visible: root.editMode
+            id: repeater
+            model: PanelModel
+            PDGlowedRectangle {
+                parent: baseGrid
                 hoverEnabled: true
-                anchors.fill: parent
-                onEntered: {
-                    if (!root.itemMoving) {
-                        root.selectedPanel = parent
-                        if (root.editMode) {
-                            root.syncSizeHandleSizes()
+                id: panelRectangle
+
+                x: (baseGrid.columnWidth + root.columnSpacing) * model.column
+                y: (baseGrid.rowHeight + root.rowSpacing) * model.row
+                z: 10
+                width: (baseGrid.columnWidth + root.columnSpacing)
+                       * model.columnSpan - root.columnSpacing
+                height: (baseGrid.rowHeight + root.rowSpacing) * model.rowSpan - root.rowSpacing
+
+                property var _model: model
+                property var itemIndex: index
+
+                Loader {
+                    Component {
+                        id: unknownComponentErrorComponent
+                        PDLabel {
+                            color: AppTheme.warn
+                            anchors.fill: parent
+                            text: qsTr("Unknown Plugin Component") + "\n'"
+                                  + panelRectangle._model.contentType + "'"
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                    }
+
+                    id: _loader
+                    clip: true
+                    anchors.fill: parent
+                    anchors.margins: 10
+                    Component.onCompleted: {
+                        var qmlTypeInfo = PanelModel.getQmlInfoFromType(
+                                    parent._model.contentType)
+                        if (qmlTypeInfo.qmlPath === "") {
+                            _loader.sourceComponent = unknownComponentErrorComponent
+                        } else {
+                            _loader.setSource(qmlTypeInfo.qmlPath,
+                                              qmlTypeInfo.initialProperties)
+                        }
+                    }
+                }
+
+                MouseArea {
+                    id: mouse
+                    visible: root.editMode
+                    hoverEnabled: true
+                    anchors.fill: parent
+                    onEntered: {
+                        if (!root.itemMoving) {
+                            root.selectedPanel = parent
+                            if (root.editMode) {
+                                root.syncSizeHandleSizes()
+                            }
                         }
                     }
                 }
@@ -150,7 +137,8 @@ Item {
                     Layout.fillHeight: true
                     text: qsTr("Delete")
                     textcolor: AppTheme.warn
-                    onClicked: PanelModel.removeItem(root.selectedPanel._index)
+                    onClicked: PanelModel.removeItem(
+                                   root.selectedPanel.itemIndex)
                 }
             }
         }
@@ -167,16 +155,22 @@ Item {
             if (!root.itemMoving)
                 root.itemMoving = true
 
-            root.selectedPanel._model.column = Math.round(
-                        sizehandle.realStartX / (baseGrid.columnWidth + root.columnSpacing))
-            root.selectedPanel._model.row = Math.round(
-                        sizehandle.realStartY / (baseGrid.rowHeight + root.rowSpacing))
+            var newX = sizehandle.realStartX
+            var newY = sizehandle.realStartY
+
+            var newWidth = sizehandle.realEndX - sizehandle.realStartX
+            var newHeight = sizehandle.realEndY - sizehandle.realStartY
+
+            var tmpVSize = baseGrid.rowHeight + root.rowSpacing
+            var tmpHSize = baseGrid.columnWidth + root.columnSpacing
+
+            root.selectedPanel._model.column = Math.round(newX / tmpHSize)
+            root.selectedPanel._model.row = Math.round(newY / tmpVSize)
+
             root.selectedPanel._model.columnSpan = Math.round(
-                        (sizehandle.realEndX - sizehandle.realStartX)
-                        / (baseGrid.columnWidth + root.columnSpacing))
+                        (newWidth + root.columnSpacing) / tmpHSize)
             root.selectedPanel._model.rowSpan = Math.round(
-                        (sizehandle.realEndY - sizehandle.realStartY)
-                        / (baseGrid.rowHeight + root.rowSpacing))
+                        (newHeight + root.rowSpacing) / tmpVSize)
         }
     }
 
