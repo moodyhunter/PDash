@@ -16,7 +16,7 @@ T.RoundButton {
 
     contentItem: Text {
         text: root.text
-        color: textcolor
+        color: root.textcolor
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }

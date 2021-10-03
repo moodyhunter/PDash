@@ -21,10 +21,7 @@ namespace PD::Database
         QString dbName;
         DBFieldType dbType;
         QVariant dbDefaultValue;
-        ModelDBField(const QString &name, DBFieldType type, const QVariant &val = QVariant{})
-            : dbName(name), //
-              dbType(type), //
-              dbDefaultValue(val){};
+        ModelDBField(const QString &name, DBFieldType type, const QVariant &val = QVariant{}) : dbName(name), dbType(type), dbDefaultValue(val){};
     };
 
     void pdRegisterDBTable(const QString &tableName, const QList<ModelDBField> &fields);
@@ -33,6 +30,7 @@ namespace PD::Database
     {
         Q_OBJECT
         friend void pdRegisterDBTable(const QString &tableName, const QList<ModelDBField> &fields);
+        static inline QMap<QString, QList<ModelDBField>> tableFields;
 
       public:
         PDDatabaseManager(QObject *parent = nullptr);
@@ -51,7 +49,6 @@ namespace PD::Database
 
       private:
         bool CheckAndCreateTable();
-        static inline QMap<QString, QList<ModelDBField>> tableFields;
         bool m_isDatabaseOpened = false;
     };
 

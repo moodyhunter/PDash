@@ -7,7 +7,11 @@ import pd.mooody.me
 Popup {
     id: root
 
-    property string componentType
+    required property string componentType
+
+    function setComponentProperties(props) {
+        propModel.setCurrentPropertyValues(props)
+    }
 
     readonly property int _paddingH: root.width / 2 - 250
     readonly property int _paddingV: root.height / 2 - 200
@@ -20,25 +24,39 @@ Popup {
     parent: Overlay.overlay
     width: parent.width
     height: parent.height
-    closePolicy: Popup.NoAutoClose
+    closePolicy: Popup.CloseOnEscape
     modal: true
-
-    signal itemSelected(string itemType)
 
     background: Rectangle {
         color: "transparent"
+    }
+
+    PluginComponentPropertyModel {
+        id: propModel
+        componentType: root.componentType
     }
 
     contentItem: PDGlowedRectangle {
         hoverEnabled: false
         ListView {
             anchors.fill: parent
-            model: PanelModel.getQmlInfoFromType(root.componentType).properties
+            anchors.margins: 10
+            model: propModel
             delegate: ColumnLayout {
-                Text {
-                    Layout.fillHeight: true
+                RowLayout {
                     Layout.fillWidth: true
-                    text: modelData
+                    Text {
+                        Layout.fillHeight: true
+                        text: name
+                    }
+                    Text {
+                        Layout.fillHeight: true
+                        text: description
+                    }
+                    Text {
+                        Layout.fillHeight: true
+                        text: value
+                    }
                 }
             }
         }

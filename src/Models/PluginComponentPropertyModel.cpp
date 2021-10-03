@@ -1,24 +1,37 @@
 #include "PluginComponentPropertyModel.hpp"
 
+#include "Core/PluginManager.hpp"
+#include "PDApplication.hpp"
+
 using namespace PD::Models;
 
 enum Roles
 {
     PropertyName = Qt::UserRole,
-    PropertyDescription,
-    PropertyDefaultValue,
+    PropertyDescriptions,
+    PropertyValue,
 };
 
 PluginComponentPropertyModel::PluginComponentPropertyModel(QObject *parent) : QAbstractListModel(parent)
 {
 }
 
+void PluginComponentPropertyModel::setCurrentPropertyValues(const QVariantMap &vals)
+{
+    for (auto i = 0; i < m_propertyList.count(); i++)
+    {
+        const auto &pName = std::get<0>(m_propertyList[i]);
+        if (vals.contains(pName))
+            std::get<2>(m_propertyList[i]) = vals[pName], emit dataChanged(createIndex(i, 0), index(i, 0), { PropertyValue });
+    }
+}
+
 QHash<int, QByteArray> PluginComponentPropertyModel::roleNames() const
 {
     return {
         { PropertyName, "name" },
-        { PropertyDescription, "description" },
-        { PropertyDefaultValue, "defaultValue" },
+        { PropertyDescriptions, "description" },
+        { PropertyValue, "value" },
     };
 }
 
@@ -37,11 +50,12 @@ QVariant PluginComponentPropertyModel::data(const QModelIndex &index, int role) 
     if (!index.isValid())
         return QVariant();
 
+    const auto r = index.row();
     switch ((Roles) role)
     {
-        case PropertyName: return std::get<0>(m_propertyList.at(index.row()));
-        case PropertyDescription: return std::get<1>(m_propertyList.at(index.row()));
-        case PropertyDefaultValue: return std::get<2>(m_propertyList.at(index.row()));
+        case PropertyName: return std::get<0>(m_propertyList[r]);
+        case PropertyDescriptions: return std::get<1>(m_propertyList[r]);
+        case PropertyValue: return std::get<2>(m_propertyList[r]);
     }
 
     qWarning() << "Unreachable";
@@ -64,26 +78,33 @@ Qt::ItemFlags PluginComponentPropertyModel::flags(const QModelIndex &index) cons
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return Qt::ItemIsEditable;
+    return index.column() == 2 ? Qt::ItemIsEditable : Qt::NoItemFlags;
 }
 
-PDPropertyDescriptorList PluginComponentPropertyModel::getPropertyMap() const
+const QString &PluginComponentPropertyModel::getComponentType() const
 {
-    return m_propertyList;
+    return componentType;
 }
 
-void PluginComponentPropertyModel::setPropertyMap(const PDPropertyDescriptorList &newValue)
+void PluginComponentPropertyModel::setComponentType(const QString &newComponentType)
 {
-    if (m_propertyList == newValue)
+    if (componentType == newComponentType)
         return;
+    componentType = newComponentType;
+    emit componentTypeChanged();
 
-    beginRemoveRows({}, 0, m_propertyList.size());
+    PDPropertyDescriptorList info;
+    for (const auto &plugin : pdApp->PluginManager()->AllPlugins())
+    {
+        const auto types = plugin->pinterface->QmlComponentTypes();
+        for (auto it = types.begin(); it != types.end(); it++)
+            if (newComponentType == it.key())
+                info = it.value().Properties;
+    }
+
+    emit rowsRemoved({}, 0, m_propertyList.size(), {});
     m_propertyList.clear();
-    endRemoveRows();
 
-    beginInsertRows({}, 0, newValue.size());
-    m_propertyList = newValue;
-    endInsertRows();
-
-    Q_EMIT onPropertyMapChanged(m_propertyList);
+    m_propertyList = info;
+    emit rowsInserted({}, 0, info.size() - 1, {});
 }

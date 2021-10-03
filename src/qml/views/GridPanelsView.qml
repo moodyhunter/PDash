@@ -4,6 +4,78 @@ import QtQuick.Layouts
 import pd.mooody.me
 
 Item {
+    Component {
+        id: unknownComponentErrorComponent
+        PDLabel {
+            property string componentType
+
+            color: AppTheme.warn
+            anchors.fill: parent
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            text: qsTr("Unknown Plugin Component") + "\n'" + componentType + "'"
+        }
+    }
+
+    component GridPanel: PDGlowedRectangle {
+        property var _model
+        property int itemIndex
+        property var itemProperties
+        property var typeInfo: PanelModel.getQmlInfoFromType(_model.contentType)
+
+        hoverEnabled: true
+
+        x: baseGrid.spacedColumnWidth * _model.column
+        y: baseGrid.spacedRowHeight * _model.row
+        z: 10
+
+        width: baseGrid.spacedColumnWidth * _model.columnSpan - root.columnSpacing
+        height: baseGrid.spacedRowHeight * _model.rowSpan - root.rowSpacing
+
+        Loader {
+            id: _loader
+            clip: true
+            anchors.fill: parent
+            anchors.margins: 10
+            Component.onCompleted: {
+                if (typeInfo.qmlPath === "") {
+                    _loader.sourceComponent = unknownComponentErrorComponent
+                    _loader.item.componentType = parent._model.contentType
+                } else {
+                    // Fix for "" being an invalid json
+                    if (parent._model.contentData === "")
+                        parent._model.contentData = "{}"
+
+                    parent.itemProperties = JSON.parse(
+                                parent._model.contentData)
+                    if (Object.keys(parent.itemProperties).length === 0)
+                        parent.itemProperties = typeInfo.initialProperties
+                    updateQmlComponent(typeInfo.initialProperties)
+                }
+            }
+        }
+
+        function updateQmlComponent(initialProperties) {
+            _loader.setSource(typeInfo.qmlPath, initialProperties)
+            // TODO: Save Properties
+        }
+
+        MouseArea {
+            id: mouse
+            visible: root.editMode
+            hoverEnabled: true
+            anchors.fill: parent
+            onEntered: {
+                if (!root.itemMoving) {
+                    root.selectedPanel = parent
+                    if (root.editMode) {
+                        root.syncSizeHandleSizes()
+                    }
+                }
+            }
+        }
+    }
+
     id: root
     property int totalRows: 30
     property int totalColumns: 30
@@ -11,10 +83,12 @@ Item {
     property int columnSpacing: 15
 
     property bool editMode: false
-    property PDGlowedRectangle selectedPanel: null
+    property GridPanel selectedPanel: null
     property bool itemMoving: false
 
     function syncSizeHandleSizes() {
+        if (root.selectedPanel == null)
+            return
         sizehandle._start.x = root.selectedPanel.x / root.width
         sizehandle._start.y = root.selectedPanel.y / root.height
         sizehandle._end.x = (root.selectedPanel.x + root.selectedPanel.width) / root.width
@@ -24,7 +98,6 @@ Item {
     Item {
         id: baseGrid
         anchors.fill: parent
-
         z: -1
 
         property real columnWidth: (baseGrid.width - root.columnSpacing
@@ -32,67 +105,15 @@ Item {
         property real rowHeight: (baseGrid.height - root.rowSpacing
                                   * (root.totalRows - 1)) / root.totalRows
 
+        property real spacedRowHeight: baseGrid.rowHeight + root.rowSpacing
+        property real spacedColumnWidth: baseGrid.columnWidth + root.columnSpacing
+
         Repeater {
             id: repeater
             model: PanelModel
-            PDGlowedRectangle {
-                parent: baseGrid
-                hoverEnabled: true
-                id: panelRectangle
-
-                x: (baseGrid.columnWidth + root.columnSpacing) * model.column
-                y: (baseGrid.rowHeight + root.rowSpacing) * model.row
-                z: 10
-                width: (baseGrid.columnWidth + root.columnSpacing)
-                       * model.columnSpan - root.columnSpacing
-                height: (baseGrid.rowHeight + root.rowSpacing) * model.rowSpan - root.rowSpacing
-
-                property var _model: model
-                property var itemIndex: index
-
-                Loader {
-                    Component {
-                        id: unknownComponentErrorComponent
-                        PDLabel {
-                            color: AppTheme.warn
-                            anchors.fill: parent
-                            text: qsTr("Unknown Plugin Component") + "\n'"
-                                  + panelRectangle._model.contentType + "'"
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                        }
-                    }
-
-                    id: _loader
-                    clip: true
-                    anchors.fill: parent
-                    anchors.margins: 10
-                    Component.onCompleted: {
-                        var qmlTypeInfo = PanelModel.getQmlInfoFromType(
-                                    parent._model.contentType)
-                        if (qmlTypeInfo.qmlPath === "") {
-                            _loader.sourceComponent = unknownComponentErrorComponent
-                        } else {
-                            _loader.setSource(qmlTypeInfo.qmlPath,
-                                              qmlTypeInfo.initialProperties)
-                        }
-                    }
-                }
-
-                MouseArea {
-                    id: mouse
-                    visible: root.editMode
-                    hoverEnabled: true
-                    anchors.fill: parent
-                    onEntered: {
-                        if (!root.itemMoving) {
-                            root.selectedPanel = parent
-                            if (root.editMode) {
-                                root.syncSizeHandleSizes()
-                            }
-                        }
-                    }
-                }
+            delegate: GridPanel {
+                _model: model
+                itemIndex: index
             }
         }
     }
@@ -130,6 +151,8 @@ Item {
                     text: qsTr("Edit")
                     onClicked: {
                         pluginPropertyEditor.componentType = root.selectedPanel._model.contentType
+                        pluginPropertyEditor.setComponentProperties(
+                                    root.selectedPanel.itemProperties)
                         pluginPropertyEditor.open()
                     }
                 }
@@ -161,16 +184,15 @@ Item {
             var newWidth = sizehandle.realEndX - sizehandle.realStartX
             var newHeight = sizehandle.realEndY - sizehandle.realStartY
 
-            var tmpVSize = baseGrid.rowHeight + root.rowSpacing
-            var tmpHSize = baseGrid.columnWidth + root.columnSpacing
-
-            root.selectedPanel._model.column = Math.round(newX / tmpHSize)
-            root.selectedPanel._model.row = Math.round(newY / tmpVSize)
+            root.selectedPanel._model.column = Math.round(
+                        newX / baseGrid.spacedColumnWidth)
+            root.selectedPanel._model.row = Math.round(
+                        newY / baseGrid.spacedRowHeight)
 
             root.selectedPanel._model.columnSpan = Math.round(
-                        (newWidth + root.columnSpacing) / tmpHSize)
+                        (newWidth + root.columnSpacing) / baseGrid.spacedColumnWidth)
             root.selectedPanel._model.rowSpan = Math.round(
-                        (newHeight + root.rowSpacing) / tmpVSize)
+                        (newHeight + root.rowSpacing) / baseGrid.spacedRowHeight)
         }
     }
 
@@ -246,5 +268,6 @@ Item {
 
     ComponentPropertyEditor {
         id: pluginPropertyEditor
+        componentType: ""
     }
 }

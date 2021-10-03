@@ -1,28 +1,25 @@
 import QtQuick
 import QtQuick.Layouts
-import pd.mooody.me
 
 import PDPlugins.Clock
+import pd.mooody.me
 
 Clock {
-    anchors.fill: parent
     PDLabel {
         anchors.fill: parent
         id: currentTime
         fontSizeMode: Text.Fit
-        //        minimumPixelSize: 10
         font.pixelSize: 72
     }
     Timer {
         running: true
         interval: 500
+        repeat: true
         triggeredOnStart: true
         onTriggered: {
             var date = new Date()
-            var txt = date.toTimeString() + " - " + date.toLocaleDateString(
-                        Qt.locale(), "dddd MMMM d yyyy")
-            currentTime.text = txt
-            restart()
+            currentTime.text = date.toLocaleString(Qt.locale(),
+                                                   parent.formatString)
         }
     }
 }

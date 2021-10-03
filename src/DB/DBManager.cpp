@@ -2,7 +2,6 @@
 
 #include "QSQLCipherDriver/QSQLCipherDriver.hpp"
 
-#include <QMetaEnum>
 #include <QStandardPaths>
 #include <QtSql>
 
@@ -100,10 +99,8 @@ void PDDatabaseManager::Update(const QString &table, int id, const QStringList &
     QString query;
     query += u"UPDATE %1 SET "_qs.arg(table);
     for (auto i = 0; i < fields.size(); i++)
-    {
-        const auto field = fields[i];
-        query += u"%1=:%1,"_qs.arg(field);
-    }
+        query.append(u"%1=:%1,"_qs.arg(fields[i]));
+
     query.chop(1);
     query += u" WHERE id = %1"_qs.arg(id);
 

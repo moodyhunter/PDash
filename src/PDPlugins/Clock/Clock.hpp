@@ -14,18 +14,6 @@ class PDClock
     Q_DISABLE_COPY_MOVE(PDClock)
 
   public:
-    enum ClockType
-    {
-        DateTime,
-        Date,
-        Time,
-        Week,
-        CountDown,
-        CountUp,
-    };
-    Q_ENUM(ClockType)
-
-  public:
     PDClock(QObject *parent = nullptr) : QObject(parent){};
     virtual ~PDClock(){};
     virtual void RegisterQMLTypes() override;
@@ -36,8 +24,7 @@ class PDClockItem : public QQuickItem
 {
     Q_OBJECT
 
-    PD_PROPERTY(PDClock::ClockType, clockType, ClockType)
-
+    PD_PROPERTY(QString, formatString, FormatString)
   public:
     PDClockItem(QQuickItem *parent = nullptr);
     virtual ~PDClockItem(){};
