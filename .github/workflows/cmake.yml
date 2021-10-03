@@ -47,7 +47,7 @@ jobs:
           }
         - {
             name: "macOS", artifact: "macOS",
-            os: macos-latest,
+            os: macos-11,
             setup_script: "brew install pkg-config sqlcipher",
             has_release: true
           }
