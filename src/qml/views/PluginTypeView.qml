@@ -60,8 +60,8 @@ Popup {
                     }
 
                     contentItem: RowLayout {
-                        readonly property var _data: PanelModel.getQmlInfoFromType(
-                                                         modelData)
+                        readonly property var _model: PanelModel.getQmlInfoFromType(
+                                                          modelData)
                         id: content
                         anchors.fill: parent
                         anchors.margins: 5
@@ -70,7 +70,7 @@ Popup {
                             Layout.preferredHeight: 96
                             Layout.preferredWidth: 96
                             Layout.fillHeight: true
-                            source: content._data.iconPath
+                            source: content._model.iconPath
                             sourceSize.width: 80
                             sourceSize.height: 80
                         }
@@ -90,12 +90,12 @@ Popup {
 
                             PDLabel {
                                 Layout.fillWidth: true
-                                text: content._data.description
+                                text: content._model.description
                             }
 
                             PDLabel {
                                 Layout.fillWidth: true
-                                text: qsTr("QML Path:") + " " + content._data.qmlPath
+                                text: qsTr("QML Path:") + " " + content._model.qmlPath
                             }
                         }
                     }

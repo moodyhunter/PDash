@@ -127,10 +127,11 @@ Item {
         handleSize: 20
 
         ColumnLayout {
-            x: root.selectedPanel == null ? 0 : root.selectedPanel.x
-                                            + root.selectedPanel.width / 2 - implicitWidth / 2
+            id: clayout
+            x: root.selectedPanel == null ? 0 : root.selectedPanel.x + root.selectedPanel.width
+                                            / 2 - clayout.implicitWidth / 2
             y: root.selectedPanel == null ? 0 : root.selectedPanel.y + root.selectedPanel.height
-                                            / 2 - implicitHeight / 2
+                                            / 2 - clayout.implicitHeight / 2
             spacing: 10
             Text {
                 Layout.fillWidth: true
@@ -150,10 +151,7 @@ Item {
                     Layout.fillHeight: true
                     text: qsTr("Edit")
                     onClicked: {
-                        pluginPropertyEditor.componentType = root.selectedPanel._model.contentType
-                        pluginPropertyEditor.setComponentProperties(
-                                    root.selectedPanel.itemProperties)
-                        pluginPropertyEditor.open()
+                        pluginPropertyEditorLoader.load()
                     }
                 }
                 CircularButton {
@@ -246,28 +244,40 @@ Item {
                 }
             }
         ]
+
         onClicked: {
-            pluginTypeSelector.open()
+            componentSelectorLoader.load()
         }
     }
 
-    PluginTypeView {
-        id: pluginTypeSelector
-        onItemSelected: function (type) {
-            PanelModel.appendItem({
-                                      "row": 2,
-                                      "column": 2,
-                                      "rowSpan": 4,
-                                      "columnSpan": 4,
-                                      "contentType": type,
-                                      "contentData": ""
-                                  })
-            pluginTypeSelector.close()
+    AutoLoader {
+        id: componentSelectorLoader
+        onAfterLoaded: item.open()
+        PluginTypeView {
+            onItemSelected: function (type) {
+                PanelModel.appendItem({
+                                          "row": 4,
+                                          "column": 4,
+                                          "rowSpan": 6,
+                                          "columnSpan": 6,
+                                          "contentType": type,
+                                          "contentData": ""
+                                      })
+                componentSelectorLoader.unload()
+            }
         }
     }
 
-    ComponentPropertyEditor {
-        id: pluginPropertyEditor
-        componentType: ""
+    AutoLoader {
+        id: pluginPropertyEditorLoader
+        onAfterLoaded: {
+            item.componentType = root.selectedPanel._model.contentType
+            item.setComponentProperties(root.selectedPanel.itemProperties)
+            item.open()
+        }
+
+        ComponentPropertyEditor {
+            onEditFinished: pluginPropertyEditorLoader.unload()
+        }
     }
 }

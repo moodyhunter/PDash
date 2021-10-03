@@ -7,7 +7,9 @@ import pd.mooody.me
 Popup {
     id: root
 
-    required property string componentType
+    signal editFinished
+
+    property string componentType
 
     function setComponentProperties(props) {
         propModel.setCurrentPropertyValues(props)
@@ -45,15 +47,15 @@ Popup {
             delegate: ColumnLayout {
                 RowLayout {
                     Layout.fillWidth: true
-                    Text {
+                    PDLabel {
                         Layout.fillHeight: true
                         text: name
                     }
-                    Text {
+                    PDLabel {
                         Layout.fillHeight: true
                         text: description
                     }
-                    Text {
+                    PDLabel {
                         Layout.fillHeight: true
                         text: value
                     }
