@@ -54,8 +54,8 @@ list(APPEND PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ActivitiesModel.hpp
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/PluginComponentPropertyModel.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/PluginComponentPropertyModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ComponentPropertyModel.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/ComponentPropertyModel.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/PanelModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models/PanelModel.hpp
@@ -127,7 +127,6 @@ target_link_libraries(PDash
         PD::SqlCipher
         PD::AllPlugins
         PD::PDPluginInterface)
-
 
 # Installation
 if(WIN32)

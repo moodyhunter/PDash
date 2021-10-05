@@ -3,8 +3,8 @@
 #include "Core/PluginManager.hpp"
 #include "DB/DBManager.hpp"
 #include "Models/ActivitiesModel.hpp"
+#include "Models/ComponentPropertyModel.hpp"
 #include "Models/PanelModel.hpp"
-#include "Models/PluginComponentPropertyModel.hpp"
 #include "Models/ThemesModel.hpp"
 
 #include <QDir>
@@ -63,7 +63,7 @@ int PDApplication::run()
     pdRegisterModelType<Models::PanelModel>();
     qmlRegisterSingletonInstance<Models::PanelModel>(PD_QML_URI, 1, 0, "PanelModel", new Models::PanelModel(this));
 
-    qmlRegisterType<Models::PluginComponentPropertyModel>(PD_QML_URI, 1, 0, "PluginComponentPropertyModel");
+    qmlRegisterType<Models::ComponentPropertyModel>(PD_QML_URI, 1, 0, "ComponentPropertyModel");
 
     qmlRegisterSingletonInstance<AppThemeModel>(PD_QML_URI, 1, 0, "AppTheme", new AppThemeModel(this));
 

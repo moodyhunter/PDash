@@ -1,4 +1,4 @@
-#include "PluginComponentPropertyModel.hpp"
+#include "ComponentPropertyModel.hpp"
 
 #include "Core/PluginManager.hpp"
 #include "PDApplication.hpp"
@@ -10,32 +10,42 @@ enum Roles
     PropertyName = Qt::UserRole,
     PropertyDescriptions,
     PropertyValue,
+    PropertyType,
 };
 
-PluginComponentPropertyModel::PluginComponentPropertyModel(QObject *parent) : QAbstractListModel(parent)
+ComponentPropertyModel::ComponentPropertyModel(QObject *parent) : QAbstractListModel(parent)
 {
 }
 
-void PluginComponentPropertyModel::setCurrentPropertyValues(const QVariantMap &vals)
+void ComponentPropertyModel::setCurrentPropertyValues(const QVariantMap &vals)
 {
     for (auto i = 0; i < m_propertyList.count(); i++)
     {
         const auto &pName = std::get<0>(m_propertyList[i]);
         if (vals.contains(pName))
-            std::get<2>(m_propertyList[i]) = vals[pName], emit dataChanged(createIndex(i, 0), index(i, 0), { PropertyValue });
+            std::get<2>(m_propertyList[i]) = vals[pName], emit dataChanged(index(i, 0), index(i, 0), { PropertyValue });
     }
 }
 
-QHash<int, QByteArray> PluginComponentPropertyModel::roleNames() const
+QVariantMap ComponentPropertyModel::getCurrentPropertyValues() const
+{
+    QVariantMap result;
+    for (const auto &[pName, pDescription, pValue] : m_propertyList)
+        result[pName] = pValue;
+    return result;
+}
+
+QHash<int, QByteArray> ComponentPropertyModel::roleNames() const
 {
     return {
         { PropertyName, "name" },
         { PropertyDescriptions, "description" },
         { PropertyValue, "value" },
+        { PropertyType, "type" },
     };
 }
 
-int PluginComponentPropertyModel::rowCount(const QModelIndex &parent) const
+int ComponentPropertyModel::rowCount(const QModelIndex &parent) const
 {
     // For list models only the root node (an invalid parent) should return the list's size. For all
     // other (valid) parents, rowCount() should return 0 so that it does not become a tree model.
@@ -45,48 +55,57 @@ int PluginComponentPropertyModel::rowCount(const QModelIndex &parent) const
     return m_propertyList.size();
 }
 
-QVariant PluginComponentPropertyModel::data(const QModelIndex &index, int role) const
+QVariant ComponentPropertyModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
 
     const auto r = index.row();
-    switch ((Roles) role)
+    switch (static_cast<Roles>(role))
     {
         case PropertyName: return std::get<0>(m_propertyList[r]);
         case PropertyDescriptions: return std::get<1>(m_propertyList[r]);
         case PropertyValue: return std::get<2>(m_propertyList[r]);
+        case PropertyType: return std::get<2>(m_propertyList[r]).typeId();
     }
 
     qWarning() << "Unreachable";
     return QVariant();
 }
 
-bool PluginComponentPropertyModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool ComponentPropertyModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (data(index, role) != value)
     {
-        // FIXME: Implement me!
-        emit dataChanged(index, index, { role });
-        return true;
+        const auto r = index.row();
+        if (role == PropertyValue)
+        {
+            std::get<2>(m_propertyList[r]) = value;
+            emit dataChanged(index, index, { role });
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     return false;
 }
 
-Qt::ItemFlags PluginComponentPropertyModel::flags(const QModelIndex &index) const
+Qt::ItemFlags ComponentPropertyModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return index.column() == 2 ? Qt::ItemIsEditable : Qt::NoItemFlags;
+    return Qt::ItemIsEditable;
 }
 
-const QString &PluginComponentPropertyModel::getComponentType() const
+const QString &ComponentPropertyModel::getComponentType() const
 {
     return componentType;
 }
 
-void PluginComponentPropertyModel::setComponentType(const QString &newComponentType)
+void ComponentPropertyModel::setComponentType(const QString &newComponentType)
 {
     if (componentType == newComponentType)
         return;

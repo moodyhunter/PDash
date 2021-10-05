@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtGraphicalEffects
 
 import pd.mooody.me
 
@@ -26,22 +25,22 @@ ListView {
             anchors.margins: 15
             PDLabel {
                 Layout.fillWidth: true
-                text: model.type
+                text: type
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
             }
             PDLabel {
                 Layout.fillWidth: true
-                text: model.title
+                text: title
                 wrapMode: Text.WrapAnywhere
             }
             PDLabel {
                 Layout.fillWidth: true
-                text: model.content
+                text: content
                 wrapMode: Text.WrapAnywhere
             }
             PDLabel {
                 Layout.fillWidth: true
-                text: model.date
+                text: date
                 wrapMode: Text.WrapAnywhere
             }
         }

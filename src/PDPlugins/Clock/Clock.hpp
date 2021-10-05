@@ -25,6 +25,9 @@ class PDClockItem : public QQuickItem
     Q_OBJECT
 
     PD_PROPERTY(QString, formatString, FormatString)
+    PD_PROPERTY(QString, prefix, Prefix)
+    PD_PROPERTY(QString, suffix, Suffix)
+
   public:
     PDClockItem(QQuickItem *parent = nullptr);
     virtual ~PDClockItem(){};

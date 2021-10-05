@@ -19,8 +19,7 @@ PDBaseListModelImpl::PDBaseListModelImpl(const PDModelInfo &typeinfo, const QStr
         if (role < Qt::UserRole)
             qWarning() << "Found a role smaller than" << Qt::UserRole;
 
-        const auto &[dbName, dbType, dbDefaultValue] = dbInfo;
-        Q_UNUSED(dbType);
+        [[maybe_unused]] const auto &[dbName, dbType, dbDefaultValue] = dbInfo;
         m_roleNamesMap.insert(role, roleName.toUtf8());
         m_roleDBNamesMap.insert(roleName.toString(), dbName);
     }
@@ -50,8 +49,7 @@ void PDBaseListModelImpl::saveToDatabase(bool fullSave)
         for (auto it = dbData.begin(); it != dbData.end(); it++)
         {
             const auto fieldName = m_roleDBNamesMap[QString::fromUtf8(m_roleNamesMap[it.key()])];
-            auto &&[fieldData, roleState] = it.value();
-            if (fullSave || roleState.loadRelaxed() == FState_DIRTY)
+            if (auto &&[fieldData, roleState] = it.value(); fullSave || roleState.loadRelaxed() == FState_DIRTY)
                 fields << fieldName, fieldsData << fieldData, roleState.storeRelaxed(FState_CLEAN);
         }
         if (!fields.isEmpty())
@@ -176,6 +174,11 @@ Qt::ItemFlags PDBaseListModelImpl::flags(const QModelIndex &) const
 
 bool PDBaseListModelImpl::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    if (!value.isValid())
+    {
+        qWarning() << "Invalid value for" << index << "role:" << role;
+        return false;
+    }
     if (data(index, role) != value)
     {
         m_dbCache[index.row()].second[role].first = value;

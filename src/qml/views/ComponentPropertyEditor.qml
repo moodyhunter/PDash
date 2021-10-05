@@ -7,7 +7,7 @@ import pd.mooody.me
 Popup {
     id: root
 
-    signal editFinished
+    signal editFinished(var props)
 
     property string componentType
 
@@ -28,36 +28,124 @@ Popup {
     height: parent.height
     closePolicy: Popup.CloseOnEscape
     modal: true
+    onClosed: editFinished()
 
     background: Rectangle {
         color: "transparent"
     }
 
-    PluginComponentPropertyModel {
+    ComponentPropertyModel {
         id: propModel
         componentType: root.componentType
     }
 
     contentItem: PDGlowedRectangle {
         hoverEnabled: false
-        ListView {
+        ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 10
-            model: propModel
-            delegate: ColumnLayout {
-                RowLayout {
-                    Layout.fillWidth: true
+            anchors.margins: 15
+
+            PDLabel {
+                font.pixelSize: 25
+                text: qsTr("Property Editor")
+            }
+
+            PDLabel {
+                text: componentType
+                font.italic: true
+            }
+
+            Rectangle {
+                color: "#999999"
+                Layout.preferredHeight: 1
+                Layout.fillWidth: true
+            }
+
+            ListView {
+                id: propertyList
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.topMargin: 10
+                spacing: 24
+                clip: true
+                model: propModel
+                ScrollBar.vertical: ScrollBar {
+                    policy: ScrollBar.AlwaysOn
+                }
+                delegate: RowLayout {
+                    width: propertyList.width - 20
+
                     PDLabel {
                         Layout.fillHeight: true
-                        text: name
-                    }
-                    PDLabel {
-                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        font.pixelSize: 15
                         text: description
                     }
-                    PDLabel {
+
+                    Loader {
                         Layout.fillHeight: true
-                        text: value
+                        Component {
+                            id: cieditor
+                            SpinBox {
+                                id: sb
+                                value: model.value
+                                from: -99999
+                                to: 99999
+                                onValueChanged: {
+                                    model.value = sb.value
+                                }
+                            }
+                        }
+
+                        Component {
+                            id: cbeditor
+                            RowLayout {
+                                CheckBox {
+                                    id: cb
+                                    checked: model.value
+                                    onCheckedChanged: {
+                                        model.value = checked
+                                    }
+                                }
+                                PDLabel {
+                                    text: cb.checked ? qsTr("True") : qsTr(
+                                                           "False")
+                                }
+                            }
+                        }
+
+                        Component {
+                            id: cseditor
+                            TextInput {
+                                text: model.value
+                                color: AppTheme.text
+                                selectByMouse: true
+                                onTextChanged: {
+                                    model.value = text
+                                }
+                            }
+                        }
+
+                        // 1        => Boolean
+                        // 10       => String
+                        // Others   => Integer
+                        sourceComponent: type === 1 ? cbeditor : (type === 10 ? cseditor : cieditor)
+                    }
+                }
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Button {
+                    text: qsTr("Save")
+                    onClicked: {
+                        root.editFinished(propModel.getCurrentPropertyValues())
+                    }
+                }
+                Button {
+                    text: qsTr("Discard")
+                    onClicked: {
+                        root.editFinished({})
                     }
                 }
             }

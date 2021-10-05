@@ -17,10 +17,10 @@ Popup {
     parent: Overlay.overlay
     width: parent.width
     height: parent.height
-    closePolicy: Popup.NoAutoClose
+    closePolicy: Popup.CloseOnEscape
     modal: true
 
-    signal itemSelected(string itemType)
+    signal itemSelected(string itemType, size initialSize)
 
     background: Rectangle {
         color: "transparent"
@@ -55,7 +55,8 @@ Popup {
                         anchors.fill: content
                         onClicked: {
                             console.log("clicked: " + modelData)
-                            root.itemSelected(modelData)
+                            root.itemSelected(modelData,
+                                              content._model.initialSize)
                         }
                     }
 
@@ -84,28 +85,15 @@ Popup {
                                 text: modelData
                             }
 
-                            Item {
-                                Layout.fillWidth: true
-                            }
-
                             PDLabel {
                                 Layout.fillWidth: true
-                                text: content._model.description
-                            }
-
-                            PDLabel {
-                                Layout.fillWidth: true
-                                text: qsTr("QML Path:") + " " + content._model.qmlPath
+                                text: content._model.description + " ("
+                                      + content._model.initialSize.height + "x"
+                                      + content._model.initialSize.width + ")"
                             }
                         }
                     }
                 }
-            }
-
-            Button {
-                Layout.fillWidth: true
-                text: qsTr("Cancel")
-                onClicked: root.close()
             }
         }
     }

@@ -51,6 +51,7 @@ QVariantMap PanelModel::getQmlInfoFromType(const QString &type) const
     return { { u"iconPath"_qs, typeinfo.IconPath },
              { u"description"_qs, typeinfo.Description },
              { u"qmlPath"_qs, typeinfo.QmlFilePath },
+             { u"initialSize"_qs, typeinfo.initialSize },
              { u"initialProperties"_qs, initialProperties } };
 }
 

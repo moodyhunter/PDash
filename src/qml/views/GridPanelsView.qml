@@ -23,6 +23,12 @@ Item {
         property var itemProperties
         property var typeInfo: PanelModel.getQmlInfoFromType(_model.contentType)
 
+        function updateQmlComponent(propObject) {
+            itemProperties = propObject
+            _model.contentData = JSON.stringify(propObject)
+            _loader.setSource(typeInfo.qmlPath, propObject)
+        }
+
         hoverEnabled: true
 
         x: baseGrid.spacedColumnWidth * _model.column
@@ -46,20 +52,14 @@ Item {
                     if (parent._model.contentData === "")
                         parent._model.contentData = "{}"
 
-                    parent.itemProperties = JSON.parse(
-                                parent._model.contentData)
-                    if (Object.keys(parent.itemProperties).length === 0)
-                        parent.itemProperties = typeInfo.initialProperties
-                    updateQmlComponent(typeInfo.initialProperties)
+                    var props = JSON.parse(parent._model.contentData)
+                    if (Object.keys(props).length === 0)
+                        props = typeInfo.initialProperties
+
+                    updateQmlComponent(props)
                 }
             }
         }
-
-        function updateQmlComponent(initialProperties) {
-            _loader.setSource(typeInfo.qmlPath, initialProperties)
-            // TODO: Save Properties
-        }
-
         MouseArea {
             id: mouse
             visible: root.editMode
@@ -254,15 +254,16 @@ Item {
         id: componentSelectorLoader
         onAfterLoaded: item.open()
         PluginTypeView {
-            onItemSelected: function (type) {
-                PanelModel.appendItem({
-                                          "row": 4,
-                                          "column": 4,
-                                          "rowSpan": 6,
-                                          "columnSpan": 6,
-                                          "contentType": type,
-                                          "contentData": ""
-                                      })
+            onItemSelected: function (type, initialSize) {
+                var properties = {
+                    "row": 4,
+                    "column": 4,
+                    "rowSpan": initialSize.height,
+                    "columnSpan": initialSize.width,
+                    "contentType": type,
+                    "contentData": ""
+                }
+                PanelModel.appendItem(properties)
                 componentSelectorLoader.unload()
             }
         }
@@ -275,9 +276,13 @@ Item {
             item.setComponentProperties(root.selectedPanel.itemProperties)
             item.open()
         }
-
         ComponentPropertyEditor {
-            onEditFinished: pluginPropertyEditorLoader.unload()
+            onEditFinished: function (props) {
+                if (Object.keys(props).length > 0) {
+                    root.selectedPanel.updateQmlComponent(props)
+                }
+                pluginPropertyEditorLoader.unload()
+            }
         }
     }
 }
