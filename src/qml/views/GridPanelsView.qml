@@ -22,6 +22,7 @@ Item {
         property int itemIndex
         property var itemProperties
         property var typeInfo: PanelModel.getQmlInfoFromType(_model.contentType)
+        property bool available
 
         function updateQmlComponent(propObject) {
             itemProperties = propObject
@@ -47,6 +48,7 @@ Item {
                 if (typeInfo.qmlPath === "") {
                     _loader.sourceComponent = unknownComponentErrorComponent
                     _loader.item.componentType = parent._model.contentType
+                    parent.available = false
                 } else {
                     // Fix for "" being an invalid json
                     if (parent._model.contentData === "")
@@ -56,6 +58,7 @@ Item {
                     if (Object.keys(props).length === 0)
                         props = typeInfo.initialProperties
 
+                    parent.available = true
                     updateQmlComponent(props)
                 }
             }
@@ -137,11 +140,13 @@ Item {
                 Layout.fillWidth: true
                 color: AppTheme.text
                 visible: parent.visible
-                text: (root.selectedPanel == null || root.selectedPanel._model
-                       === null) ? "N/A" : "x = " + root.selectedPanel._model.column
-                                   + ", y = " + root.selectedPanel._model.row
-                                   + "\nSize: " + root.selectedPanel._model.columnSpan
-                                   + "x" + root.selectedPanel._model.rowSpan
+                text: if (root.selectedPanel == null)
+                          return "N/A"
+                      else
+                          return "x = " + root.selectedPanel._model.column + ", y = "
+                                  + root.selectedPanel._model.row + "\nSize: "
+                                  + root.selectedPanel._model.columnSpan + "x"
+                                  + root.selectedPanel._model.rowSpan
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
             }
@@ -150,6 +155,7 @@ Item {
                 CircularButton {
                     Layout.fillHeight: true
                     text: qsTr("Edit")
+                    enabled: root.selectedPanel.available
                     onClicked: {
                         pluginPropertyEditorLoader.load()
                     }

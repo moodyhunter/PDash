@@ -30,14 +30,12 @@ Popup {
         hoverEnabled: false
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 10
-            spacing: 15
+            anchors.margins: 15
+            spacing: 24
 
             PDLabel {
-                font.pixelSize: 20
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-                text: qsTr("Please select a component")
+                font.pixelSize: 25
+                text: qsTr("Add Component")
             }
 
             ListView {

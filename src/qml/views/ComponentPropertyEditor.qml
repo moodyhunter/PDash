@@ -51,7 +51,7 @@ Popup {
             }
 
             PDLabel {
-                text: componentType
+                text: qsTr("Component ID: ") + root.componentType
                 font.italic: true
             }
 
