@@ -22,14 +22,10 @@ T.RoundButton {
     }
 
     background: Rectangle {
-        readonly property real _colorratio: 1.2
-        property color downColor: Qt.darker(root.backgroundcolor, _colorratio)
-        property color hoverColor: Qt.lighter(root.backgroundcolor, _colorratio)
-
         color: if (root.down)
-                   return downColor
+                   return Qt.darker(root.backgroundcolor, 1.2)
                else if (root.hovered)
-                   return hoverColor
+                   return Qt.lighter(root.backgroundcolor, 1.2)
                else
                    return root.backgroundcolor
 
