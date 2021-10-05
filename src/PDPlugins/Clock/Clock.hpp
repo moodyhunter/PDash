@@ -26,7 +26,11 @@ class PDClockItem : public QQuickItem
 
     PD_PROPERTY(QString, formatString, FormatString)
     PD_PROPERTY(QString, prefix, Prefix)
+    PD_PROPERTY(bool, prefixSpace, PrefixSpace)
     PD_PROPERTY(QString, suffix, Suffix)
+    PD_PROPERTY(bool, suffixSpace, SuffixSpace)
+    PD_PROPERTY(bool, autoSize, AutoSize)
+    PD_PROPERTY(int, fontSize, FontSize)
 
   public:
     PDClockItem(QQuickItem *parent = nullptr);

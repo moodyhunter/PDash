@@ -19,6 +19,11 @@ QMap<QString, PDPluginQmlTypeInfo> PDClock::QmlComponentTypes()
 
     const auto pPrefix = makeDescriptor<PDClockItem>("prefix", u"String Prefix"_qs, u""_qs);
     const auto pSuffix = makeDescriptor<PDClockItem>("suffix", u"String Suffix"_qs, u""_qs);
+    const auto pPrefixSpace = makeDescriptor<PDClockItem>("prefixSpace", u"Add a space after prefix"_qs, false);
+    const auto pSuffixSpace = makeDescriptor<PDClockItem>("suffixSpace", u"Add a space before suffix"_qs, false);
+    const auto pAutoSize = makeDescriptor<PDClockItem>("autoSize", u"Automatically adjust font size"_qs, true);
+    const auto pFontSize = makeDescriptor<PDClockItem>("fontSize", u"Font Size"_qs, 75);
+    const auto fullProperty = { pFormatDateTimeString, pPrefix, pSuffix, pPrefixSpace, pSuffixSpace, pAutoSize, pFontSize };
 
     const static auto icon = u"/assets/pd-frameless.svg"_qs;
     const static auto mainQmlFile = QmlInternalImportPath() + u"qml/ClockItem.qml"_qs;
@@ -30,10 +35,10 @@ QMap<QString, PDPluginQmlTypeInfo> PDClock::QmlComponentTypes()
         { u"DateClock"_qs, { u"A Calender that Shows Date"_qs, mainQmlFile, icon, { pFormatDateString }, size1 } },
         { u"TimeClock"_qs, { u"A Simple Digital Clock"_qs, mainQmlFile, icon, { pFormatTimeString }, size1 } },
         { u"DateTimeClock"_qs, { u"A DateTime Clock"_qs, mainQmlFile, icon, { pFormatDateTimeString }, size2 } },
-        { u"FullClock"_qs, { u"A Clock with Prefix and Suffix String Support"_qs, mainQmlFile, icon, { pFormatDateTimeString, pPrefix, pSuffix }, size2 } },
+        { u"FullClock"_qs, { u"A Clock with Prefix and Suffix String Support"_qs, mainQmlFile, icon, fullProperty, size2 } },
     };
 }
 
-PDClockItem::PDClockItem(QQuickItem *parent) : QQuickItem(parent)
+PDClockItem::PDClockItem(QQuickItem *parent) : QQuickItem(parent), m_prefixSpace(false), m_suffixSpace(false), m_autoSize(true), m_fontSize(75)
 {
 }

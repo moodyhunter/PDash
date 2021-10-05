@@ -5,21 +5,23 @@ import PDPlugins.Clock
 import pd.mooody.me
 
 Clock {
+    id: clock
+
     PDLabel {
         anchors.fill: parent
         id: currentTime
-        fontSizeMode: Text.Fit
-        font.pixelSize: 72
+        fontSizeMode: clock.autoSize ? Text.Fit : Text.FixedSize
+        font.pixelSize: clock.autoSize ? 75 : clock.fontSize
     }
+
     Timer {
         running: true
         interval: 500
         repeat: true
         triggeredOnStart: true
-        onTriggered: {
-            var date = new Date()
-            currentTime.text = date.toLocaleString(Qt.locale(),
-                                                   parent.formatString)
-        }
+        onTriggered: currentTime.text = clock.prefix
+                     + (clock.prefixSpace ? " " : "") + new Date().toLocaleString(
+                         Qt.locale(),
+                         clock.formatString) + (clock.suffixSpace ? " " : "") + clock.suffix
     }
 }

@@ -15,8 +15,8 @@ Popup {
         propModel.setCurrentPropertyValues(props)
     }
 
-    readonly property int _paddingH: root.width / 2 - 250
-    readonly property int _paddingV: root.height / 2 - 200
+    readonly property int _paddingH: root.width / 2 - 200
+    readonly property int _paddingV: root.height / 2 - 225
 
     bottomPadding: _paddingV
     topPadding: _paddingV
@@ -84,6 +84,7 @@ Popup {
 
                     Loader {
                         Layout.fillHeight: true
+                        Layout.minimumWidth: 50
                         Component {
                             id: cieditor
                             SpinBox {
@@ -120,6 +121,7 @@ Popup {
                                 text: model.value
                                 color: AppTheme.text
                                 selectByMouse: true
+                                font: fixedFont
                                 onTextChanged: {
                                     model.value = text
                                 }
@@ -136,6 +138,7 @@ Popup {
 
             RowLayout {
                 Layout.fillWidth: true
+                Layout.alignment: Qt.AlignRight
                 Button {
                     text: qsTr("Save")
                     onClicked: {

@@ -155,7 +155,7 @@ Item {
                 CircularButton {
                     Layout.fillHeight: true
                     text: qsTr("Edit")
-                    enabled: root.selectedPanel.available
+                    enabled: root.selectedPanel && root.selectedPanel.available
                     onClicked: {
                         pluginPropertyEditorLoader.load()
                     }
