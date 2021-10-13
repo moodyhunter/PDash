@@ -80,7 +80,7 @@ int PDApplication::run()
     const QUrl MainComponent{ u"qrc:/pd/mooody/me/MainComponent.qml"_qs };
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated, this,
-        [&](QObject *obj, const QUrl &objUrl)
+        [&](const QObject *obj, const QUrl &objUrl)
         {
             if (!obj && MainComponent == objUrl)
                 QCoreApplication::exit(-1);
