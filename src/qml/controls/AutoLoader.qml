@@ -14,14 +14,12 @@ Loader {
     function load() {
         beforeLoading()
         root.sourceComponent = content
-        console.debug("Item loaded: " + content)
         afterLoaded()
     }
 
     function unload() {
         beforeUnloading()
         root.sourceComponent = undefined
-        console.debug("Item unloaded: " + content)
         afterUnloaded()
     }
 }
