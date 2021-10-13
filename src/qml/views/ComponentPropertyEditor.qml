@@ -28,7 +28,7 @@ Popup {
     height: parent.height
     closePolicy: Popup.CloseOnEscape
     modal: true
-    onClosed: editFinished()
+    onClosed: editFinished({})
 
     background: Rectangle {
         color: "transparent"
